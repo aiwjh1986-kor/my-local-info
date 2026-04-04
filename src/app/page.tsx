@@ -12,9 +12,12 @@ export default function Home() {
           <Link href="/" className="text-xl md:text-2xl font-black text-pink-600 tracking-tight flex items-center gap-2">
             <span className="text-2xl">🌸</span> 성남시 생활 정보
           </Link>
-          <p className="text-sm text-pink-500 hidden sm:block font-medium">
-            따뜻하게 모아보는 우리 동네 꿀정보
-          </p>
+          <div className="flex items-center gap-6">
+            <Link href="/blog" className="text-sm font-bold text-pink-600 hover:text-pink-800 transition">블로그</Link>
+            <p className="text-sm text-pink-500 hidden sm:block font-medium">
+              따뜻하게 모아보는 우리 동네 꿀정보
+            </p>
+          </div>
         </div>
       </header>
 
@@ -45,7 +48,7 @@ export default function Home() {
             </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {events.map((event) => (
-                <Link href={`/detail/${event.id}`} key={event.id} className="group bg-white/90 rounded-2xl shadow-sm border border-pink-100 p-6 hover:-translate-y-2 hover:shadow-xl hover:shadow-pink-200 transition-all duration-300 flex flex-col h-full cursor-pointer">
+                <Link href="/blog" key={event.id} className="group bg-white/90 rounded-2xl shadow-sm border border-pink-100 p-6 hover:-translate-y-2 hover:shadow-xl hover:shadow-pink-200 transition-all duration-300 flex flex-col h-full cursor-pointer">
                   <div className="flex justify-between items-start mb-4">
                     <span className="shrink-0 bg-pink-100 text-pink-600 border border-pink-200 text-xs px-3 py-1 rounded-full font-bold">🎉 축제 정보</span>
                   </div>
@@ -70,7 +73,7 @@ export default function Home() {
             </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {benefits.map((benefit) => (
-                <Link href={`/detail/${benefit.id}`} key={benefit.id} className="group bg-white/90 rounded-2xl shadow-sm border border-pink-100 p-6 hover:-translate-y-2 hover:shadow-xl hover:shadow-pink-200 transition-all duration-300 flex flex-col h-full relative overflow-hidden cursor-pointer">
+                <Link href="/blog" key={benefit.id} className="group bg-white/90 rounded-2xl shadow-sm border border-pink-100 p-6 hover:-translate-y-2 hover:shadow-xl hover:shadow-pink-200 transition-all duration-300 flex flex-col h-full relative overflow-hidden cursor-pointer">
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-400 to-fuchsia-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div className="flex justify-between items-start mb-4">
                     <span className="shrink-0 bg-fuchsia-50 text-fuchsia-700 border border-fuchsia-100 text-xs px-3 py-1 rounded-full font-bold">💡 꿀팁 혜택</span>
