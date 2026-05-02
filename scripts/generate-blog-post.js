@@ -36,7 +36,6 @@ async function generateBlogPost() {
 
     for (const item of allItems) {
       let isAlreadyPosted = false;
-      /* 중시 중복 체크 비활성화 (강제 생성을 위해)
       for (const file of existingFiles) {
         if (file.endsWith('.md')) {
           const content = fs.readFileSync(path.join(postsDir, file), 'utf8');
@@ -46,7 +45,6 @@ async function generateBlogPost() {
           }
         }
       }
-      */
 
       if (isAlreadyPosted) {
         console.log(`- 이미 포스팅됨: ${item.name}`);
@@ -88,7 +86,7 @@ tags: [태그1, 태그2, 태그3]
 
 마지막 줄에 FILENAME: ${today}-${item.id} 형식으로 파일명도 출력해줘.`;
 
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
       const response = await fetch(geminiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
