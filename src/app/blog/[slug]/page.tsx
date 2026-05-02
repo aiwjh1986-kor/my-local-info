@@ -4,8 +4,6 @@ import remarkGfm from 'remark-gfm';
 import { getPostData, getSortedPostsData } from '@/lib/posts';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import AdBanner from '@/components/AdBanner';
-import CoupangBanner from '@/components/CoupangBanner';
 
 export const dynamicParams = false;
 
@@ -19,14 +17,8 @@ export async function generateMetadata({
   if (!post) return { title: 'Post Not Found' };
 
   return {
-    title: `${post.title} | 용인시 생활 정보 블로그`,
+    title: `${post.title} | 용인생활가이드`,
     description: post.summary,
-    openGraph: {
-      title: post.title,
-      description: post.summary,
-      type: 'article',
-      publishedTime: post.date,
-    },
   };
 }
 
@@ -49,115 +41,124 @@ export default async function PostPage({
     notFound();
   }
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "headline": postData.title,
-    "datePublished": postData.date,
-    "description": postData.summary,
-    "author": {
-      "@type": "Organization",
-      "name": "용인시 생활 정보"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "용인시 생활 정보",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://my-local-info-42x.pages.dev/og-image.png"
-      }
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-white font-sans text-gray-900">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      {/* 상단 헤더 */}
-      <header className="bg-white shadow-sm border-b border-orange-100">
-        <div className="max-w-4xl mx-auto px-4 py-6 flex justify-between items-center">
-          <Link href="/">
-            <h1 className="text-xl font-extrabold text-orange-600 font-[family-name:var(--font-baloo-2)]">
-              용인시 생활정보 및 여행가이드 🏠
-            </h1>
+    <div className="dashboard-container">
+      {/* 1. 좌측 사이드바 (메인과 동일) */}
+      <aside className="sidebar-left p-6 flex flex-col">
+        <div className="mb-10 flex items-center gap-2 px-2">
+          <Link href="/" className="flex items-center gap-2">
+            <span className="text-2xl">🏮</span>
+            <span className="text-xl font-black tracking-tighter">용인생활가이드</span>
           </Link>
-          <nav className="flex gap-4 font-bold text-gray-600">
-            <Link href="/" className="hover:text-orange-600 transition-colors">홈</Link>
-            <Link href="/blog" className="hover:text-orange-600 transition-colors">블로그</Link>
-            <Link href="/about" className="hover:text-orange-600 transition-colors">소개</Link>
-          </nav>
         </div>
-      </header>
+        
+        <nav className="flex-1 space-y-2">
+          <Link href="/" className="flex items-center gap-3 px-3 py-3 rounded-xl text-gray-500 hover:bg-gray-50 font-bold text-sm transition-all">
+            <span>🏠</span><span>홈</span>
+          </Link>
+          <Link href="/blog" className="flex items-center gap-3 px-3 py-3 rounded-xl bg-accent text-white shadow-lg shadow-accent/20 font-bold text-sm transition-all">
+            <span>💰</span><span>상세보기</span>
+          </Link>
+          <Link href="/blog" className="flex items-center gap-3 px-3 py-3 rounded-xl text-gray-500 hover:bg-gray-50 font-bold text-sm transition-all">
+            <span>📅</span><span>행사</span>
+          </Link>
+          <Link href="/blog" className="flex items-center gap-3 px-3 py-3 rounded-xl text-gray-500 hover:bg-gray-50 font-bold text-sm transition-all">
+            <span>🌿</span><span>생활정보</span>
+          </Link>
+        </nav>
 
-      <main className="max-w-4xl mx-auto px-4 py-12 md:py-20">
-        {/* 포스트 헤더 */}
-        <div className="mb-12 text-center">
-          <span className="inline-block px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-sm font-bold mb-4">
-            {postData.category}
-          </span>
-          <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-6 leading-tight">
-            {postData.title}
-          </h1>
-          <div className="flex flex-col items-center gap-2 text-gray-400 text-sm font-medium">
-            <div className="flex items-center gap-4">
-              <time className="font-mono">{postData.date}</time>
-              <span>•</span>
-              <div className="flex gap-2">
-                {postData.tags.map(tag => (
-                  <span key={tag}>#{tag}</span>
-                ))}
-              </div>
+        <div className="mt-auto p-4 bg-accent-light rounded-2xl flex items-center gap-3">
+          <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-bold">L</div>
+          <div>
+            <p className="text-xs font-black">루미 에디터 🐈‍⬛</p>
+            <p className="text-[10px] text-accent font-bold">우리동네 소식통</p>
+          </div>
+        </div>
+      </aside>
+
+      {/* 2. 본문 영역 (Main Content) */}
+      <main className="main-content bg-white min-h-screen">
+        <div className="max-w-3xl mx-auto py-12">
+          {/* 상단 네비게이션 */}
+          <Link href="/" className="text-sm font-bold text-gray-400 hover:text-accent flex items-center gap-2 mb-10 transition-colors">
+            ← 목록으로 돌아가기
+          </Link>
+
+          {/* 포스트 헤더 */}
+          <header className="mb-16">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="px-3 py-1 bg-accent-light text-accent text-[10px] font-black rounded-md uppercase tracking-widest">
+                {postData.category}
+              </span>
+              <time className="text-xs font-bold text-gray-300">{postData.date}</time>
             </div>
-            <p className="text-xs text-gray-400">최종 업데이트: {postData.date}</p>
+            <h1 className="text-4xl md:text-5xl font-black text-[#111111] mb-8 leading-tight">
+              {postData.title}
+            </h1>
+            <p className="text-xl text-gray-500 font-medium leading-relaxed">
+              {postData.summary}
+            </p>
+          </header>
+
+          {/* 본문 (Markdown) */}
+          <article className="prose prose-lg max-w-none prose-headings:text-[#111111] prose-headings:font-black prose-p:text-gray-600 prose-p:leading-relaxed prose-strong:text-accent prose-a:text-accent prose-img:rounded-3xl">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {postData.content}
+            </ReactMarkdown>
+          </article>
+
+          {/* 정보 출처 카드 */}
+          <div className="mt-20 p-8 glass-card bg-gray-50 border-none flex flex-col md:flex-row items-center gap-8">
+            <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-sm">🏮</div>
+            <div className="flex-1 text-center md:text-left">
+              <h4 className="font-black text-lg mb-2">정확한 정보 확인이 필요하신가요?</h4>
+              <p className="text-sm text-gray-500 mb-6 font-medium">본 정보는 공공데이터를 기반으로 AI 에디터 루미가 정리했습니다. 원문 링크를 통해 더 자세한 내용을 확인하실 수 있습니다.</p>
+              {postData.link && (
+                <a 
+                  href={postData.link} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-block px-6 py-3 bg-[#111111] text-white rounded-xl font-bold hover:bg-accent transition-all"
+                >
+                  공식 홈페이지 바로가기 →
+                </a>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* 본문 (Markdown) */}
-        <div className="prose prose-orange lg:prose-xl max-w-none mx-auto prose-headings:font-bold prose-a:text-orange-600 prose-img:rounded-3xl shadow-none">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {postData.content}
-          </ReactMarkdown>
-        </div>
-
-        {/* E-E-A-T 정보 영역 */}
-        <div className="mt-16 p-8 bg-orange-50 rounded-3xl border border-orange-100">
-          <p className="text-sm text-gray-600 leading-relaxed mb-6">
-            이 글은 공공데이터포털(<a href="http://data.go.kr/" target="_blank" rel="noopener noreferrer" className="text-orange-600 underline">data.go.kr</a>)의 정보를 바탕으로 AI가 작성하였습니다. 정확한 내용은 아래 원문 링크를 통해 확인해 주세요.
-          </p>
-          {postData.link && (
-            <a 
-              href={postData.link} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-orange-200 text-orange-600 rounded-xl font-bold hover:bg-orange-600 hover:text-white transition-all shadow-sm"
-            >
-              <span>🔗 원문 출처 및 상세 정보 보기</span>
-            </a>
-          )}
-        </div>
-
-        {/* 광고 영역 */}
-        <AdBanner />
-        <CoupangBanner />
-
-        {/* 하단 네비게이션 */}
-        <div className="mt-20 pt-10 border-t border-gray-100 flex justify-center">
-          <Link 
-            href="/blog"
-            className="px-8 py-3 rounded-full bg-gray-100 text-gray-600 font-bold hover:bg-orange-500 hover:text-white transition-all"
-          >
-            목록으로 돌아가기
-          </Link>
-        </div>
+        {/* 푸터 */}
+        <footer className="max-w-3xl mx-auto mt-20 py-10 border-t border-gray-100 flex justify-between items-center text-[#999999] text-[11px] font-bold">
+          <p>© {new Date().getFullYear()} Yongin Guide. All rights reserved.</p>
+          <div className="flex gap-6">
+            <span>이용안내</span>
+            <span>문의하기</span>
+          </div>
+        </footer>
       </main>
 
-      <footer className="bg-gray-50 border-t border-gray-100 mt-20">
-        <div className="max-w-4xl mx-auto px-4 py-10 text-center text-gray-400 text-xs">
-          © {new Date().getFullYear()} 용인시 생활정보 및 여행가이드 | 블로그 상세
+      {/* 3. 우측 정보바 (상세 페이지에서는 심플하게) */}
+      <aside className="sidebar-right space-y-6">
+        <div className="glass-card p-6 text-center">
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6">글쓴이</p>
+          <div className="w-20 h-20 bg-accent-light rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden">
+             <img src="/images/black-cat-hero.png" alt="Lumi" className="w-full h-full object-cover scale-150 mt-4" />
+          </div>
+          <h5 className="font-black text-[#111111] mb-1">에디터 루미</h5>
+          <p className="text-[10px] text-gray-400 font-bold">Yongin Life Specialist</p>
         </div>
-      </footer>
+
+        <div className="glass-card p-6">
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">관련 태그</p>
+          <div className="flex flex-wrap gap-2">
+            {postData.tags.map(tag => (
+              <span key={tag} className="px-3 py-1.5 bg-gray-50 text-gray-500 text-[10px] font-bold rounded-lg hover:bg-accent-light hover:text-accent cursor-pointer transition-all">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      </aside>
     </div>
   );
 }

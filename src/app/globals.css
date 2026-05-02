@@ -1,30 +1,69 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #F8F9FD;
   --foreground: #111111;
-  --secondary: #666666;
-  --muted: #999999;
-  --accent: #FF7A00; /* 포인트 오렌지 */
+  --sidebar: #FFFFFF;
+  --accent: #8A70FF; /* 프리미엄 퍼플 */
+  --accent-light: #F0EDFF;
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  --card-hover-shadow: 0 10px 40px rgba(138, 112, 255, 0.08);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-secondary: var(--secondary);
-  --color-muted: var(--muted);
   --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
   --font-sans: 'Inter', 'Pretendard', sans-serif;
 }
 
 body {
-  background-color: var(--background);
+  background-image: url('/images/background1.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
-/* 넉넉한 여백과 부드러운 느낌을 위한 글로벌 스타일 */
-* {
-  border-color: #f0f0f0;
+/* 3단 레이아웃을 위한 기본 구조 */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: transparent;
+}
+
+.sidebar-left {
+  width: 500px;
+  background-color: rgba(255, 255, 255, 0.9); /* 살짝 투명하게 */
+  backdrop-filter: blur(10px); /* 유리 느낌 추가 */
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto; /* 정보가 많아질 것에 대비 */
+}
+
+.main-content {
+  flex: 1;
+  padding: 40px 60px;
+}
+
+/* 우측 사이드바 스타일 제거 */
+
+.glass-card {
+  background: white;
+  border-radius: 24px;
+  border: 1px solid #F0F2F5;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  box-shadow: var(--card-hover-shadow);
+  transform: translateY(-4px);
 }
