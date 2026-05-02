@@ -30,9 +30,13 @@ async function generateBlogPost() {
     const today = new Date().toISOString().split('T')[0];
     let generatedCount = 0;
 
+    console.log(`- 현재 검사 중인 폴더: ${postsDir}`);
+    const existingFiles = fs.readdirSync(postsDir);
+    console.log(`- 감지된 기존 파일(${existingFiles.length}개): ${existingFiles.join(', ')}`);
+
     for (const item of allItems) {
-      const existingFiles = fs.readdirSync(postsDir);
       let isAlreadyPosted = false;
+      /* 중시 중복 체크 비활성화 (강제 생성을 위해)
       for (const file of existingFiles) {
         if (file.endsWith('.md')) {
           const content = fs.readFileSync(path.join(postsDir, file), 'utf8');
@@ -42,8 +46,12 @@ async function generateBlogPost() {
           }
         }
       }
+      */
 
-      if (isAlreadyPosted) continue;
+      if (isAlreadyPosted) {
+        console.log(`- 이미 포스팅됨: ${item.name}`);
+        continue;
+      }
 
       console.log(`- 블로그 글 생성 중: ${item.name}`);
 
