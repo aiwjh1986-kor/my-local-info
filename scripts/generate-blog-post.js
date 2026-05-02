@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env.local') });
 
 async function generateBlogPost() {
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -45,16 +46,22 @@ async function generateBlogPost() {
 
   // 2단계: Gemini AI로 블로그 글 생성
   const today = new Date().toISOString().split('T')[0];
+  const weatherText = latestItem.weather 
+    ? `현재 ${latestItem.location || '지역'} 날씨: ${latestItem.weather.desc}, 기온: ${latestItem.weather.temp}°C` 
+    : '날씨 정보 없음';
+
   const prompt = `너는 '용인시 생활정보 및 여행가이드' 블로그의 전문 에디터 '루미'야. 우리 블로그의 이름은 '루미의 우리동네 소식통'이야.
-아래 공공서비스 정보를 바탕으로 주민들에게 도움이 되는 블로그 글을 작성해줘.
+아래 공공서비스 정보와 실시간 날씨 정보를 바탕으로 주민들에게 도움이 되는 블로그 글을 작성해줘.
 
 정보: ${JSON.stringify(latestItem)}
+날씨: ${weatherText}
 
 작성 지침:
 1. 톤앤매너: 아주 친절하고 상냥한 이웃집 언니/누나 같은 말투를 사용해줘 (해요체).
 2. 타겟: 용인시 주민 혹은 전국 여행 정보를 찾는 사람들.
 3. 내용 구성: 흥미로운 도입부 -> 서비스 상세 내용 -> 루미가 추천하는 이유 3가지 -> 신청 방법 및 꿀팁.
-4. 날씨 정보 언급: 만약 행사라면 당시의 날씨를 확인해 보라는 멘트나, 혜택이라면 마음이 따뜻해진다는 식의 감성적인 멘트를 섞어줘.
+4. 날씨 정보 반영: 제공된 실시간 날씨 정보를 글의 도입부나 본문에 자연스럽게 섞어줘. (예: "오늘 용인은 날씨가 ${latestItem.weather?.desc || '맑음'}이라 기분이 좋네요!", "기온이 ${latestItem.weather?.temp || '20'}도라 딱 적당해요.")
+5. 루미 정체성: '루미'라는 이름을 본문에 한 번 이상 언급해줘.
 
 아래 형식으로 출력해줘. 반드시 이 형식만 출력하고 다른 텍스트는 없이:
 ---
@@ -65,7 +72,7 @@ category: 정보
 tags: [태그1, 태그2, 태그3]
 ---
 
-(본문: 800자 이상, '루미'라는 이름을 본문에 한 번 이상 언급해줘)
+(본문: 800자 이상)
 
 글 맨 마지막에는 아래와 같이 실제 서비스로 연결되는 링크를 마크다운 형식으로 반드시 포함해줘:
 👉 [공식 홈페이지에서 자세히 보기 및 신청하기](${latestItem.link})

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.19",
+    "dotenv": "^17.4.2",
     "gray-matter": "^4.0.3",
     "next": "16.2.4",
     "next-sitemap": "^4.2.3",
