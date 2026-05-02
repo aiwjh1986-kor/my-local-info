@@ -1,5 +1,6 @@
 import Link from "next/link";
 import data from "../../public/data/local-info.json";
+import AdBanner from "@/components/AdBanner";
 
 interface InfoItem {
   id: string;
@@ -32,6 +33,7 @@ export default function Home() {
           <nav className="flex gap-6 font-bold text-gray-600">
             <Link href="/" className="text-orange-600 underline decoration-2 underline-offset-8">홈</Link>
             <Link href="/blog" className="hover:text-orange-600 transition-colors">블로그</Link>
+            <Link href="/about" className="hover:text-orange-600 transition-colors">소개</Link>
           </nav>
         </div>
       </header>
@@ -46,6 +48,24 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {events.map((event: InfoItem) => (
               <div key={event.id} className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow overflow-hidden border border-orange-50 flex flex-col">
+                <script
+                  type="application/ld+json"
+                  dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                      "@context": "https://schema.org",
+                      "@type": "Event",
+                      "name": event.name,
+                      "startDate": event.startDate,
+                      "endDate": event.endDate,
+                      "location": {
+                        "@type": "Place",
+                        "name": event.location,
+                        "address": event.location
+                      },
+                      "description": event.summary
+                    })
+                  }}
+                />
                 <div className="p-6 flex-1">
                   <div className="inline-block px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold mb-3">
                     {event.category}
@@ -76,6 +96,9 @@ export default function Home() {
           </div>
         </section>
 
+        {/* 광고 영역 */}
+        <AdBanner />
+
         {/* 3. 지원금/혜택 정보 */}
         <section>
           <div className="flex items-center gap-2 mb-6">
@@ -85,6 +108,21 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {benefits.map((benefit: InfoItem) => (
               <div key={benefit.id} className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow border border-green-50 flex flex-col md:flex-row">
+                <script
+                  type="application/ld+json"
+                  dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                      "@context": "https://schema.org",
+                      "@type": "GovernmentService",
+                      "name": benefit.name,
+                      "description": benefit.summary,
+                      "provider": {
+                        "@type": "Organization",
+                        "name": "성남시"
+                      }
+                    })
+                  }}
+                />
                 <div className="p-6 flex-1">
                   <div className="inline-block px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold mb-3">
                     {benefit.category}
