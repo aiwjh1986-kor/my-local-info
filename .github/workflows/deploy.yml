@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '0 22 * * *' # 매일 한국 시간 오전 7시 (UTC 22시)
+  workflow_dispatch: # 수동 실행 버튼 추가
+
+permissions:
+  contents: write
 
 jobs:
   deploy:
@@ -20,6 +26,28 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Run automation scripts (Schedule or Manual)
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          node scripts/fetch-public-data.js
+          node scripts/generate-blog-post.js
+        env:
+          PUBLIC_DATA_API_KEY: ${{ secrets.PUBLIC_DATA_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Commit and push changes
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          if ! git diff --cached --quiet; then
+            git commit -m "자동 업데이트: 공공데이터 수집 및 블로그 글 생성"
+            git push
+          else
+            echo "No changes to commit"
+          fi
 
       - name: Build
         run: npm run build

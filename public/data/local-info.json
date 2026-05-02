@@ -56,7 +56,18 @@
       "target": "경기도 거주 출산 가정",
       "summary": "첫째 100만원, 둘째 이상 150만원 등 출산 장려금 지급",
       "link": "#"
+    },
+    {
+      "id": "b3",
+      "name": "유아학비 (누리과정) 지원",
+      "category": "혜택",
+      "startDate": "2023-10-27",
+      "endDate": "상시",
+      "location": "복지로 (온라인), 읍면동 주민센터",
+      "target": "국공립 및 사립유치원에 다니는 3~5세 유아",
+      "summary": "유치원에 다니는 3~5세 아동에게 유아학비, 방과후과정비 등 지원",
+      "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/000000465790"
     }
   ],
-  "lastUpdate": "2024-05-01"
+  "lastUpdate": "2026-05-02"
 }
