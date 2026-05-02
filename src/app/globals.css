@@ -4,7 +4,7 @@
   --background: #F8F9FD;
   --foreground: #111111;
   --sidebar: #FFFFFF;
-  --accent: #8A70FF; /* 프리미엄 퍼플 */
+  --accent: #8A70FF;
   --accent-light: #F0EDFF;
   --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
   --card-hover-shadow: 0 10px 40px rgba(138, 112, 255, 0.08);
@@ -28,32 +28,55 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  width: 100%;
 }
 
-/* 3단 레이아웃을 위한 기본 구조 */
 .dashboard-container {
   display: flex;
+  flex-direction: column; /* 모바일 기본: 세로 */
   min-height: 100vh;
   background-color: transparent;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .sidebar-left {
-  width: 500px;
-  background-color: rgba(255, 255, 255, 0.9); /* 살짝 투명하게 */
-  backdrop-filter: blur(10px); /* 유리 느낌 추가 */
-  border-right: 1px solid rgba(255, 255, 255, 0.2);
-  height: 100vh;
-  position: sticky;
-  top: 0;
-  overflow-y: auto; /* 정보가 많아질 것에 대비 */
+  width: 100%; /* 모바일: 전체 너비 */
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  height: auto;
+  position: relative;
+  z-index: 50;
+  flex-shrink: 0;
 }
 
 .main-content {
   flex: 1;
-  padding: 40px 60px;
+  padding: 16px; /* 모바일 여백 최소화 */
+  width: 100%;
+  overflow-x: hidden;
 }
 
-/* 우측 사이드바 스타일 제거 */
+/* 데스크탑 화면 (1024px 이상) */
+@media (min-width: 1024px) {
+  .dashboard-container {
+    flex-direction: row; /* 데스크탑: 가로 */
+  }
+
+  .sidebar-left {
+    width: 500px; /* 데스크탑 전용 넓이 */
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: none;
+  }
+
+  .main-content {
+    padding: 40px 80px;
+  }
+}
 
 .glass-card {
   background: white;
