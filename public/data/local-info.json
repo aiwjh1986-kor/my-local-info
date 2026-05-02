@@ -1,5 +1,134 @@
 {
   "events": [],
-  "benefits": [],
+  "benefits": [
+    {
+      "id": "b1",
+      "name": "유아학비 (누리과정) 지원",
+      "category": "혜택",
+      "startDate": "2023-10-27",
+      "endDate": "상시",
+      "location": "복지로 또는 읍면동 주민센터",
+      "target": "국공립 및 사립유치원에 다니는 3~5세 유아",
+      "summary": "유치원에 다니는 3~5세 아동에게 유아학비, 방과후과정비 등 지원",
+      "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/000000465790",
+      "weather": {
+        "temp": "21",
+        "desc": "Cloudy",
+        "humidity": "61"
+      }
+    },
+    {
+      "id": "b2",
+      "name": "근로·자녀장려금",
+      "category": "혜택",
+      "startDate": "2023-03-01",
+      "endDate": "2023-09-15",
+      "location": "국세청",
+      "target": "○ 신청요건을 모두 충족하는 근로소득, 사업소득 또는 종교인소득이 있는 가구로써 신청기간 내 신청하는 경우 근로소득, 사업소득 또는 종교인소득에 따라 산정한 근로장려금과 부양자녀수에 따라 산정한 자녀장려금을 지급",
+      "summary": "소득과 재산이 적은 근로소득자에게 근로장려금을, 자녀가 있을 경우 자녀장려금 지급",
+      "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/105100000001",
+      "weather": {
+        "temp": "21",
+        "desc": "Cloudy",
+        "humidity": "61"
+      }
+    },
+    {
+      "id": "b3",
+      "name": "주택금융공사 월세자금보증",
+      "category": "혜택",
+      "startDate": "2023-10-27",
+      "endDate": "상시",
+      "location": "한국주택금융공사",
+      "target": "○ 보증금 1억원 이하 및 월세금 60만원 이하인 월세 계약을 체결한 주택도시 기금 주거안정 월세대출 대상자\r\n[우대형]\r\n- 취업준비생(신청일 현재 만 35세 이하의 무소득자이며 부모 소득이 6천만원 이하인 자)\r\n- 희망키움통장 가입자\r\n- 신청일 기준 최근 1년 이내 수급사실이 인정되는 근로장려금 수급자\r\n- 취업 후 5년 이내인 사회초년생으로 신청일 현재 만 35세 이하이며 부부합산 연소득 4천만원 이하인 자\r\n- 신청일 기준 최근 1년 이내 수급사실이 인정되는 자녀장려금 수급자\r\n- 신청일 현재 주거급여 수급자 확인서가 발급되는 주거급여 수급자\r\n\r\n[일반형]\r\n- 부부합산 연소득 5천만원 이하자 중 상기 [우대형]에 해당되지 않는 자",
+      "summary": "일정요건의 월세대출 대상자에게 월세자금보증을 지원",
+      "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/116010000001",
+      "weather": {
+        "temp": "21",
+        "desc": "Cloudy",
+        "humidity": "61"
+      }
+    },
+    {
+      "id": "b4",
+      "name": "친환경 에너지절감장비 보급",
+      "category": "혜택",
+      "startDate": "2024-06-20",
+      "endDate": "상시",
+      "location": "시·군·구청",
+      "target": "연근해 허가를 가진 어업인",
+      "summary": "연근해 어업인을 대상으로 노후기관, 장비, 설비를 대체 보급",
+      "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000001",
+      "weather": {
+        "temp": "21",
+        "desc": "Cloudy",
+        "humidity": "61"
+      }
+    },
+    {
+      "id": "b5",
+      "name": "해양사고 국선 심판변론인 선정 지원",
+      "category": "혜택",
+      "startDate": "2024-05-16",
+      "endDate": "상시",
+      "location": "관할지방해양안전심판원 심판관실",
+      "target": "사회적 약자(연령, 장애, 빈곤, 교육정도 등)에 해당하는 해양사고관련자",
+      "summary": "해양사고를 입은 사회적 약자에게 국선 심판변론인 선정 및 법률자문 지원",
+      "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000007",
+      "weather": {
+        "temp": "21",
+        "desc": "Cloudy",
+        "humidity": "61"
+      }
+    },
+    {
+      "id": "b6",
+      "name": "옵서버 승선경비 지원",
+      "category": "혜택",
+      "startDate": "2023-10-27",
+      "endDate": "상시",
+      "location": "한국수산자원공단",
+      "target": "○ 국제옵서버를 승선시킨 원양선사",
+      "summary": "국제옵서버를 승선시킨 원양선사에 승선경비 및 활동 등을 지원",
+      "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000008",
+      "weather": {
+        "temp": "21",
+        "desc": "Cloudy",
+        "humidity": "61"
+      }
+    },
+    {
+      "id": "b7",
+      "name": "합작수산물 관세 감면 추진",
+      "category": "혜택",
+      "startDate": "2023-10-27",
+      "endDate": "상시",
+      "location": "해양수산부",
+      "target": "기획재정부령에서 정한 방법 또는 요건에 적합하게 채포한 수산물을 국내로 수입하는 자",
+      "summary": "적법하게 채포한 수산물을 국내로 수입하는 자에게 관세감면",
+      "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000010",
+      "weather": {
+        "temp": "21",
+        "desc": "Cloudy",
+        "humidity": "61"
+      }
+    },
+    {
+      "id": "b8",
+      "name": "귀어 창업 및 주택구입 지원(융자)",
+      "category": "혜택",
+      "startDate": "2023-10-27",
+      "endDate": "상시",
+      "location": "해양수산부",
+      "target": "○ 귀어업인(희망자 포함) 및 재촌비어업인으로서, 사업신청 연도기준 만 65세 이하인 자",
+      "summary": "귀어업 지원자에 창업 및 주택구입 자금 지원 (융자 후 이자 차이를 지원)",
+      "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000012",
+      "weather": {
+        "temp": "21",
+        "desc": "Cloudy",
+        "humidity": "61"
+      }
+    }
+  ],
   "lastUpdate": "2026-05-02"
 }

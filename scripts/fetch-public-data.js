@@ -51,18 +51,24 @@ async function fetchPublicData() {
              (item.소관기관명 && item.소관기관명.includes(keyword));
     };
 
-    // 용인 또는 경기 또는 전국 공통 정보를 모두 수집
-    const targetItems = result.data.filter(item => 
+    // 용인 또는 경기 정보 찾기
+    let targetItems = result.data.filter(item => 
       filterKeyword(item, '용인') || 
       filterKeyword(item, '경기')
     );
 
-    if (targetItems.length === 0) {
-      console.log('조건에 맞는 데이터가 없습니다.');
-      return;
+    // 만약 용인/경기 소식이 적다면, 전국 공통 소식을 추가해서 10개를 채움
+    if (targetItems.length < 10) {
+      const extraItems = result.data.slice(0, 15); // 상위 15개 중 중복되지 않는 것 추가
+      for (const extra of extraItems) {
+        if (targetItems.length >= 10) break;
+        if (!targetItems.find(t => t.서비스명 === extra.서비스명)) {
+          targetItems.push(extra);
+        }
+      }
     }
 
-    console.log(`${targetItems.length}개의 후보 데이터를 발견했습니다.`);
+    console.log(`${targetItems.length}개의 데이터를 수집 대상으로 선정했습니다.`);
 
     // 2단계: 기존 데이터와 비교 및 루프 실행
     const weatherInfo = await fetchWeather('Yongin');
