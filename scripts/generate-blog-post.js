@@ -30,13 +30,14 @@ async function generateBlogPost() {
   // (실제 로직상 push로 추가하므로 마지막이 최신)
   const latestItem = allItems[allItems.length - 1];
 
-  // 기존 파일들과 비교해서 이미 같은 name으로 글이 있는지 확인
+  // 기존 파일들과 비교해서 이미 같은 서비스 이름이 내용에 포함되어 있는지 확인
   const existingFiles = fs.readdirSync(postsDir);
   for (const file of existingFiles) {
     if (file.endsWith('.md')) {
       const content = fs.readFileSync(path.join(postsDir, file), 'utf8');
-      if (content.includes(`title: "${latestItem.name}"`) || content.includes(`title: '${latestItem.name}'`)) {
-        console.log('이미 작성된 글입니다.');
+      // 파일 내용 중에 서비스 이름(latestItem.name)이 들어있으면 이미 쓴 글로 간주
+      if (content.includes(latestItem.name)) {
+        console.log(`이미 작성된 글입니다: ${latestItem.name}`);
         return;
       }
     }
@@ -58,6 +59,9 @@ tags: [태그1, 태그2, 태그3]
 ---
 
 (본문: 800자 이상, 친근한 블로그 톤, 추천 이유 3가지 포함, 신청 방법 안내)
+
+글 맨 마지막에는 아래와 같이 실제 서비스로 연결되는 링크를 마크다운 형식으로 반드시 포함해줘:
+👉 [공식 홈페이지에서 자세히 보기 및 신청하기](${latestItem.link})
 
 마지막 줄에 FILENAME: ${today}-keyword 형식으로 파일명도 출력해줘. 키워드는 영문으로.`;
 
