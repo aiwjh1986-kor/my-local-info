@@ -13,6 +13,7 @@ export interface PostData {
   tags: string[];
   content: string;
   link?: string;
+  image?: string;
 }
 
 export function getSortedPostsData(): PostData[] {
@@ -30,40 +31,50 @@ export function getSortedPostsData(): PostData[] {
       const fileContents = fs.readFileSync(fullPath, 'utf8');
       const matterResult = matter(fileContents);
 
-      // 날짜 처리: Date 객체인 경우 YYYY-MM-DD 문자열로 변환
-      let date = matterResult.data.date;
-      if (date instanceof Date) {
-        date = date.toISOString().split('T')[0];
-      } else if (typeof date !== 'string') {
-        date = String(date);
+      // 날짜 처리: 더 견고한 변환 로직
+      let date = "2026-05-01"; // 기본값
+      try {
+        const rawDate = matterResult.data.date;
+        if (rawDate instanceof Date) {
+          date = rawDate.toISOString().split('T')[0];
+        } else if (rawDate) {
+          // "2026.05.02" 형식을 "2026-05-02"로 변환 시도
+          const dateStr = String(rawDate).replace(/\./g, '-');
+          const d = new Date(dateStr);
+          if (!isNaN(d.getTime())) {
+            date = d.toISOString().split('T')[0];
+          } else {
+            date = dateStr;
+          }
+        }
+      } catch (e) {
+        console.error("Date parsing error for slug:", slug, e);
       }
 
       return {
         ...matterResult.data,
         slug,
-        title: matterResult.data.title,
+        title: matterResult.data.title || "제목 없음",
         date,
         summary: matterResult.data.summary || '',
-        category: matterResult.data.category || '',
-        tags: matterResult.data.tags || [],
+        category: (matterResult.data.category || '생활정보').toString().replace(/["']/g, "").trim().toLowerCase(),
+        tags: Array.isArray(matterResult.data.tags) ? matterResult.data.tags : [],
         link: matterResult.data.link || '',
-        content: matterResult.content,
+        content: matterResult.content || '',
       } as PostData;
     });
 
-  // 날짜순으로 정렬
+  // 날짜순으로 정렬 (더 안전한 비교)
   return allPostsData.sort((a, b) => {
-    if (a.date < b.date) {
-      return 1;
-    } else {
-      return -1;
-    }
+    const timeA = new Date(a.date).getTime();
+    const timeB = new Date(b.date).getTime();
+    return timeB - timeA;
   });
 }
 
 export function getPostData(slug: string): PostData | null {
   const fullPath = path.join(postsDirectory, `${slug}.md`);
-  
+
   if (!fs.existsSync(fullPath)) {
     return null;
   }
@@ -85,7 +96,7 @@ export function getPostData(slug: string): PostData | null {
     title: matterResult.data.title,
     date,
     summary: matterResult.data.summary || '',
-    category: matterResult.data.category || '',
+    category: (matterResult.data.category || '').toString().replace(/["']/g, "").trim().toLowerCase(),
     tags: matterResult.data.tags || [],
     link: matterResult.data.link || '',
     content: matterResult.content,

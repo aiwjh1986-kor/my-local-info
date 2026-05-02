@@ -30,12 +30,10 @@ async function generateBlogPost() {
     const today = new Date().toISOString().split('T')[0];
     let generatedCount = 0;
 
-    console.log(`- 현재 검사 중인 폴더: ${postsDir}`);
     if (!fs.existsSync(postsDir)) {
       fs.mkdirSync(postsDir, { recursive: true });
     }
     const existingFiles = fs.readdirSync(postsDir);
-    console.log(`- 감지된 기존 파일(${existingFiles.length}개): ${existingFiles.join(', ')}`);
 
     for (const item of allItems) {
       let isAlreadyPosted = false;
@@ -50,7 +48,6 @@ async function generateBlogPost() {
       }
 
       if (isAlreadyPosted) {
-        console.log(`- 이미 포스팅됨: ${item.name}`);
         continue;
       }
 
@@ -78,7 +75,7 @@ async function generateBlogPost() {
 title: (친근하고 흥미로운 제목)
 date: ${today}
 summary: (한 줄 요약)
-category: 정보
+category: ${item.category || 'info'}
 tags: [태그1, 태그2, 태그3]
 ---
 
@@ -89,8 +86,7 @@ tags: [태그1, 태그2, 태그3]
 
 마지막 줄에 FILENAME: ${today}-${item.id} 형식으로 파일명도 출력해줘.`;
 
-      // 이전에 성공했던 gemini-1.5-flash-latest 모델 사용
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
       const response = await fetch(geminiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

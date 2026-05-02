@@ -16,6 +16,7 @@
   --color-accent: var(--accent);
   --color-accent-light: var(--accent-light);
   --font-sans: 'Inter', 'Pretendard', sans-serif;
+  --font-handwriting: var(--font-gamja-flower), cursive;
 }
 
 body {
@@ -31,52 +32,39 @@ body {
   width: 100%;
 }
 
+.font-handwriting {
+  font-family: var(--font-handwriting);
+}
+
 .dashboard-container {
   display: flex;
-  flex-direction: column; /* 모바일 기본: 세로 */
+  flex-direction: column;
   min-height: 100vh;
   background-color: transparent;
   width: 100%;
-  overflow-x: hidden;
 }
 
 .sidebar-left {
-  width: 100%; /* 모바일: 전체 너비 */
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  height: auto;
-  position: relative;
-  z-index: 50;
-  flex-shrink: 0;
+  /* 기존 스타일 제거 - 이제 page.tsx에서 인라인으로 관리됨 */
+  display: none;
 }
 
 .main-content {
   flex: 1;
-  padding: 16px; /* 모바일 여백 최소화 */
+  padding: 120px 24px 40px 24px; /* 메뉴 버튼 공간 확보를 위해 상단 패딩 증가 */
   width: 100%;
-  overflow-x: hidden;
+  max-width: 1800px;
+  margin: 0 auto;
 }
 
-/* 데스크탑 화면 (1024px 이상) */
+/* 데스크탑 화면 최적화 */
 @media (min-width: 1024px) {
-  .dashboard-container {
-    flex-direction: row; /* 데스크탑: 가로 */
-  }
-
-  .sidebar-left {
-    width: 500px; /* 데스크탑 전용 넓이 */
-    height: 100vh;
-    position: sticky;
-    top: 0;
-    border-right: 1px solid rgba(0, 0, 0, 0.05);
-    border-bottom: none;
-  }
-
   .main-content {
-    padding: 40px 80px;
+    padding: 150px 80px 80px 80px;
   }
 }
+
+/* 초대형 화면 마진 제거됨 (메뉴 토글 방식 적용) */
 
 .glass-card {
   background: white;

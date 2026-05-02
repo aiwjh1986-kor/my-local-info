@@ -1,11 +1,18 @@
 import { Metadata } from "next";
-import { Geist, Geist_Mono, Baloo_2 } from "next/font/google";
+import { Geist, Geist_Mono, Baloo_2, Gamja_Flower } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const baloo2 = Baloo_2({
   variable: "--font-baloo-2",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
+});
+
+const gamjaFlower = Gamja_Flower({
+  variable: "--font-gamja-flower",
+  subsets: ["latin"],
+  weight: ["400"],
 });
 
 const geistSans = Geist({
@@ -37,23 +44,29 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`${geistSans.variable} ${geistMono.variable} ${baloo2.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${baloo2.variable} ${gamjaFlower.variable} h-full antialiased`}
     >
       <head>
         {process.env.NEXT_PUBLIC_ADSENSE_ID && process.env.NEXT_PUBLIC_ADSENSE_ID !== "나중에_입력" && (
-          <script
+          <Script
+            id="adsense-id"
             async
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
             crossOrigin="anonymous"
+            strategy="afterInteractive"
           />
         )}
         {process.env.NEXT_PUBLIC_GA_ID && process.env.NEXT_PUBLIC_GA_ID !== "나중에_입력" && (
           <>
-            <script
+            <Script
+              id="google-analytics"
               async
               src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+              strategy="afterInteractive"
             />
-            <script
+            <Script
+              id="ga-config"
+              strategy="afterInteractive"
               dangerouslySetInnerHTML={{
                 __html: `
                   window.dataLayer = window.dataLayer || [];
@@ -66,6 +79,7 @@ export default function RootLayout({
           </>
         )}
         <script
+          key="json-ld-website"
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
@@ -78,6 +92,7 @@ export default function RootLayout({
           }}
         />
         <script
+          key="json-ld-breadcrumb"
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({

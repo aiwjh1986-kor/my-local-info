@@ -33,7 +33,7 @@ async function fetchPublicData() {
   }
 
   try {
-    // 1단계: 공공데이터포털 API에서 데이터 가져오기 (더 많이 가져오기)
+    // 1단계: 공공데이터포털 API에서 데이터 가져오기
     const url = `https://api.odcloud.kr/api/gov24/v3/serviceList?page=1&perPage=100&returnType=JSON&serviceKey=${PUBLIC_DATA_API_KEY}`;
     const response = await fetch(url);
     const result = await response.json();
@@ -43,12 +43,17 @@ async function fetchPublicData() {
       return;
     }
 
-    // 필터링 규칙 적용 (여러 개 찾기)
+    // 필터링 규칙 적용
     const filterKeyword = (item, keyword) => {
-      return (item.서비스명 && item.서비스명.includes(keyword)) ||
-             (item.서비스목적요약 && item.서비스목적요약.includes(keyword)) ||
-             (item.지원대상 && item.지원대상.includes(keyword)) ||
-             (item.소관기관명 && item.소관기관명.includes(keyword));
+      const serviceName = item['서비스명'] || '';
+      const serviceSummary = item['서비스목적요약'] || '';
+      const supportTarget = item['지원대상'] || '';
+      const agencyName = item['소관기관명'] || '';
+      
+      return serviceName.includes(keyword) || 
+             serviceSummary.includes(keyword) || 
+             supportTarget.includes(keyword) || 
+             agencyName.includes(keyword);
     };
 
     // 용인 또는 경기 정보 찾기
@@ -57,12 +62,11 @@ async function fetchPublicData() {
       filterKeyword(item, '경기')
     );
 
-    // 만약 용인/경기 소식이 적다면, 전국 공통 소식을 추가해서 10개를 채움
     if (targetItems.length < 10) {
-      const extraItems = result.data.slice(0, 15); // 상위 15개 중 중복되지 않는 것 추가
+      const extraItems = result.data.slice(0, 15);
       for (const extra of extraItems) {
         if (targetItems.length >= 10) break;
-        if (!targetItems.find(t => t.서비스명 === extra.서비스명)) {
+        if (!targetItems.find(t => t['서비스명'] === extra['서비스명'])) {
           targetItems.push(extra);
         }
       }
@@ -70,7 +74,6 @@ async function fetchPublicData() {
 
     console.log(`${targetItems.length}개의 데이터를 수집 대상으로 선정했습니다.`);
 
-    // 2단계: 기존 데이터와 비교 및 루프 실행
     const weatherInfo = await fetchWeather('Yongin');
     let addedCount = 0;
 
@@ -80,21 +83,21 @@ async function fetchPublicData() {
         ...localData.benefits.map(b => b.name)
       ];
 
-      if (allExistingNames.includes(item.서비스명)) {
-        continue; // 이미 있으면 건너뛰기
+      if (allExistingNames.includes(item['서비스명'])) {
+        continue;
       }
 
-      // 3단계: Gemini AI로 가공
+      // 3단계: Gemini AI로 가공 (v1 엔드포인트 및 최신 모델 사용)
       const prompt = `아래 공공데이터 1건을 분석해서 JSON 객체로 변환해줘. 형식:
-{id: 숫자, name: 서비스명, category: '행사' 또는 '혜택', startDate: 'YYYY-MM-DD', endDate: 'YYYY-MM-DD', location: 장소 또는 기관명, target: 지원대상, summary: 한줄요약, link: 상세URL}
-category는 내용을 보고 행사/축제면 '행사', 지원금/서비스면 '혜택'으로 판단해.
+{id: 숫자, name: 서비스명, category: 'event' 또는 'grant', startDate: 'YYYY-MM-DD', endDate: 'YYYY-MM-DD', location: 장소 또는 기관명, target: 지원대상, summary: 한줄요약, link: 상세URL}
+category는 내용을 보고 행사/축제면 'event', 지원금/서비스/혜택이면 'grant'로 판단해.
 startDate가 없으면 오늘 날짜, endDate가 없으면 '상시'로 넣어.
 반드시 JSON 객체만 출력해. 다른 텍스트 없이.
 
 공공데이터 내용:
 ${JSON.stringify(item)}`;
 
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
       const geminiResponse = await fetch(geminiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -104,7 +107,10 @@ ${JSON.stringify(item)}`;
       });
 
       const geminiResult = await geminiResponse.json();
-      if (!geminiResult.candidates) continue;
+      if (!geminiResult.candidates) {
+        console.error("- AI 가공 오류:", JSON.stringify(geminiResult));
+        continue;
+      }
 
       let aiText = geminiResult.candidates[0].content.parts[0].text;
       aiText = aiText.replace(/```json|```/g, '').trim();
@@ -112,8 +118,7 @@ ${JSON.stringify(item)}`;
       
       if (weatherInfo) newItem.weather = weatherInfo;
 
-      // ID 부여
-      if (newItem.category === '행사') {
+      if (newItem.category === 'event') {
         newItem.id = `e${localData.events.length + 1}`;
         localData.events.push(newItem);
       } else {
