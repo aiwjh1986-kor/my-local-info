@@ -20,47 +20,50 @@ async function generateBlogPost() {
 
   const localData = JSON.parse(fs.readFileSync(dataFilePath, 'utf8'));
   
-  // 1단계: 최신 데이터 확인
+  // 1단계: 전체 데이터 확인
   const allItems = [...localData.events, ...localData.benefits];
   if (allItems.length === 0) {
     console.log('가공할 데이터가 없습니다.');
     return;
   }
 
-  // ID와 상관없이 가장 마지막에 추가된 항목을 찾기 위해 간단히 배열 끝을 선택
-  // (실제 로직상 push로 추가하므로 마지막이 최신)
-  const latestItem = allItems[allItems.length - 1];
+  const today = new Date().toISOString().split('T')[0];
+  let generatedCount = 0;
 
-  // 기존 파일들과 비교해서 이미 같은 서비스 이름이 내용에 포함되어 있는지 확인
-  const existingFiles = fs.readdirSync(postsDir);
-  for (const file of existingFiles) {
-    if (file.endsWith('.md')) {
-      const content = fs.readFileSync(path.join(postsDir, file), 'utf8');
-      // 파일 내용 중에 서비스 이름(latestItem.name)이 들어있으면 이미 쓴 글로 간주
-      if (content.includes(latestItem.name)) {
-        console.log(`이미 작성된 글입니다: ${latestItem.name}`);
-        return;
+  for (const item of allItems) {
+    // 기존 파일들과 비교해서 이미 작성된 글인지 확인
+    const existingFiles = fs.readdirSync(postsDir);
+    let isAlreadyPosted = false;
+    for (const file of existingFiles) {
+      if (file.endsWith('.md')) {
+        const content = fs.readFileSync(path.join(postsDir, file), 'utf8');
+        if (content.includes(item.name)) {
+          isAlreadyPosted = true;
+          break;
+        }
       }
     }
-  }
 
-  // 2단계: Gemini AI로 블로그 글 생성
-  const today = new Date().toISOString().split('T')[0];
-  const weatherText = latestItem.weather 
-    ? `현재 ${latestItem.location || '지역'} 날씨: ${latestItem.weather.desc}, 기온: ${latestItem.weather.temp}°C` 
-    : '날씨 정보 없음';
+    if (isAlreadyPosted) continue;
 
-  const prompt = `너는 '용인시 생활정보 및 여행가이드' 블로그의 전문 에디터 '루미'야. 우리 블로그의 이름은 '루미의 우리동네 소식통'이야.
+    console.log(`- 블로그 글 생성 중: ${item.name}`);
+
+    // 2단계: Gemini AI로 블로그 글 생성
+    const weatherText = item.weather 
+      ? `현재 ${item.location || '지역'} 날씨: ${item.weather.desc}, 기온: ${item.weather.temp}°C` 
+      : '날씨 정보 없음';
+
+    const prompt = `너는 '용인시 생활정보 및 여행가이드' 블로그의 전문 에디터 '루미'야. 우리 블로그의 이름은 '루미의 우리동네 소식통'이야.
 아래 공공서비스 정보와 실시간 날씨 정보를 바탕으로 주민들에게 도움이 되는 블로그 글을 작성해줘.
 
-정보: ${JSON.stringify(latestItem)}
+정보: ${JSON.stringify(item)}
 날씨: ${weatherText}
 
 작성 지침:
 1. 톤앤매너: 아주 친절하고 상냥한 이웃집 언니/누나 같은 말투를 사용해줘 (해요체).
 2. 타겟: 용인시 주민 혹은 전국 여행 정보를 찾는 사람들.
 3. 내용 구성: 흥미로운 도입부 -> 서비스 상세 내용 -> 루미가 추천하는 이유 3가지 -> 신청 방법 및 꿀팁.
-4. 날씨 정보 반영: 제공된 실시간 날씨 정보를 글의 도입부나 본문에 자연스럽게 섞어줘. (예: "오늘 용인은 날씨가 ${latestItem.weather?.desc || '맑음'}이라 기분이 좋네요!", "기온이 ${latestItem.weather?.temp || '20'}도라 딱 적당해요.")
+4. 날씨 정보 반영: 제공된 실시간 날씨 정보를 자연스럽게 섞어줘.
 5. 루미 정체성: '루미'라는 이름을 본문에 한 번 이상 언급해줘.
 
 아래 형식으로 출력해줘. 반드시 이 형식만 출력하고 다른 텍스트는 없이:
@@ -75,44 +78,48 @@ tags: [태그1, 태그2, 태그3]
 (본문: 800자 이상)
 
 글 맨 마지막에는 아래와 같이 실제 서비스로 연결되는 링크를 마크다운 형식으로 반드시 포함해줘:
-👉 [공식 홈페이지에서 자세히 보기 및 신청하기](${latestItem.link})
+👉 [공식 홈페이지에서 자세히 보기 및 신청하기](${item.link})
 
-마지막 줄에 FILENAME: ${today}-keyword 형식으로 파일명도 출력해줘. 키워드는 영문으로.`;
+마지막 줄에 FILENAME: ${today}-${item.id} 형식으로 파일명도 출력해줘.`;
 
-  try {
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-    const response = await fetch(geminiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
-      })
-    });
+    try {
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+      const response = await fetch(geminiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
+      });
 
-    const result = await response.json();
-    if (!result.candidates) {
-      console.error('Gemini API 응답 오류:', JSON.stringify(result));
-      return;
+      const result = await response.json();
+      if (!result.candidates) {
+        console.error(`- ${item.name} 생성 오류:`, JSON.stringify(result));
+        continue;
+      }
+
+      let aiResponse = result.candidates[0].content.parts[0].text;
+      const fileNameMatch = aiResponse.match(/FILENAME:\s*(.+)$/m);
+      let fileName = fileNameMatch ? fileNameMatch[1].trim() : `${today}-${item.id}.md`;
+      if (!fileName.endsWith('.md')) fileName += '.md';
+
+      const content = aiResponse.replace(/FILENAME:\s*.+$/m, '').trim();
+      fs.writeFileSync(path.join(postsDir, fileName), content, 'utf8');
+      generatedCount++;
+      
+      // API 할당량 보호를 위해 짧은 지연시간 추가
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+    } catch (error) {
+      console.error(`- ${item.name} 처리 중 오류:`, error);
     }
+  }
 
-    let aiResponse = result.candidates[0].content.parts[0].text;
-
-    // 3단계: 파일 저장
-    const fileNameMatch = aiResponse.match(/FILENAME:\s*(.+)$/m);
-    if (!fileNameMatch) {
-      console.error('파일명(FILENAME)을 찾을 수 없습니다.');
-      return;
-    }
-
-    let fileName = fileNameMatch[1].trim();
-    if (!fileName.endsWith('.md')) fileName += '.md';
-
-    // 파일명 줄 제외하고 본문만 추출
-    const content = aiResponse.replace(/FILENAME:\s*.+$/m, '').trim();
-
-    const finalPath = path.join(postsDir, fileName);
-    fs.writeFileSync(finalPath, content, 'utf8');
-    console.log(`블로그 글 생성 완료: ${fileName}`);
+  if (generatedCount > 0) {
+    console.log(`총 ${generatedCount}개의 새로운 블로그 포스팅이 생성되었습니다!`);
+  } else {
+    console.log('새로 생성할 포스팅이 없습니다.');
+  }
 
   } catch (error) {
     console.error('글 생성 중 오류 발생:', error);
