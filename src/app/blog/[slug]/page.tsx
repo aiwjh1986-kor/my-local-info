@@ -1,0 +1,88 @@
+import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { getPostData, getSortedPostsData } from '@/lib/posts';
+import { notFound } from 'next/navigation';
+
+export async function generateStaticParams() {
+  const posts = getSortedPostsData();
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
+}
+
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const postData = getPostData(slug);
+
+  if (!postData) {
+    notFound();
+  }
+
+  return (
+    <div className="min-h-screen bg-white font-sans text-gray-900">
+      {/* 상단 헤더 */}
+      <header className="bg-white shadow-sm border-b border-orange-100">
+        <div className="max-w-4xl mx-auto px-4 py-6 flex justify-between items-center">
+          <Link href="/">
+            <h1 className="text-xl font-bold text-orange-600">
+              성남시 생활 정보 🏠
+            </h1>
+          </Link>
+          <nav className="flex gap-4 font-bold text-gray-600">
+            <Link href="/" className="hover:text-orange-600 transition-colors">홈</Link>
+            <Link href="/blog" className="hover:text-orange-600 transition-colors">블로그</Link>
+          </nav>
+        </div>
+      </header>
+
+      <main className="max-w-4xl mx-auto px-4 py-12 md:py-20">
+        {/* 포스트 헤더 */}
+        <div className="mb-12 text-center">
+          <span className="inline-block px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-sm font-bold mb-4">
+            {postData.category}
+          </span>
+          <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-6 leading-tight">
+            {postData.title}
+          </h1>
+          <div className="flex justify-center items-center gap-4 text-gray-400 text-sm font-medium">
+            <time className="font-mono">{postData.date}</time>
+            <span>•</span>
+            <div className="flex gap-2">
+              {postData.tags.map(tag => (
+                <span key={tag}>#{tag}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* 본문 (Markdown) */}
+        <div className="prose prose-orange lg:prose-xl max-w-none mx-auto prose-headings:font-bold prose-a:text-orange-600 prose-img:rounded-3xl shadow-none">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {postData.content}
+          </ReactMarkdown>
+        </div>
+
+        {/* 하단 네비게이션 */}
+        <div className="mt-20 pt-10 border-t border-gray-100 flex justify-center">
+          <Link 
+            href="/blog"
+            className="px-8 py-3 rounded-full bg-gray-100 text-gray-600 font-bold hover:bg-orange-500 hover:text-white transition-all"
+          >
+            목록으로 돌아가기
+          </Link>
+        </div>
+      </main>
+
+      <footer className="bg-gray-50 border-t border-gray-100 mt-20">
+        <div className="max-w-4xl mx-auto px-4 py-10 text-center text-gray-400 text-xs">
+          © {new Date().getFullYear()} 성남시 생활 정보 | 블로그 상세
+        </div>
+      </footer>
+    </div>
+  );
+}

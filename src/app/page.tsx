@@ -20,13 +20,19 @@ export default function Home() {
     <div className="min-h-screen bg-orange-50 font-sans text-gray-900">
       {/* 1. 상단 헤더 */}
       <header className="bg-white shadow-sm border-b border-orange-100">
-        <div className="max-w-5xl mx-auto px-4 py-6 md:py-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-orange-600 text-center md:text-left">
-            성남시 생활 정보 🏠
-          </h1>
-          <p className="mt-2 text-gray-600 text-center md:text-left text-sm md:text-base">
-            우리 동네의 생생한 축제와 따뜻한 혜택을 전해드립니다.
-          </p>
+        <div className="max-w-5xl mx-auto px-4 py-6 md:py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="text-center md:text-left">
+            <h1 className="text-2xl md:text-3xl font-bold text-orange-600">
+              성남시 생활 정보 🏠
+            </h1>
+            <p className="mt-2 text-gray-600 text-sm md:text-base">
+              우리 동네의 생생한 축제와 따뜻한 혜택을 전해드립니다.
+            </p>
+          </div>
+          <nav className="flex gap-6 font-bold text-gray-600">
+            <Link href="/" className="text-orange-600 underline decoration-2 underline-offset-8">홈</Link>
+            <Link href="/blog" className="hover:text-orange-600 transition-colors">블로그</Link>
+          </nav>
         </div>
       </header>
 
@@ -59,7 +65,7 @@ export default function Home() {
                 </div>
                 <div className="p-6 pt-0">
                   <Link 
-                    href={`/info/${event.id}/`}
+                    href="/blog"
                     className="block text-center py-3 px-4 rounded-xl bg-orange-500 text-white font-bold hover:bg-orange-600 transition-colors"
                   >
                     상세보기
@@ -98,7 +104,7 @@ export default function Home() {
                 </div>
                 <div className="p-6 pt-0 md:pt-6 md:pl-0 flex items-end">
                   <Link 
-                    href={`/info/${benefit.id}/`}
+                    href="/blog"
                     className="w-full md:w-auto px-6 py-3 rounded-xl bg-green-500 text-white font-bold hover:bg-green-600 transition-colors text-center"
                   >
                     상세보기
