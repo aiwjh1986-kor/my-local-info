@@ -7,6 +7,8 @@ import { Metadata } from 'next';
 import AdBanner from '@/components/AdBanner';
 import CoupangBanner from '@/components/CoupangBanner';
 
+export const dynamicParams = false;
+
 export async function generateMetadata({
   params,
 }: {
