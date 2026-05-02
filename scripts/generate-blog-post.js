@@ -12,14 +12,14 @@ async function generateBlogPost() {
 
   const dataFilePath = path.join(__dirname, '../public/data/local-info.json');
   const postsDir = path.join(__dirname, '../src/content/posts');
-  
+
   if (!fs.existsSync(dataFilePath)) {
     console.error('데이터 파일이 없습니다.');
     return;
   }
 
   const localData = JSON.parse(fs.readFileSync(dataFilePath, 'utf8'));
-  
+
   try {
     const allItems = [...localData.events, ...localData.benefits];
     if (allItems.length === 0) {
@@ -53,8 +53,8 @@ async function generateBlogPost() {
 
       console.log(`- 블로그 글 생성 중: ${item.name}`);
 
-      const weatherText = item.weather 
-        ? `현재 ${item.location || '지역'} 날씨: ${item.weather.desc}, 기온: ${item.weather.temp}°C` 
+      const weatherText = item.weather
+        ? `현재 ${item.location || '지역'} 날씨: ${item.weather.desc}, 기온: ${item.weather.temp}°C`
         : '날씨 정보 없음';
 
       const prompt = `너는 '용인시 생활정보 및 여행가이드' 블로그의 전문 에디터 '루미'야. 우리 블로그의 이름은 '루미의 우리동네 소식통'이야.
@@ -86,7 +86,7 @@ tags: [태그1, 태그2, 태그3]
 
 마지막 줄에 FILENAME: ${today}-${item.id} 형식으로 파일명도 출력해줘.`;
 
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
       const response = await fetch(geminiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -109,7 +109,7 @@ tags: [태그1, 태그2, 태그3]
       const content = aiResponse.replace(/FILENAME:\s*.+$/m, '').trim();
       fs.writeFileSync(path.join(postsDir, fileName), content, 'utf8');
       generatedCount++;
-      
+
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
 

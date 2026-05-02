@@ -1,0 +1,112 @@
+[
+  {
+    "category": "지원금",
+    "title": "2026 용인시 청년 기본소득\n분기별 25만원 지금 신청하세요",
+    "summary": "만 24세 청년 누구나, 지역화폐 지급",
+    "date": "2026.05.02",
+    "region": "용인",
+    "cta": "지금 신청하기",
+    "deadline": "2026.05.31",
+    "is_urgent": false,
+    "is_popular": true
+  },
+  {
+    "category": "행사",
+    "title": "용인 에버랜드 장미축제 개막!\n밤하늘 수놓는 불꽃놀이까지",
+    "summary": "화려한 장미 정원과 야간 퍼레이드",
+    "date": "2026.05.15",
+    "region": "용인",
+    "cta": "행사 일정 보기",
+    "deadline": "2026.06.10",
+    "is_urgent": false,
+    "is_popular": true
+  },
+  {
+    "category": "생활정보",
+    "title": "용인시 공공배달앱 '배달특급'\n주말 한정 5천원 할인쿠폰 배포",
+    "summary": "지역화폐 결제 시 추가 혜택까지",
+    "date": "2026.05.02",
+    "region": "용인",
+    "cta": "쿠폰 받으러 가기",
+    "deadline": "2026.05.04",
+    "is_urgent": true,
+    "is_popular": true
+  },
+  {
+    "category": "지원금",
+    "title": "용인시 임산부 교통비 50만원 지원\n택시비부터 주유비까지 오케이",
+    "summary": "용인 거주 6개월 이상 임산부 대상",
+    "date": "2026.05.02",
+    "region": "용인",
+    "cta": "혜택 확인하기",
+    "deadline": null,
+    "is_urgent": false,
+    "is_popular": false
+  },
+  {
+    "category": "행사",
+    "title": "용인 중앙시장 '별빛 야시장'\n전통시장 먹거리 총출동!",
+    "summary": "매주 금/토 저녁 버스킹 공연과 야시장",
+    "date": "2026.05.08",
+    "region": "용인",
+    "cta": "위치 확인하기",
+    "deadline": null,
+    "is_urgent": false,
+    "is_popular": true
+  },
+  {
+    "category": "생활정보",
+    "title": "용인시 공공자전거 '타용'\n무료 이용 시간 2시간 확대",
+    "summary": "시민 누구나 앱 설치 후 즉시 이용",
+    "date": "2026.05.01",
+    "region": "용인",
+    "cta": "이용 가이드 보기",
+    "deadline": null,
+    "is_urgent": false,
+    "is_popular": false
+  },
+  {
+    "category": "지원금",
+    "title": "노후 경유차 조기 폐차 지원금\n최대 300만원 선착순 마감 임박",
+    "summary": "대기 오염 방지를 위한 폐차 지원",
+    "date": "2026.05.02",
+    "region": "용인",
+    "cta": "잔여 예산 확인",
+    "deadline": "2026.05.05",
+    "is_urgent": true,
+    "is_popular": false
+  },
+  {
+    "category": "행사",
+    "title": "처인구 와우정사 산사 음악회\n도심 속 힐링을 선사합니다",
+    "summary": "무료 관람, 사찰 비빔밥 체험 제공",
+    "date": "2026.05.20",
+    "region": "용인",
+    "cta": "사전 예약하기",
+    "deadline": "2026.05.18",
+    "is_urgent": false,
+    "is_popular": false
+  },
+  {
+    "category": "생활정보",
+    "title": "기흥구 쓰레기 배출 요일 변경\n우리 집 앞 배출일 확인하세요",
+    "summary": "쾌적한 주거 환경을 위한 운영 변경",
+    "date": "2026.05.02",
+    "region": "용인",
+    "cta": "우리동네 요일 확인",
+    "deadline": null,
+    "is_urgent": false,
+    "is_popular": false
+  },
+  {
+    "category": "지원금",
+    "title": "1인가구 병원 안심 동행 서비스\n이용료 5천원으로 보호자 동행",
+    "summary": "거동 불편 시 병원 동행 및 접수 지원",
+    "date": "2026.05.02",
+    "region": "용인",
+    "cta": "서비스 신청하기",
+    "deadline": null,
+    "is_urgent": false,
+    "is_popular": true
+  }
+]
