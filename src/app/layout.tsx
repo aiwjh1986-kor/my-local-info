@@ -1,6 +1,12 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Metadata } from "next";
+import { Geist, Geist_Mono, Baloo_2 } from "next/font/google";
 import "./globals.css";
+
+const baloo2 = Baloo_2({
+  variable: "--font-baloo-2",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,10 +19,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "용인시 생활 정보 | 행사·혜택·지원금 안내",
-  description: "용인시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보를 매일 업데이트합니다.",
+  title: "용인시 생활 정보 및 여행가이드",
+  description: "용인시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보 및 전국 여행 가이드를 매일 업데이트합니다.",
   openGraph: {
-    title: "용인시 생활 정보 | 행사·혜택·지원금 안내",
+    title: "용인시 생활 정보 및 여행가이드",
     description: "용인시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보를 매일 업데이트합니다.",
     type: "website",
     locale: "ko_KR",
@@ -31,7 +37,7 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${baloo2.variable} h-full antialiased`}
     >
       <head>
         {process.env.NEXT_PUBLIC_ADSENSE_ID && process.env.NEXT_PUBLIC_ADSENSE_ID !== "나중에_입력" && (

@@ -11,12 +11,12 @@ export default function BlogPage() {
         <div className="max-w-5xl mx-auto px-4 py-6 md:py-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-center md:text-left">
             <Link href="/">
-              <h1 className="text-2xl md:text-3xl font-bold text-orange-600">
-                성남시 생활 정보 🏠
+              <h1 className="text-2xl md:text-3xl font-extrabold text-orange-600 font-[family-name:var(--font-baloo-2)]">
+                용인시 생활정보 및 여행가이드 🏠
               </h1>
             </Link>
-            <p className="mt-1 text-gray-600 text-sm">
-              우리 동네의 유용한 정보와 소식을 전합니다.
+            <p className="mt-1 text-gray-600 text-sm font-medium">
+              용인시의 알찬 정보와 전국 여행 소식을 전합니다.
             </p>
           </div>
           <nav className="flex gap-6 font-bold text-gray-600">
@@ -70,7 +70,7 @@ export default function BlogPage() {
       <footer className="bg-gray-100 border-t border-gray-200 mt-20">
         <div className="max-w-5xl mx-auto px-4 py-10 text-center">
           <p className="text-xs text-gray-400">
-            © {new Date().getFullYear()} 성남시 생활 정보 | 블로그
+            © {new Date().getFullYear()} 용인시 생활정보 및 여행가이드 | 블로그 목록
           </p>
         </div>
       </footer>

@@ -8,12 +8,12 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto px-4 py-6 md:py-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-center md:text-left">
             <Link href="/">
-              <h1 className="text-2xl md:text-3xl font-bold text-orange-600">
-                성남시 생활 정보 🏠
+              <h1 className="text-2xl md:text-3xl font-extrabold text-orange-600 font-[family-name:var(--font-baloo-2)]">
+                용인시 생활정보 및 여행가이드 🏠
               </h1>
             </Link>
-            <p className="mt-1 text-gray-600 text-sm">
-              우리 동네의 유용한 정보와 소식을 전합니다.
+            <p className="mt-1 text-gray-600 text-sm font-medium">
+              용인시의 알찬 정보와 전국 여행 소식을 전합니다.
             </p>
           </div>
           <nav className="flex gap-6 font-bold text-gray-600">
@@ -27,8 +27,8 @@ export default function AboutPage() {
       <main className="max-w-3xl mx-auto px-4 py-16">
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-orange-100">
           <div className="bg-orange-500 p-10 text-white text-center">
-            <span className="text-5xl mb-4 block">👋</span>
-            <h2 className="text-3xl font-black">안녕하세요! 루미의 생활 정보입니다.</h2>
+            <span className="text-5xl mb-4 block">🏮</span>
+            <h2 className="text-3xl font-black font-[family-name:var(--font-baloo-2)]">안녕하세요! 루미의 우리동네 소식통입니다.</h2>
           </div>
           
           <div className="p-10 space-y-12">
@@ -36,8 +36,8 @@ export default function AboutPage() {
               <h3 className="text-xl font-bold text-orange-600 mb-4 flex items-center gap-2">
                 🎯 운영 목적
               </h3>
-              <p className="text-gray-600 leading-relaxed">
-                성남시와 인근 지역 주민분들이 꼭 필요한 <strong>생활 정보, 문화 행사, 정부 지원금</strong> 소식을 놓치지 않도록 돕기 위해 시작되었습니다. 복잡한 공고문을 일일이 확인하기 어려운 바쁜 현대인들을 위해 핵심만 쏙쏙 뽑아 전달해 드립니다.
+              <p className="text-gray-600 leading-relaxed font-medium">
+                용인시 주민분들과 전국 여행자분들이 꼭 필요한 <strong>생활정보, 문화행사, 정부 지원금, 전국 여행 및 행사</strong> 소식을 놓치지 않도록 돕기 위해 시작되었습니다. 실시간 <strong>날씨 정보</strong>까지 포함하여 더욱 유용한 정보를 매일 전달해 드립니다.
               </p>
             </section>
 
@@ -80,7 +80,7 @@ export default function AboutPage() {
 
       <footer className="bg-gray-100 border-t border-gray-200 mt-20">
         <div className="max-w-5xl mx-auto px-4 py-10 text-center text-xs text-gray-400">
-          © {new Date().getFullYear()} 성남시 생활 정보 | 소개 페이지
+          © {new Date().getFullYear()} 용인시 생활정보 및 여행가이드 | 소개 페이지
         </div>
       </footer>
     </div>

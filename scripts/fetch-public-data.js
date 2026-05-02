@@ -33,13 +33,13 @@ async function fetchPublicData() {
              (item.소관기관명 && item.소관기관명.includes(keyword));
     };
 
-    // 1. 성남 포함
-    targetItem = result.data.find(item => filterKeyword(item, '성남'));
+    // 1. 용인 포함
+    targetItem = result.data.find(item => filterKeyword(item, '용인'));
     // 2. 경기 포함
     if (!targetItem) {
       targetItem = result.data.find(item => filterKeyword(item, '경기'));
     }
-    // 3. 전체 데이터 중 첫 번째
+    // 3. 전체 데이터 중 첫 번째 (전국 공통 등)
     if (!targetItem) {
       targetItem = result.data[0];
     }

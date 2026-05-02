@@ -77,8 +77,8 @@ export default async function PostPage({
       <header className="bg-white shadow-sm border-b border-orange-100">
         <div className="max-w-4xl mx-auto px-4 py-6 flex justify-between items-center">
           <Link href="/">
-            <h1 className="text-xl font-bold text-orange-600">
-              성남시 생활 정보 🏠
+            <h1 className="text-xl font-extrabold text-orange-600 font-[family-name:var(--font-baloo-2)]">
+              용인시 생활정보 및 여행가이드 🏠
             </h1>
           </Link>
           <nav className="flex gap-4 font-bold text-gray-600">
@@ -153,7 +153,7 @@ export default async function PostPage({
 
       <footer className="bg-gray-50 border-t border-gray-100 mt-20">
         <div className="max-w-4xl mx-auto px-4 py-10 text-center text-gray-400 text-xs">
-          © {new Date().getFullYear()} 성남시 생활 정보 | 블로그 상세
+          © {new Date().getFullYear()} 용인시 생활정보 및 여행가이드 | 블로그 상세
         </div>
       </footer>
     </div>

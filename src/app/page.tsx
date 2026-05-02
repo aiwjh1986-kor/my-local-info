@@ -23,11 +23,11 @@ export default function Home() {
       <header className="bg-white shadow-sm border-b border-orange-100">
         <div className="max-w-5xl mx-auto px-4 py-6 md:py-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-center md:text-left">
-            <h1 className="text-2xl md:text-3xl font-bold text-orange-600">
-              성남시 생활 정보 🏠
+            <h1 className="text-2xl md:text-3xl font-extrabold text-orange-600 font-[family-name:var(--font-baloo-2)]">
+              용인시 생활정보 및 여행가이드 🏠
             </h1>
-            <p className="mt-2 text-gray-600 text-sm md:text-base">
-              우리 동네의 생생한 축제와 따뜻한 혜택을 전해드립니다.
+            <p className="mt-2 text-gray-600 text-sm md:text-base font-medium">
+              용인시의 알찬 정보와 전국 여행 소식을 전해드립니다.
             </p>
           </div>
           <nav className="flex gap-6 font-bold text-gray-600">
@@ -38,64 +38,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 py-8 space-y-12">
-        {/* 2. 이번 달 행사/축제 */}
-        <section>
-          <div className="flex items-center gap-2 mb-6">
-            <span className="text-2xl">🎉</span>
-            <h2 className="text-xl md:text-2xl font-bold text-gray-800">이번 달 행사/축제</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event: InfoItem) => (
-              <div key={event.id} className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow overflow-hidden border border-orange-50 flex flex-col">
-                <script
-                  type="application/ld+json"
-                  dangerouslySetInnerHTML={{
-                    __html: JSON.stringify({
-                      "@context": "https://schema.org",
-                      "@type": "Event",
-                      "name": event.name,
-                      "startDate": event.startDate,
-                      "endDate": event.endDate,
-                      "location": {
-                        "@type": "Place",
-                        "name": event.location,
-                        "address": event.location
-                      },
-                      "description": event.summary
-                    })
-                  }}
-                />
-                <div className="p-6 flex-1">
-                  <div className="inline-block px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold mb-3">
-                    {event.category}
-                  </div>
-                  <h3 className="text-lg font-bold mb-2 text-gray-900">{event.name}</h3>
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">{event.summary}</p>
-                  <div className="space-y-2 text-sm text-gray-500">
-                    <div className="flex items-center gap-2">
-                      <span className="w-4 text-center text-xs">📅</span>
-                      <span>{event.startDate} ~ {event.endDate}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-4 text-center text-xs">📍</span>
-                      <span>{event.location}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-6 pt-0">
-                  <Link 
-                    href="/blog"
-                    className="block text-center py-3 px-4 rounded-xl bg-orange-500 text-white font-bold hover:bg-orange-600 transition-colors"
-                  >
-                    상세보기
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
+      <main className="max-w-5xl mx-auto px-4 py-8 space-y-16">
         {/* 광고 영역 */}
         <AdBanner />
 
@@ -161,7 +104,7 @@ export default function Home() {
             본 사이트의 정보는 공공데이터포털(data.go.kr)의 데이터를 바탕으로 제공됩니다.
           </p>
           <p className="text-xs text-gray-400">
-            최근 업데이트: {lastUpdate} | © {new Date().getFullYear()} 성남시 생활 정보
+            최근 업데이트: {lastUpdate}          © {new Date().getFullYear()} 용인시 생활정보 및 여행가이드 | 루미의 우리동네 소식통
           </p>
         </div>
       </footer>
