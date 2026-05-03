@@ -693,9 +693,10 @@ export default function DashboardClient({
                 </ReactMarkdown>
               </div>
 
-              {/* 🛍️ 쿠팡 파트너스 다이나믹 배너 (상세 팝업용) */}
-              <div className="mt-10 mb-6">
+              {/* 🛍️ 쿠팡 파트너스 다이나믹 배너 (상세 팝업용 - Key 부여로 강제 새로고침) */}
+              <div className="mt-10 mb-6 px-10 lg:px-20">
                 <CoupangDynamicBanner 
+                  key={selectedCard.slug || selectedCard.title}
                   id={985786} 
                   trackingCode="AF1183921" 
                   height="170"
