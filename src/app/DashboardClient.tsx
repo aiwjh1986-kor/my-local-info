@@ -451,15 +451,15 @@ export default function DashboardClient({
                 </div>
               </div>
 
-              {/* [하단] 5대 핵심 메뉴 - 모바일에서 제목 바로 아래에 밀착 배치 */}
-              <div className="relative z-10 flex items-center justify-center mt-4 lg:mt-24 w-full">
-                <div className="flex flex-wrap lg:flex-nowrap items-center justify-center gap-2 lg:gap-6 bg-white/40 lg:bg-gray-100/60 backdrop-blur-md px-4 lg:px-12 py-2 lg:py-6 rounded-[30px] lg:rounded-full border border-white/50 shadow-lg lg:shadow-xl w-fit">
+              {/* [하단] 5대 핵심 메뉴 - 모바일에서 아이콘만 일렬로 초슬림 배치 */}
+              <div className="relative z-10 flex items-center justify-center mt-2 lg:mt-24 w-full px-2">
+                <div className="flex flex-nowrap items-center justify-center gap-1 lg:gap-6 bg-white/40 lg:bg-gray-100/60 backdrop-blur-md px-2 lg:px-12 py-2 lg:py-6 rounded-[24px] lg:rounded-full border border-white/50 shadow-lg lg:shadow-xl w-full max-w-[450px] lg:w-fit overflow-hidden">
                 {[
-                  { id: "홈", label: "홈", img: "icon-home.png", color: "bg-purple-100" },
-                  { id: "지원금", label: "지원금 혜택", img: "icon-grant.png", color: "bg-purple-100" },
-                  { id: "지역행사", label: "지역행사", img: "icon-event.png", color: "bg-purple-100" },
-                  { id: "생활정보", label: "생활 정보", img: "icon-info.png", color: "bg-purple-100" },
-                  { id: "도서정보", label: "도서 소식", img: "icon-book.png", color: "bg-purple-100" }
+                  { id: "홈", label: "홈", img: "icon-home.png" },
+                  { id: "지원금", label: "지원금 혜택", img: "icon-grant.png" },
+                  { id: "지역행사", label: "지역행사", img: "icon-event.png" },
+                  { id: "생활정보", label: "생활 정보", img: "icon-info.png" },
+                  { id: "도서정보", label: "도서 소식", img: "icon-book.png" }
                 ].map((item) => (
                   <button 
                     key={item.id}
