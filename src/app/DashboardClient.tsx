@@ -926,15 +926,11 @@ export default function DashboardClient({
             <p className="text-gray-400 text-sm lg:text-xl font-bold whitespace-nowrap">용인시의 모든 정보가 모이는 곳</p>
           </div>
 
-          {/* 📊 실시간 방문자 통계 보드 (Real-time Engine) */}
+          {/* 📊 방문자 상태 표시 */}
           <div className="flex items-center gap-4 lg:gap-10 bg-white/80 p-6 lg:p-8 rounded-[40px] border border-white shadow-2xl">
-            <div className="flex flex-col items-center">
-              <span className="text-[10px] lg:text-sm font-black text-gray-400 uppercase tracking-widest mb-3">Visitor Statistics</span>
-              <div className="hover:scale-105 transition-transform cursor-pointer">
-                <a href="https://hits.dwyl.com/aiwjh1986-kor/my-local-info">
-                  <img src="https://hits.dwyl.com/aiwjh1986-kor/my-local-info.svg?style=flat-square&color=3b82f6" alt="Hits" />
-                </a>
-              </div>
+            <div className="flex items-center gap-3 px-6 bg-blue-500/5 py-3 rounded-full border border-blue-500/10">
+              <span className="text-lg">👥</span>
+              <span className="text-[10px] lg:text-sm font-black text-blue-600 uppercase tracking-widest">Welcome Visitor</span>
             </div>
             <div className="flex items-center gap-3 px-6 bg-green-500/5 py-3 rounded-full border border-green-500/10">
               <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
