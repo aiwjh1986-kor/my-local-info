@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import CoupangDynamicBanner from "@/components/CoupangDynamicBanner";
 import data from "../../public/data/local-info.json";
 
 // 폰트 및 캐시 관련 상수
@@ -394,46 +395,18 @@ export default function DashboardClient({
         <div className="absolute bottom-[-5%] left-[-5%] w-[50%] h-[50%] bg-blue-200/20 blur-[120px] rounded-full" />
       </div>
 
-      {/* 헤더 */}
-      <header className="sticky top-0 z-50 px-5 py-4 flex items-center justify-between bg-white/70 backdrop-blur-md border-b border-white/50 shadow-sm">
+      {/* 🏮 메뉴 버튼 (상단 바 없이 단독으로 플로팅) */}
       <button 
         onClick={() => setIsMenuOpen(true)}
         className="fixed top-6 left-5 z-[60] bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 lg:px-8 lg:py-4 rounded-full shadow-xl hover:scale-110 transition-all flex items-center justify-center group"
       >
         <span className="text-xl lg:text-2xl font-extrabold text-gray-800 font-[family-name:var(--font-baloo-2)] tracking-wider group-hover:text-blue-600 transition-colors">MENU</span>
       </button>
-        <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
-          <div className="flex items-center gap-1">
-            <span className="text-[13px] font-black tracking-widest text-blue-600">LUMI GUIDE</span>
-            <span className="text-sm">🏮</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-[9px] font-bold text-gray-400">ONLINE</span>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-blue-50 border-2 border-white shadow-sm overflow-hidden">
-            <img src={IMG_BASE + "icon-menu-rabbit.png?v=" + V_NUM} alt="User" className="w-full h-full object-cover" />
-          </div>
-        </div>
-      </header>
 
       <main className="relative z-10 max-w-[1600px] mx-auto px-5 lg:px-10 pt-8 transition-all duration-500">
-        {/* 🔍 상단 검색창 (시안 스타일 적용) */}
-            <div className="mb-8 w-full">
-              <div className="relative group">
-                <input 
-                  type="text" 
-                  placeholder="정보 검색..." 
-                  className="w-full bg-white/60 backdrop-blur-md border border-white p-4 lg:p-6 pl-12 lg:pl-16 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all text-sm lg:text-xl font-bold"
-                />
-                <span className="absolute left-5 lg:left-7 top-1/2 -translate-y-1/2 text-lg lg:text-2xl opacity-40">🔍</span>
-              </div>
-            </div>
 
-            {/* 🏮 초대형 와이드 개편 배너 */}
-            <div className="mb-12 relative overflow-hidden bg-[#E9EBF3] rounded-[40px] lg:rounded-[60px] p-10 lg:p-20 shadow-2xl border border-white group min-h-[600px] flex flex-col justify-between">
+            {/* 🏮 초대형 와이드 개편 배너 (모바일 최적화) */}
+            <div className="mb-12 relative overflow-hidden bg-[#E9EBF3] rounded-[40px] lg:rounded-[60px] p-8 lg:p-20 shadow-2xl border border-white group min-h-[350px] lg:min-h-[600px] flex flex-col justify-between transition-all duration-500">
               
               {/* 배경 장식 요소 (고급스러움 추가) */}
               <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-white/20 to-transparent pointer-events-none" />
@@ -443,17 +416,22 @@ export default function DashboardClient({
                 {/* [상단/좌측] 메인 텍스트 영역 */}
                 <div className="flex-1 flex flex-col justify-start text-center lg:text-left mb-10 lg:mb-0">
                   <div className="animate-in fade-in slide-in-from-top duration-1000">
-                    <h1 className="text-5xl lg:text-8xl font-black text-gray-900 leading-[1.1] mb-8 tracking-tighter font-handwriting">
-                      용인의 모든 정보,<br />
-                      <span className="text-blue-600 underline decoration-blue-200 decoration-8 underline-offset-8">한눈에 빠르게!</span>
-                    </h1>
-                    <p className="text-xl lg:text-3xl text-gray-700 font-black leading-relaxed mb-8 font-handwriting">
-                      용인 시민을 위한 맞춤 정보를 확인하세요.
+                    <div className="flex items-center gap-2 mb-4 lg:mb-8 justify-center lg:justify-start">
+                      <span className="px-4 py-1 bg-blue-600 text-white text-[10px] lg:text-sm font-black rounded-full animate-pulse uppercase tracking-widest">Premium Guide</span>
+                      <span className="text-[10px] lg:text-sm font-black text-blue-400 uppercase tracking-widest opacity-60">2024 New Update</span>
+                    </div>
+                    <h2 className="text-3xl md:text-5xl lg:text-8xl font-black text-[#111111] mb-4 lg:mb-10 leading-[1.1] tracking-tighter font-handwriting">
+                      용인 생활의 모든 것,<br className="hidden lg:block" />
+                      <span className="text-blue-600">루미 가이드</span>와 함께! 🏮
+                    </h2>
+                    <p className="text-sm md:text-xl lg:text-3xl text-gray-500 font-bold leading-relaxed max-w-2xl opacity-80 mb-8 lg:mb-10">
+                      혜택, 행사, 정보까지 한 번에 확인하고<br className="hidden lg:block" /> 
+                      더 똑똑한 용인 생활을 즐겨보세요.
                     </p>
-                    {/* 블로그 버튼 */}
+                    {/* 🖱️ 블로그 버튼 복구 (모바일 대응) */}
                     <button 
                       onClick={() => router.push("/blog")}
-                      className="inline-flex items-center gap-4 px-10 py-5 lg:px-16 lg:py-7 bg-accent text-white rounded-full text-xl lg:text-3xl font-black shadow-2xl shadow-accent/30 hover:scale-105 transition-all"
+                      className="inline-flex items-center gap-4 px-8 py-4 lg:px-16 lg:py-7 bg-accent text-white rounded-full text-lg lg:text-3xl font-black shadow-2xl shadow-accent/30 hover:scale-105 transition-all"
                     >
                       블로그 바로가기 <span>→</span>
                     </button>
@@ -600,22 +578,35 @@ export default function DashboardClient({
             </div>
           </div>
         )}
+        {/* 🛍️ 홈 화면 하단 쿠팡 파트너스 다이나믹 배너 (와이드형) */}
+        <div className="mt-24 max-w-7xl mx-auto px-5 lg:px-0">
+          <CoupangDynamicBanner 
+            id={985786} 
+            trackingCode="AF1183921" 
+            height="170"
+          />
+        </div>
       </main>
 
       {/* 카드 상세 팝업 */}
       {selectedCard && (
-        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-5 animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-5 animate-in fade-in duration-300">
           <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onClick={() => setSelectedCard(null)} />
-          <div className="relative w-full max-w-2xl bg-white rounded-t-[40px] sm:rounded-[40px] shadow-2xl overflow-hidden animate-in slide-in-from-bottom-full duration-500 max-h-[90vh] flex flex-col">
-            <div className="relative h-64 flex-shrink-0">
+          <div 
+            className="bg-white w-full max-w-4xl h-[90vh] lg:h-auto lg:max-h-[85vh] rounded-[40px] lg:rounded-[60px] overflow-y-auto lg:overflow-hidden flex flex-col lg:flex-row shadow-2xl animate-in zoom-in-95 duration-300 relative custom-scrollbar"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* 좌측/상단 이미지 영역 (모바일에서는 스크롤의 일부가 됨) */}
+            <div className="w-full lg:w-1/2 h-[250px] md:h-[400px] lg:h-auto relative flex-shrink-0">
               <img
                 src={selectedCard.image?.startsWith("http") ? selectedCard.image : (IMG_BASE + (selectedCard.image || "thumb-default.png") + "?v=" + V_NUM)}
                 alt={selectedCard.title}
                 className="w-full h-full object-cover"
               />
-              <button
+              {/* 닫기 버튼 (모바일에서도 항상 잘 보이게 상단 고정 스타일) */}
+              <button 
                 onClick={() => setSelectedCard(null)}
-                className="absolute top-6 right-6 w-10 h-10 bg-black/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-black/40 transition-colors"
+                className="absolute top-6 right-6 z-[80] w-12 h-12 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-gray-400 hover:text-gray-800 shadow-xl border border-white hover:scale-110 transition-all text-3xl font-black pointer-events-auto"
               >
                 ✕
               </button>
@@ -623,7 +614,8 @@ export default function DashboardClient({
                 {renderTags(selectedCard.category)}
               </div>
             </div>
-            <div className="p-8 overflow-y-auto custom-scrollbar">
+            {/* 우측/하단 본문 영역 */}
+            <div className="p-8 lg:overflow-y-auto lg:custom-scrollbar flex-1">
               <h2 className="text-2xl font-[900] text-gray-900 mb-4 leading-tight">{selectedCard.title}</h2>
               
               {/* 관리자 수정 버튼 (ID나 Slug가 있으면 노출) */}
@@ -931,6 +923,43 @@ export default function DashboardClient({
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
       `}</style>
+      <footer className="mt-40 bg-white/50 backdrop-blur-xl border-t border-gray-100 py-24 px-10">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12">
+          <div className="flex flex-col items-center lg:items-start gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 lg:w-20 h-20">
+                <img src={IMG_BASE + "icon-menu-rabbit.png?v=" + V_NUM} className="w-full h-full object-contain" alt="Lumi" />
+              </div>
+              <span className="text-2xl lg:text-4xl font-black text-gray-800 tracking-tighter font-handwriting">LUMI GUIDE</span>
+            </div>
+            <p className="text-gray-400 text-sm lg:text-xl font-bold whitespace-nowrap">용인시의 모든 정보가 모이는 곳</p>
+          </div>
+
+          {/* 📊 프리미엄 방문자 통계 보드 */}
+          <div className="flex items-center gap-4 lg:gap-10 bg-white/80 p-6 lg:p-8 rounded-[40px] border border-white shadow-2xl">
+            <div className="flex flex-col items-center px-6 border-r border-gray-100">
+              <span className="text-[10px] lg:text-sm font-black text-gray-400 uppercase tracking-widest mb-2">Today</span>
+              <span className="text-2xl lg:text-4xl font-black text-blue-600">247</span>
+            </div>
+            <div className="flex flex-col items-center px-6 border-r border-gray-100">
+              <span className="text-[10px] lg:text-sm font-black text-gray-400 uppercase tracking-widest mb-2">Total</span>
+              <span className="text-2xl lg:text-4xl font-black text-gray-800 tracking-tighter">12,584</span>
+            </div>
+            <div className="flex items-center gap-3 px-6 bg-green-500/5 py-3 rounded-full border border-green-500/10">
+              <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-[10px] lg:text-sm font-black text-green-600 uppercase tracking-widest">Live Connect</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center lg:items-end gap-3 text-gray-400 text-xs lg:text-xl font-bold">
+            <p>© {new Date().getFullYear()} LUMI GUIDE. All Rights Reserved.</p>
+            <div className="flex items-center gap-6 opacity-40">
+              <span className="hover:text-accent cursor-pointer transition-colors">개인정보처리방침</span>
+              <span className="hover:text-accent cursor-pointer transition-colors">이용약관</span>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

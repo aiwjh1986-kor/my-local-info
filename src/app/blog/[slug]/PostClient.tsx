@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import CoupangDynamicBanner from "@/components/CoupangDynamicBanner";
 
 // 캐시 방지 버전
 const V_NUM = "4";
@@ -50,10 +51,9 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
       <div className="fixed top-6 left-0 right-0 z-[60] px-6 flex items-center justify-between pointer-events-none">
         <button 
           onClick={() => setIsMenuOpen(true)}
-          className="pointer-events-auto bg-white/80 backdrop-blur-md border border-white/50 p-3 lg:p-4 rounded-2xl lg:rounded-3xl shadow-xl hover:scale-105 transition-all flex items-center gap-2 lg:gap-4"
+          className="fixed top-6 left-5 z-[60] bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 lg:px-8 lg:py-4 rounded-full shadow-xl hover:scale-110 transition-all flex items-center justify-center group"
         >
-          <span className="text-2xl lg:text-4xl">🏮</span>
-          <span className="text-sm lg:text-xl font-black text-gray-800 pr-1 lg:pr-2">MENU</span>
+          <span className="text-xl lg:text-2xl font-extrabold text-gray-800 font-[family-name:var(--font-baloo-2)] tracking-wider group-hover:text-blue-600 transition-colors">MENU</span>
         </button>
 
         {/* 중앙 퀵 바로가기 (바보가기) */}
@@ -160,8 +160,17 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
               </ReactMarkdown>
             </div>
 
+            {/* 🛍️ 쿠팡 파트너스 다이나믹 배너 (실시간 상품 슬라이드) */}
+            <div className="mt-20">
+              <CoupangDynamicBanner 
+                id={985786} 
+                trackingCode="AF1183921" 
+                height="170"
+              />
+            </div>
+
             {/* 태그 영역 */}
-            <div className="mt-20 pt-16 border-t border-gray-100 flex flex-wrap gap-4">
+            <div className="mt-12 pt-12 border-t border-gray-50 flex flex-wrap gap-4">
               {post.tags?.map((tag) => (
                 <span key={tag} className="px-6 py-2 bg-gray-50 text-gray-400 text-sm lg:text-2xl font-black rounded-full">
                   #{tag}

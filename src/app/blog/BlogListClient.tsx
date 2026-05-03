@@ -11,6 +11,7 @@ const IMG_BASE = "/images/";
 export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
   const router = useRouter();
   const [activeCat, setActiveCat] = useState("전체");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const categories = ["전체", "지원금", "지역행사", "생활정보", "도서정보"];
   
@@ -45,12 +46,43 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
           backgroundAttachment: 'fixed'
         }}
       />
-      {/* 1. 상단 프리미엄 내비게이션 바 */}
+      {/* 🏮 메뉴 버튼 (상단 바 없이 단독으로 플로팅) */}
+      <button 
+        onClick={() => setIsMenuOpen(true)}
+        className="fixed top-6 left-5 z-[60] bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 lg:px-8 lg:py-4 rounded-full shadow-xl hover:scale-110 transition-all flex items-center justify-center group"
+      >
+        <span className="text-xl lg:text-2xl font-extrabold text-gray-800 font-[family-name:var(--font-baloo-2)] tracking-wider group-hover:text-blue-600 transition-colors">MENU</span>
+      </button>
+
+      {/* 2. 사이드바 드로어 (홈 화면과 동일) */}
+      <aside className={`fixed left-0 top-0 bottom-0 w-[320px] lg:w-[450px] bg-white/95 backdrop-blur-2xl border-r border-gray-100 z-[70] flex flex-col p-8 lg:p-14 shadow-2xl transition-transform duration-500 ${
+        isMenuOpen ? "translate-x-0" : "-translate-x-full"
+      }`}>
+        <div className="flex items-center justify-between mb-10 lg:mb-20">
+          <div className="flex items-center gap-5">
+            <span className="text-3xl lg:text-5xl">🏮</span>
+            <h1 className="text-xl lg:text-4xl font-black text-[#111111]">메뉴</h1>
+          </div>
+          <button onClick={() => setIsMenuOpen(false)} className="text-4xl lg:text-6xl text-gray-300 hover:text-gray-800">×</button>
+        </div>
+        
+        <nav className="flex flex-col gap-4 lg:gap-8 overflow-y-auto no-scrollbar">
+          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-home.png?v=" + V_NUM} label="홈" />
+          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금" />
+          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" />
+          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="생활정보" />
+          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-blog.png?v=" + V_NUM} label="블로그" active={true} />
+          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-notice.png?v=" + V_NUM} label="공지" />
+        </nav>
+      </aside>
+
+      {isMenuOpen && (
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[65]" onClick={() => setIsMenuOpen(false)} />
+      )}
+
+      {/* 퀵 내비게이션 바 (중앙/우측 조절) */}
       <div className="fixed top-6 left-0 right-0 z-[60] px-6 flex items-center justify-between pointer-events-none">
-        <Link href="/" className="pointer-events-auto bg-white/80 backdrop-blur-md border border-white/50 p-3 lg:p-4 rounded-2xl lg:rounded-3xl shadow-xl hover:scale-105 transition-all flex items-center gap-2 lg:gap-4">
-          <span className="text-2xl lg:text-4xl">🏮</span>
-          <span className="text-sm lg:text-xl font-black text-gray-800 pr-1 lg:pr-2">HOME</span>
-        </Link>
+        <div className="w-[120px] lg:w-[150px] hidden md:block" /> {/* 좌측 여백 확보용 */}
 
         <div className="pointer-events-auto hidden md:flex items-center gap-2 bg-white/70 backdrop-blur-xl border border-white/40 p-2 rounded-full shadow-2xl">
           <QuickLink icon={IMG_BASE + "icon-home.png?v=" + V_NUM} label="홈" onClick={() => router.push("/")} />
@@ -67,10 +99,10 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
       {/* 2. 히어로 타이틀 영역 */}
       <header className="pt-32 lg:pt-48 pb-12 lg:pb-20 px-6 text-center">
         <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-top duration-1000">
-          <h1 className="text-5xl lg:text-8xl font-black text-gray-900 mb-6 lg:mb-10 tracking-tighter font-handwriting drop-shadow-sm">
+          <h1 className="text-4xl md:text-6xl lg:text-8xl font-black text-gray-900 mb-6 lg:mb-10 tracking-tighter font-handwriting drop-shadow-sm">
             루미의 <span className="text-blue-600 underline decoration-blue-200 decoration-8 underline-offset-8">생생 블로그</span>
           </h1>
-          <p className="text-xl lg:text-3xl text-gray-700 font-black leading-relaxed font-handwriting">
+          <p className="text-sm md:text-xl lg:text-3xl text-gray-700 font-black leading-relaxed font-handwriting px-6">
             용인시의 알찬 정보와 따끈따끈한 소식을 전해드려요!
           </p>
         </div>
@@ -153,14 +185,62 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
         )}
       </main>
 
-      {/* 5. 하단 푸터 */}
-      <footer className="mt-40 text-center px-6">
-        <div className="max-w-4xl mx-auto p-10 bg-white/50 rounded-[40px] border border-white">
-          <p className="text-sm lg:text-xl font-bold text-gray-400 uppercase tracking-widest">
-            © {new Date().getFullYear()} 용인시 생활정보 및 여행가이드 | Lumi's Blog
-          </p>
+      {/* 🏮 프리미엄 푸터 (홈 화면과 동일) */}
+      <footer className="mt-40 bg-white/50 backdrop-blur-xl border-t border-gray-100 py-24 px-10">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12">
+          <div className="flex flex-col items-center lg:items-start gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 lg:w-20 h-20">
+                <img src={IMG_BASE + "icon-menu-rabbit.png?v=" + V_NUM} className="w-full h-full object-contain" alt="Lumi" />
+              </div>
+              <span className="text-2xl lg:text-4xl font-black text-gray-800 tracking-tighter font-handwriting">LUMI GUIDE</span>
+            </div>
+            <p className="text-gray-400 text-sm lg:text-xl font-bold whitespace-nowrap">용인시의 모든 정보가 모이는 곳</p>
+          </div>
+
+          {/* 📊 프리미엄 방문자 통계 보드 */}
+          <div className="flex items-center gap-4 lg:gap-10 bg-white/80 p-6 lg:p-8 rounded-[40px] border border-white shadow-2xl">
+            <div className="flex flex-col items-center px-6 border-r border-gray-100">
+              <span className="text-[10px] lg:text-sm font-black text-gray-400 uppercase tracking-widest mb-2">Today</span>
+              <span className="text-2xl lg:text-4xl font-black text-blue-600">142</span>
+            </div>
+            <div className="flex flex-col items-center px-6 border-r border-gray-100">
+              <span className="text-[10px] lg:text-sm font-black text-gray-400 uppercase tracking-widest mb-2">Total</span>
+              <span className="text-2xl lg:text-4xl font-black text-gray-800 tracking-tighter">8,924</span>
+            </div>
+            <div className="flex items-center gap-3 px-6 bg-green-500/5 py-3 rounded-full border border-green-500/10">
+              <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-[10px] lg:text-sm font-black text-green-600 uppercase tracking-widest">Live Connect</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center lg:items-end gap-3 text-gray-400 text-xs lg:text-xl font-bold">
+            <p>© {new Date().getFullYear()} LUMI GUIDE. All Rights Reserved.</p>
+            <div className="flex items-center gap-6 opacity-40">
+              <span className="hover:text-accent cursor-pointer transition-colors">개인정보처리방침</span>
+              <span className="hover:text-accent cursor-pointer transition-colors">이용약관</span>
+            </div>
+          </div>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function MenuLink({ onClick, icon, label, active = false }: any) {
+  return (
+    <div 
+      onClick={onClick}
+      className={`flex items-center px-5 lg:px-10 py-3 lg:py-8 rounded-[20px] lg:rounded-[50px] transition-all font-black cursor-pointer group ${
+        active ? "bg-accent text-white shadow-2xl scale-[1.05]" : "text-gray-500 hover:bg-gray-50"
+      }`}
+    >
+      <div className="flex items-center gap-3 lg:gap-10">
+        <div className="w-10 h-10 lg:w-32 h-32 flex items-center justify-center p-1 transform group-hover:scale-110 transition-transform">
+          <img src={icon} className="w-full h-full object-contain" alt={label} />
+        </div>
+        <span className="text-sm lg:text-[32px] tracking-tighter whitespace-nowrap">{label}</span>
+      </div>
     </div>
   );
 }
