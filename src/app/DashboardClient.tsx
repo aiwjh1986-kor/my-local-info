@@ -403,10 +403,10 @@ export default function DashboardClient({
         <span className="text-xl lg:text-2xl font-extrabold text-gray-800 font-[family-name:var(--font-baloo-2)] tracking-wider group-hover:text-blue-600 transition-colors">MENU</span>
       </button>
 
-      <main className="relative z-10 max-w-[1600px] mx-auto px-5 lg:px-10 pt-8 transition-all duration-500">
+      <main className="relative z-10 max-w-[1600px] mx-auto px-5 lg:px-10 pt-24 lg:pt-8 transition-all duration-500">
 
-            {/* 🏮 초대형 와이드 개편 배너 (모바일 최적화) */}
-            <div className="mb-12 relative overflow-hidden bg-[#E9EBF3] rounded-[40px] lg:rounded-[60px] p-8 lg:p-20 shadow-2xl border border-white group min-h-[350px] lg:min-h-[600px] flex flex-col justify-between transition-all duration-500">
+            {/* 🏮 초대형 와이드 개편 배너 (모바일 초슬림 최적화) */}
+            <div className="mb-12 relative overflow-hidden bg-[#E9EBF3] rounded-[40px] lg:rounded-[60px] p-6 lg:p-20 shadow-2xl border border-white group min-h-[280px] lg:min-h-[600px] flex flex-col justify-center lg:justify-between transition-all duration-500">
               
               {/* 배경 장식 요소 (고급스러움 추가) */}
               <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-white/20 to-transparent pointer-events-none" />
@@ -420,11 +420,11 @@ export default function DashboardClient({
                       <span className="px-4 py-1 bg-blue-600 text-white text-[10px] lg:text-sm font-black rounded-full animate-pulse uppercase tracking-widest">Premium Guide</span>
                       <span className="text-[10px] lg:text-sm font-black text-blue-400 uppercase tracking-widest opacity-60">2024 New Update</span>
                     </div>
-                    <h2 className="text-3xl md:text-5xl lg:text-8xl font-black text-[#111111] mb-4 lg:mb-10 leading-[1.1] tracking-tighter font-handwriting">
+                    <h2 className="text-2xl md:text-5xl lg:text-8xl font-black text-[#111111] mb-2 lg:mb-10 leading-tight tracking-tighter font-handwriting">
                       용인 생활의 모든 것,<br className="hidden lg:block" />
                       <span className="text-blue-600">루미 가이드</span>와 함께!
                     </h2>
-                    <p className="text-sm md:text-xl lg:text-3xl text-gray-500 font-bold leading-relaxed max-w-2xl opacity-80 mb-8 lg:mb-10">
+                    <p className="text-[10px] md:text-xl lg:text-3xl text-gray-500 font-bold leading-relaxed max-w-2xl opacity-80 mb-6 lg:mb-10">
                       혜택, 행사, 정보까지 한 번에 확인하고<br className="hidden lg:block" /> 
                       더 똑똑한 용인 생활을 즐겨보세요.
                     </p>

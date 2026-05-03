@@ -97,7 +97,7 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
       </div>
 
       {/* 2. 히어로 타이틀 영역 */}
-      <header className="pt-32 lg:pt-48 pb-12 lg:pb-20 px-6 text-center">
+      <header className="pt-48 lg:pt-48 pb-12 lg:pb-20 px-6 text-center">
         <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-top duration-1000">
           <h1 className="text-4xl md:text-6xl lg:text-8xl font-black text-gray-900 mb-6 lg:mb-10 tracking-tighter font-handwriting drop-shadow-sm">
             루미의 <span className="text-blue-600 underline decoration-blue-200 decoration-8 underline-offset-8">생생 블로그</span>
