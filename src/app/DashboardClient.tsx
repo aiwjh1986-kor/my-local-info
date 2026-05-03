@@ -279,7 +279,7 @@ export default function DashboardClient({
     document.cookie = "is_admin=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     setIsAdmin(false);
     setIsMenuOpen(false);
-    router.refresh();
+    window.location.reload(); // 즉시 새로고침하여 상태 반영
   };
 
   const Card = ({ card, onClick }: { card: FeaturedCard; onClick: () => void }) => (
@@ -607,6 +607,7 @@ export default function DashboardClient({
               <h2 className="text-2xl font-[900] text-gray-900 mb-4 leading-tight">{selectedCard.title}</h2>
               
               {/* 관리자 수정 버튼 (ID나 Slug가 있으면 노출) */}
+              {isAdmin && (selectedCard.slug || selectedCard.id) && (
                 <div className="mb-6 flex flex-col gap-3">
                   <div className="flex gap-2">
                     <button
@@ -646,6 +647,7 @@ export default function DashboardClient({
                     ))}
                   </div>
                 </div>
+              )}
 
               <div className="flex gap-4 mb-8 text-[11px] font-bold text-gray-400">
                 <span className="flex items-center gap-1.5">📅 {selectedCard.date}</span>
@@ -763,14 +765,14 @@ export default function DashboardClient({
           {isAdmin ? (
             <MenuLink 
               onClick={handleLogout} 
-              icon={IMG_BASE + "icon-home.png?v=" + V_NUM} 
+              icon={IMG_BASE + "icon-info.png?v=" + V_NUM} 
               label="관리자 로그아웃" 
               active={false} 
             />
           ) : (
             <MenuLink 
-              onClick={() => { router.push("/admin"); setIsMenuOpen(false); }} 
-              icon={IMG_BASE + "icon-home.png?v=" + V_NUM} 
+              onClick={() => { window.location.href = "/admin"; setIsMenuOpen(false); }} 
+              icon={IMG_BASE + "icon-info.png?v=" + V_NUM} 
               label="관리자 로그인" 
               active={false} 
             />

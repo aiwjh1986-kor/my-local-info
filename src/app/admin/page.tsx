@@ -21,8 +21,8 @@ export default function AdminLogin() {
       });
 
       if (res.ok) {
-        // 로그인 성공 시 홈으로 이동
-        router.push("/");
+        // 로그인 성공 시 홈으로 이동하며 새로고침
+        window.location.href = "/";
       } else {
         const data = await res.json();
         setError(data.message || "로그인에 실패했습니다.");
