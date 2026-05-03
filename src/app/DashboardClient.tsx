@@ -25,6 +25,7 @@ interface FeaturedCard {
   slug?: string;
   link?: string;
   image?: string;
+  id?: string;
 }
 
 export default function DashboardClient({
@@ -84,7 +85,7 @@ export default function DashboardClient({
   };
 
   const allCards = getCombinedData();
-  const latestCards = allCards.slice(0, 3);
+  const latestCards = allCards.slice(0, 10);
   const popularCards = allCards.filter((c) => c.is_popular).slice(0, 3);
   const bookCards = allCards.filter(c => c.category === "도서정보" || c.category === "book").slice(0, 3);
 
@@ -332,7 +333,7 @@ export default function DashboardClient({
   );
 
   return (
-    <div className="min-h-screen bg-[#F0F2FF] font-[family-name:var(--font-pretendard)] pb-24">
+    <div className="min-h-screen bg-transparent font-[family-name:var(--font-pretendard)] pb-24">
       {/* 플로팅 배경 요소 */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-purple-200/30 blur-[100px] rounded-full" />
@@ -465,7 +466,11 @@ export default function DashboardClient({
                   icon={IMG_BASE + "icon-tip.png?v=" + V_NUM}
                   cards={latestCards}
                   onCardClick={setSelectedCard}
-                  onMoreClick={() => setActiveTab("생활정보")}
+                  onMoreClick={() => {
+                    setActiveTab("블로그");
+                    setActiveBlogCat("전체");
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
                 />
 
                 <Section
@@ -608,8 +613,8 @@ export default function DashboardClient({
                               e.preventDefault();
                               setEditingCard(selectedCard);
                               setIsContentEdit(true);
-                              setOldContentImageUrl(props.src || "");
-                              setNewImageUrl(props.src || "");
+                              setOldContentImageUrl(String(props.src || ""));
+                              setNewImageUrl(String(props.src || ""));
                               setIsEditModalOpen(true);
                             }}
                             className="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[10px] font-black opacity-0 group-hover/content-img:opacity-100 transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 shadow-xl z-10"
@@ -720,13 +725,6 @@ export default function DashboardClient({
           )}
         </nav>
 
-        <div className="mt-auto pt-8 border-t border-gray-100">
-          <p className="text-[10px] text-gray-300 font-bold mb-4 tracking-widest uppercase">Community</p>
-          <div className="grid grid-cols-2 gap-3">
-            <button className="p-3 bg-gray-50 rounded-xl text-[10px] font-bold text-gray-500 hover:bg-gray-100 transition-colors">Instagram</button>
-            <button className="p-3 bg-gray-50 rounded-xl text-[10px] font-bold text-gray-500 hover:bg-gray-100 transition-colors">KakaoTalk</button>
-          </div>
-        </div>
       </aside>
 
       {isMenuOpen && (

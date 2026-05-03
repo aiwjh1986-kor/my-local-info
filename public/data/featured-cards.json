@@ -1,1 +1,35 @@
-[]
+[
+  {
+    "id": "e2026-1",
+    "title": "🎮 [2026 플레이엑스포] 게임 매니아 집결! 킨텍스에서 열리는 역대급 게임 축제",
+    "summary": "2026년 5월 21일부터 4일간! 대한민국 최대 게임 쇼 PlayX4가 돌아옵니다! ✨",
+    "category": "지역행사",
+    "date": "2026-05-03",
+    "image": "bike_01.png",
+    "slug": "2026-playx4",
+    "is_popular": true,
+    "region": "고양"
+  },
+  {
+    "id": "e2026-2",
+    "title": "🦴 [연천 구석기 축제] 지금 바로 출동! 선사시대로 떠나는 타임머신 여행",
+    "summary": "5월 2일부터 5일까지! 연천에서 즐기는 구석기 바비큐와 다채로운 체험 🍖",
+    "category": "지역행사",
+    "date": "2026-05-03",
+    "image": "goo_01.png",
+    "slug": "2026-yeoncheon-festival",
+    "is_popular": true,
+    "region": "연천"
+  },
+  {
+    "id": "e2026-3",
+    "title": "🎶 [의정부 음악극축제] 오감을 깨우는 선율! 도심 속 예술 여행 떠나요",
+    "summary": "2026년 5월 9일부터 17일까지! 음악과 연극이 만나는 환상적인 무대 🎭",
+    "category": "지역행사",
+    "date": "2026-05-03",
+    "image": "rose_01.png",
+    "slug": "2026-uijeongbu-music",
+    "is_popular": true,
+    "region": "의정부"
+  }
+]

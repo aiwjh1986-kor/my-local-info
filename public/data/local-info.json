@@ -1,5 +1,54 @@
 {
-  "events": [],
+  "events": [
+    {
+      "id": "e2026-1",
+      "name": "2026 플레이엑스포 (PlayX4)",
+      "category": "지역행사",
+      "startDate": "2026-05-21",
+      "endDate": "2026-05-24",
+      "location": "고양 킨텍스",
+      "target": "전 국민 누구나",
+      "summary": "신작 게임 체험, 코스프레, e스포츠 페스티벌까지 즐기는 수도권 최대 게임쇼!",
+      "link": "https://playx4.or.kr",
+      "weather": { "temp": "22", "desc": "Sunny", "humidity": "50" }
+    },
+    {
+      "id": "e2026-2",
+      "name": "2026 연천 구석기 축제",
+      "category": "지역행사",
+      "startDate": "2026-05-02",
+      "endDate": "2026-05-05",
+      "location": "연천 전곡리 유적",
+      "target": "가족 및 어린이",
+      "summary": "구석기 바비큐 체험과 선사시대 문화 여행! 지금 바로 연천으로 떠나보세요.",
+      "link": "http://festival.yeoncheon.go.kr",
+      "weather": { "temp": "21", "desc": "Cloudy", "humidity": "61" }
+    },
+    {
+      "id": "e2026-3",
+      "name": "2026 의정부 음악극축제",
+      "category": "지역행사",
+      "startDate": "2026-05-09",
+      "endDate": "2026-05-17",
+      "location": "의정부예술의전당",
+      "target": "전 국민 누구나",
+      "summary": "음악과 연극이 만나는 도심 속 예술 축제! 수준 높은 공연을 만나보세요.",
+      "link": "http://www.uimt.or.kr",
+      "weather": { "temp": "20", "desc": "Clear", "humidity": "45" }
+    },
+    {
+      "id": "e2026-4",
+      "name": "제11회 일러스타 페스",
+      "category": "지역행사",
+      "startDate": "2026-05-23",
+      "endDate": "2026-05-24",
+      "location": "고양 킨텍스",
+      "target": "서브컬처 팬",
+      "summary": "화려한 코스프레와 일러스트 굿즈가 가득한 서브컬처 매니아들의 천국!",
+      "link": "https://illustar.net",
+      "weather": { "temp": "23", "desc": "Sunny", "humidity": "55" }
+    }
+  ],
   "benefits": [
     {
       "id": "b1",
@@ -11,11 +60,7 @@
       "target": "국공립 및 사립유치원에 다니는 3~5세 유아",
       "summary": "유치원에 다니는 3~5세 아동에게 유아학비, 방과후과정비 등 지원",
       "link": "https://www.childschool.go.kr",
-      "weather": {
-        "temp": "21",
-        "desc": "Cloudy",
-        "humidity": "61"
-      }
+      "weather": { "temp": "21", "desc": "Cloudy", "humidity": "61" }
     },
     {
       "id": "b3",
@@ -27,12 +72,8 @@
       "target": "○ 보증금 1억원 이하 및 월세금 60만원 이하인 월세 계약을 체결한 주택도시 기금 주거안정 월세대출 대상자",
       "summary": "일정요건의 월세대출 대상자에게 월세자금보증을 지원",
       "link": "https://www.hf.go.kr",
-      "weather": {
-        "temp": "21",
-        "desc": "Cloudy",
-        "humidity": "61"
-      }
+      "weather": { "temp": "21", "desc": "Cloudy", "humidity": "61" }
     }
   ],
-  "lastUpdate": "2026-05-02"
+  "lastUpdate": "2026-05-03"
 }

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getSortedPostsData } from "@/lib/posts";
 import DashboardClient from "./DashboardClient";
 import featuredCardsData from "../../public/data/featured-cards.json";
@@ -23,6 +24,8 @@ export default function Page() {
   const featuredCards = featuredCardsData as any[];
 
   return (
-    <DashboardClient initialBlogPosts={blogPosts} initialFeaturedCards={featuredCards} />
+    <Suspense fallback={<div>Loading...</div>}>
+      <DashboardClient initialBlogPosts={blogPosts} initialFeaturedCards={featuredCards} />
+    </Suspense>
   );
 }
