@@ -188,6 +188,26 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
         <div className="mt-20 max-w-4xl mx-auto">
           <CoupangDynamicBanner />
         </div>
+
+        {/* 우측 하단 플로팅 버튼 (홈 & TOP) */}
+        <div className="fixed bottom-24 right-6 flex flex-col gap-3 z-40">
+          <button
+            onClick={() => {
+              router.push("/");
+            }}
+            className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-white/50 flex flex-col items-center justify-center group active:scale-90 transition-all"
+          >
+            <span className="text-blue-600 text-lg font-black group-hover:scale-110 transition-transform">H</span>
+            <span className="text-[7px] font-black text-blue-600">HOME</span>
+          </button>
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="w-12 h-12 bg-blue-600/90 backdrop-blur-md rounded-2xl shadow-lg shadow-blue-200 flex flex-col items-center justify-center group active:scale-90 transition-all border border-blue-400/30"
+          >
+            <span className="text-white text-lg group-hover:-translate-y-1 transition-transform">▲</span>
+            <span className="text-[7px] font-black text-white">TOP</span>
+          </button>
+        </div>
       </main>
 
       {/* 🏮 프리미엄 푸터 (홈 화면과 동일) */}

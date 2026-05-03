@@ -199,10 +199,11 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
       <div className="fixed bottom-8 right-8 z-[60] flex flex-col gap-4">
         <button 
           onClick={() => router.push("/")}
-          className="w-16 h-16 lg:w-24 h-24 bg-white/80 backdrop-blur-md border border-gray-100 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 hover:bg-white transition-all group p-3 lg:p-5"
+          className="w-16 h-16 lg:w-24 h-24 bg-white/90 backdrop-blur-md border border-gray-100 rounded-full shadow-2xl flex flex-col items-center justify-center hover:scale-110 hover:bg-white transition-all group p-2"
           title="홈으로"
         >
-          <img src={IMG_BASE + "icon-home.png?v=" + V_NUM} className="w-full h-full object-contain" alt="홈" />
+          <span className="text-accent text-2xl lg:text-5xl font-black group-hover:scale-110 transition-transform">H</span>
+          <span className="text-[10px] lg:text-lg font-black tracking-tighter text-accent">HOME</span>
         </button>
         <button 
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

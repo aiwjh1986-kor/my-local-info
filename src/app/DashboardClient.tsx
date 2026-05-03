@@ -804,11 +804,9 @@ export default function DashboardClient({
             setActiveTab("홈");
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
-          className="w-12 h-12 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/50 flex flex-col items-center justify-center group active:scale-90 transition-all"
+          className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-white/50 flex flex-col items-center justify-center group active:scale-90 transition-all"
         >
-          <div className="w-6 h-6 group-hover:scale-110 transition-transform">
-            <img src={IMG_BASE + "icon-home.png?v=" + V_NUM} alt="Home" className="w-full h-full object-contain" />
-          </div>
+          <span className="text-blue-600 text-lg group-hover:scale-110 transition-transform font-black">H</span>
           <span className="text-[7px] font-black text-blue-600">HOME</span>
         </button>
         <button

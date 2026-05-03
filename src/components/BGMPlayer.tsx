@@ -46,18 +46,17 @@ export default function BGMPlayer() {
   };
  
   return (
-    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[200] flex flex-col items-center gap-2">
-      {/* 🎵 음악 재생 상태 표시 및 조절 버튼 */}
+    <div className="fixed bottom-[210px] right-6 lg:bottom-[230px] lg:right-6 z-[200] flex flex-col items-center gap-2">
       <button
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
           togglePlay();
         }}
-        className={`w-12 h-12 lg:w-16 lg:h-16 rounded-full flex items-center justify-center shadow-2xl transition-all border-2 active:scale-95 ${
+        className={`w-12 h-12 lg:w-16 lg:h-16 rounded-2xl flex items-center justify-center shadow-lg transition-all border border-white/50 active:scale-95 ${
           isPlaying 
-            ? "bg-white border-blue-500 text-blue-600 scale-110 shadow-blue-200" 
-            : "bg-gray-100 border-gray-300 text-gray-400"
+            ? "bg-white text-blue-600 shadow-blue-100" 
+            : "bg-gray-100/80 backdrop-blur-md text-gray-400"
         }`}
         style={{ cursor: 'pointer' }}
       >
@@ -65,16 +64,15 @@ export default function BGMPlayer() {
           {isPlaying ? "🎵" : "🔇"}
         </span>
       </button>
- 
-      {/* 상태 노출 */}
-      <div className={`bg-white/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/30 shadow-sm transition-all duration-500 ${
-        isPlaying ? "opacity-100 translate-y-0" : "opacity-40 -translate-y-1 scale-90"
+
+      <div className={`bg-white/60 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/30 shadow-sm transition-all duration-500 ${
+        isPlaying ? "opacity-100" : "opacity-0 scale-90"
       }`}>
-        <span className="text-[8px] lg:text-[10px] font-black text-gray-800 uppercase tracking-widest whitespace-nowrap">
-          {isPlaying ? "LUMI THEME PLAYING" : "MUSIC PAUSED"}
+        <span className="text-[7px] lg:text-[9px] font-black text-blue-600 uppercase tracking-tighter">
+          {isPlaying ? "PLAY" : ""}
         </span>
       </div>
- 
+
       <audio
         ref={audioRef}
         src="/audio/Lumi%20song.mp3"
