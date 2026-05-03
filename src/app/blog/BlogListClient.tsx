@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import CoupangDynamicBanner from "@/components/CoupangDynamicBanner";
 
 // 캐시 방지 버전
 const V_NUM = "5";
@@ -183,6 +184,14 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
             <p className="text-2xl lg:text-4xl font-black text-gray-300 font-handwriting">아직 등록된 블로그 글이 없습니다!</p>
           </div>
         )}
+        {/* 🛍️ 쿠팡 파트너스 다이나믹 배너 (블로그 목록 하단) */}
+        <div className="mt-20 max-w-4xl mx-auto">
+          <CoupangDynamicBanner 
+            id={985786} 
+            trackingCode="AF1183921" 
+            height="170"
+          />
+        </div>
       </main>
 
       {/* 🏮 프리미엄 푸터 (홈 화면과 동일) */}

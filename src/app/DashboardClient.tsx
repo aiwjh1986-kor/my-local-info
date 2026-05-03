@@ -690,6 +690,8 @@ export default function DashboardClient({
                       </span>
                     )
                   }}
+                >
+                  {selectedCard.content || selectedCard.detail || selectedCard.summary}
                 </ReactMarkdown>
               </div>
 
