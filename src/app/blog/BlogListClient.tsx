@@ -186,11 +186,7 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
         )}
         {/* 🛍️ 쿠팡 파트너스 다이나믹 배너 (블로그 목록 하단) */}
         <div className="mt-20 max-w-4xl mx-auto">
-          <CoupangDynamicBanner 
-            id={985786} 
-            trackingCode="AF1183921" 
-            height="170"
-          />
+          <CoupangDynamicBanner />
         </div>
       </main>
 
