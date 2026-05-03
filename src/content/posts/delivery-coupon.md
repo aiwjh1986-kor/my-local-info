@@ -1,11 +1,15 @@
 ---
-title: "용인시 공공배달앱 '배달특급' 주말 한정 5천원 할인쿠폰 배포"
-date: "2026-05-02"
+title: 용인시 공공배달앱 '배달특급' 주말 한정 5천원 할인쿠폰 배포
+date: '2026-05-02'
 category: info
-summary: "소상공인 돕고 소비자 혜택 받는 배달특급! 이번 주말 5,000원 추가 할인!"
-image: "thumb-delivery.png"
-tags: ["용인배달", "배달특급", "지역화폐", "할인쿠폰"]
-link: "https://www.specialdelivery.co.kr"
+summary: '소상공인 돕고 소비자 혜택 받는 배달특급! 이번 주말 5,000원 추가 할인!'
+image: be_01.png
+tags:
+  - 용인배달
+  - 배달특급
+  - 지역화폐
+  - 할인쿠폰
+link: 'https://www.specialdelivery.co.kr'
 ---
 
 # 🛵 배달특급 용인시 주말 할인 쿠폰 안내
@@ -20,7 +24,7 @@ link: "https://www.specialdelivery.co.kr"
 ## 2. 쿠폰 사용 기간
 - **매주 토요일, 일요일** (선착순 마감 주의!)
 
-![배달특급 이미지](/images/thumb-delivery.png)
+![배달특급 이미지](/images/be_01.png)
 
 ## 3. 이용 방법
 1. '배달특급' 앱 실행

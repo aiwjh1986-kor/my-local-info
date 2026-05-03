@@ -1,11 +1,15 @@
 ---
-title: "용인 에버랜드 장미축제 개막! 밤하늘 수놓는 불꽃놀이까지"
-date: "2026-05-15"
+title: 용인 에버랜드 장미축제 개막! 밤하늘 수놓는 불꽃놀이까지
+date: '2026-05-15'
 category: event
-summary: "수만 송이 장미와 환상적인 야간 퍼레이드, 6월까지 계속됩니다!"
-image: "everland_roses_thumb.png"
-tags: ["용인축제", "에버랜드", "장미축제", "가족나들이"]
-link: "https://www.everland.com"
+summary: '수만 송이 장미와 환상적인 야간 퍼레이드, 6월까지 계속됩니다!'
+image: rose_01.png
+tags:
+  - 용인축제
+  - 에버랜드
+  - 장미축제
+  - 가족나들이
+link: 'https://www.everland.com'
 ---
 
 # 🌹 용인 에버랜드 장미축제 2026
@@ -21,7 +25,7 @@ link: "https://www.everland.com"
 - **문라이트 퍼레이드**: 수만 개의 전구가 빛나는 야간 퍼레이드 (매일 저녁 8시)
 - **멀티미디어 쇼 '주크박스'**: 화려한 불꽃과 레이저, 음악이 어우러진 멀티미디어 쇼
 
-![장미축제 이미지](/images/everland_roses_thumb.png)
+![장미축제 이미지](/images/rose_01.png)
 
 ## 3. 이용 팁
 - **용인 시민 할인**: 용인 시민이라면 홈페이지 예약 시 특별 할인 혜택을 받을 수 있습니다.

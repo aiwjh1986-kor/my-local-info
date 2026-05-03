@@ -41,6 +41,23 @@ export default function DashboardClient({
   const [activeBlogCat, setActiveBlogCat] = useState("전체");
   const [selectedCard, setSelectedCard] = useState<FeaturedCard | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingCard, setEditingCard] = useState<FeaturedCard | null>(null);
+  const [newImageUrl, setNewImageUrl] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [isContentEdit, setIsContentEdit] = useState(false);
+  const [oldContentImageUrl, setOldContentImageUrl] = useState("");
+  const [isTextEditModalOpen, setIsTextEditModalOpen] = useState(false);
+  const [editingText, setEditingText] = useState("");
+
+  // 관리자 로그인 상태 확인 (쿠키 확인)
+  useEffect(() => {
+    const isAdminCookie = document.cookie.split('; ').find(row => row.startsWith('is_admin='));
+    if (isAdminCookie && isAdminCookie.split('=')[1] === 'true') {
+      setIsAdmin(true);
+    }
+  }, []);
 
   // URL 파라미터에서 탭 정보를 읽어와 설정
   useEffect(() => {
@@ -118,6 +135,118 @@ export default function DashboardClient({
     );
   };
 
+  // 이미지 수정 시작
+  const startImageEdit = (e: React.MouseEvent, card: FeaturedCard) => {
+    e.stopPropagation(); // 카드 클릭 이벤트 전파 방지
+    setEditingCard(card);
+    setNewImageUrl(card.image || "");
+    setIsContentEdit(false);
+    setIsEditModalOpen(true);
+  };
+
+  // 이미지 수정 저장
+  const saveImageChanges = async () => {
+    if (!editingCard || !editingCard.slug) return;
+    
+    setIsSaving(true);
+    try {
+      const endpoint = isContentEdit ? "/api/update-content-image" : "/api/update-post-image";
+      const body = isContentEdit 
+        ? { slug: editingCard.slug, oldImageUrl: oldContentImageUrl, newImageUrl: newImageUrl }
+        : { slug: editingCard.slug, newImageUrl: newImageUrl };
+
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      if (res.ok) {
+        // 성공 시 페이지 새로고침하여 반영
+        window.location.reload();
+      } else {
+        alert("이미지 수정에 실패했습니다.");
+      }
+    } catch (err) {
+      alert("서버 오류가 발생했습니다.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // 게시글 삭제
+  const deletePost = async () => {
+    // slug가 있으면 우선 사용, 없으면 id 사용
+    const targetSlug = selectedCard?.slug || selectedCard?.id;
+    if (!selectedCard || !targetSlug) return;
+    
+    if (!confirm("정말 이 게시글을 삭제하시겠습니까?\n삭제된 글은 복구할 수 없습니다.")) {
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const res = await fetch("/api/delete-post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: targetSlug }),
+      });
+
+      if (res.ok) {
+        alert("게시글이 삭제되었습니다.");
+        window.location.reload();
+      } else {
+        alert("삭제에 실패했습니다.");
+      }
+    } catch (err) {
+      alert("서버 오류가 발생했습니다.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // 텍스트 수정 시작
+  const startTextEdit = () => {
+    if (!selectedCard) return;
+    setEditingText(selectedCard.content || selectedCard.detail || selectedCard.summary || "");
+    setIsTextEditModalOpen(true);
+  };
+
+  // 텍스트 수정 저장
+  const saveTextChanges = async () => {
+    if (!selectedCard || !selectedCard.slug) return;
+    
+    setIsSaving(true);
+    try {
+      const res = await fetch("/api/update-post-text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug: selectedCard.slug,
+          newContent: editingText
+        }),
+      });
+
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        alert("텍스트 수정에 실패했습니다.");
+      }
+    } catch (err) {
+      alert("서버 오류가 발생했습니다.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // 로그아웃
+  const handleLogout = () => {
+    document.cookie = "is_admin=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    setIsAdmin(false);
+    setIsMenuOpen(false);
+    router.refresh();
+  };
+
   const Card = ({ card, onClick }: { card: FeaturedCard; onClick: () => void }) => (
     <div
       onClick={onClick}
@@ -137,6 +266,16 @@ export default function DashboardClient({
             </span>
           )}
         </div>
+        {/* 관리자 수정 버튼 */}
+        {isAdmin && card.slug && (
+          <button
+            onClick={(e) => startImageEdit(e, card)}
+            className="absolute top-3 right-3 w-8 h-8 bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-blue-600 transition-all z-20 shadow-lg"
+            title="이미지 수정"
+          >
+            📸
+          </button>
+        )}
       </div>
       <div className="p-4">
         <h3 className="font-bold text-gray-900 text-sm leading-tight mb-2 group-hover:text-blue-600 transition-colors line-clamp-2 whitespace-pre-line">
@@ -202,13 +341,11 @@ export default function DashboardClient({
 
       {/* 헤더 */}
       <header className="sticky top-0 z-50 px-5 py-4 flex items-center justify-between bg-white/70 backdrop-blur-md border-b border-white/50 shadow-sm">
-      {/* 🏮 메뉴 버튼 (블로그 스타일 적용) */}
       <button 
         onClick={() => setIsMenuOpen(true)}
-        className="fixed top-6 left-5 z-[60] bg-white/80 backdrop-blur-md border border-gray-100 p-3 lg:p-4 rounded-2xl shadow-xl hover:scale-110 transition-all flex items-center gap-3"
+        className="fixed top-6 left-5 z-[60] bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 lg:px-8 lg:py-4 rounded-full shadow-xl hover:scale-110 transition-all flex items-center justify-center group"
       >
-        <span className="text-2xl lg:text-3xl">🏮</span>
-        <span className="text-lg lg:text-xl font-black text-gray-800 pr-1">MENU</span>
+        <span className="text-xl lg:text-2xl font-extrabold text-gray-800 font-[family-name:var(--font-baloo-2)] tracking-wider group-hover:text-blue-600 transition-colors">MENU</span>
       </button>
         <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
           <div className="flex items-center gap-1">
@@ -324,31 +461,23 @@ export default function DashboardClient({
               <>
                 {/* 섹션들 */}
                 <Section
-              title="지금 뜨는 정보"
-              icon={IMG_BASE + "icon-tip.png?v=" + V_NUM}
-              cards={latestCards}
-              onCardClick={setSelectedCard}
-              onMoreClick={() => setActiveTab("생활정보")}
-            />
+                  title="최신 정보"
+                  icon={IMG_BASE + "icon-tip.png?v=" + V_NUM}
+                  cards={latestCards}
+                  onCardClick={setSelectedCard}
+                  onMoreClick={() => setActiveTab("생활정보")}
+                />
 
-            <Section
-              title="지혜가 쌓이는 도서 추천"
-              icon={IMG_BASE + "icon-book.png?v=" + V_NUM}
-              iconSize="large"
-              cards={bookCards}
-              onCardClick={setSelectedCard}
-              onMoreClick={() => setActiveTab("도서정보")}
-            />
-
-            <Section
-              title="인기 만점 혜택"
-              icon={IMG_BASE + "icon-welfare.png?v=" + V_NUM}
-              cards={popularCards}
-              onCardClick={setSelectedCard}
-              onMoreClick={() => setActiveTab("지원금")}
-            />
-          </>
-        )}
+                <Section
+                  title="지혜가 쌓이는 도서 추천"
+                  icon={IMG_BASE + "icon-book.png?v=" + V_NUM}
+                  iconSize="large"
+                  cards={bookCards}
+                  onCardClick={setSelectedCard}
+                  onMoreClick={() => setActiveTab("도서정보")}
+                />
+              </>
+            )}
 
         {activeTab !== "홈" && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -434,13 +563,64 @@ export default function DashboardClient({
             </div>
             <div className="p-8 overflow-y-auto custom-scrollbar">
               <h2 className="text-2xl font-[900] text-gray-900 mb-4 leading-tight">{selectedCard.title}</h2>
+              
+              {/* 관리자 수정 버튼 (ID나 Slug가 있으면 노출) */}
+              {isAdmin && (selectedCard.slug || selectedCard.id) && (
+                <div className="mb-6 flex gap-2">
+                  <button
+                    onClick={startTextEdit}
+                    className="flex-1 py-3 bg-gray-800 text-white rounded-xl text-xs font-black hover:bg-black transition-all flex items-center justify-center gap-2 shadow-lg"
+                  >
+                    📝 본문 글 내용 수정
+                  </button>
+                  <button
+                    onClick={(e) => startImageEdit(e, selectedCard)}
+                    className="flex-1 py-3 bg-blue-600 text-white rounded-xl text-xs font-black hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-lg"
+                  >
+                    📸 대표 이미지 수정
+                  </button>
+                  {/* 삭제 버튼 추가 */}
+                  <button
+                    onClick={deletePost}
+                    disabled={isSaving}
+                    className="px-4 py-3 bg-red-50 text-red-600 rounded-xl text-xs font-black hover:bg-red-600 hover:text-white transition-all flex items-center justify-center gap-2 border border-red-100"
+                  >
+                    🗑️ 삭제
+                  </button>
+                </div>
+              )}
+
               <div className="flex gap-4 mb-8 text-[11px] font-bold text-gray-400">
                 <span className="flex items-center gap-1.5">📅 {selectedCard.date}</span>
                 <span className="flex items-center gap-1.5">📍 {selectedCard.region || "용인"}</span>
               </div>
               
               <div className="prose prose-sm prose-slate max-w-none prose-headings:font-black prose-a:text-blue-600">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                <ReactMarkdown 
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    img: ({ node, ...props }) => (
+                      <span className="relative group/content-img inline-block w-full my-4">
+                        <img {...props} className="rounded-2xl shadow-sm w-full h-auto" />
+                        {isAdmin && (
+                          <button 
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setEditingCard(selectedCard);
+                              setIsContentEdit(true);
+                              setOldContentImageUrl(props.src || "");
+                              setNewImageUrl(props.src || "");
+                              setIsEditModalOpen(true);
+                            }}
+                            className="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[10px] font-black opacity-0 group-hover/content-img:opacity-100 transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 shadow-xl z-10"
+                          >
+                            <span>📸</span> 본문 사진 수정
+                          </button>
+                        )}
+                      </span>
+                    )
+                  }}
+                >
                   {selectedCard.content || selectedCard.detail || selectedCard.summary}
                 </ReactMarkdown>
               </div>
@@ -475,7 +655,9 @@ export default function DashboardClient({
       }`}>
         <div className="flex items-center justify-between mb-8 lg:mb-16">
           <div className="flex items-center gap-4">
-            <span className="text-3xl lg:text-4xl">🏮</span>
+            <div className="w-10 h-10 lg:w-14 h-14">
+              <img src={IMG_BASE + "icon-menu-rabbit.png?v=" + V_NUM} alt="Menu Icon" className="w-full h-full object-contain" />
+            </div>
             <h1 className="text-xl lg:text-3xl font-black text-[#111111]">메뉴</h1>
           </div>
           <button onClick={() => setIsMenuOpen(false)} className="text-4xl lg:text-5xl text-gray-300 hover:text-gray-800">×</button>
@@ -518,6 +700,24 @@ export default function DashboardClient({
             label="블로그" 
             active={activeTab === "블로그" && activeBlogCat === "전체"} 
           />
+
+          <div className="h-px bg-gray-100 my-2" />
+          
+          {isAdmin ? (
+            <MenuLink 
+              onClick={handleLogout} 
+              icon={IMG_BASE + "icon-home.png?v=" + V_NUM} 
+              label="관리자 로그아웃" 
+              active={false} 
+            />
+          ) : (
+            <MenuLink 
+              onClick={() => { router.push("/admin"); setIsMenuOpen(false); }} 
+              icon={IMG_BASE + "icon-home.png?v=" + V_NUM} 
+              label="관리자 로그인" 
+              active={false} 
+            />
+          )}
         </nav>
 
         <div className="mt-auto pt-8 border-t border-gray-100">
@@ -542,7 +742,9 @@ export default function DashboardClient({
           }}
           className="w-12 h-12 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/50 flex flex-col items-center justify-center group active:scale-90 transition-all"
         >
-          <span className="text-lg group-hover:scale-110 transition-transform">🏠</span>
+          <div className="w-6 h-6 group-hover:scale-110 transition-transform">
+            <img src={IMG_BASE + "icon-home.png?v=" + V_NUM} alt="Home" className="w-full h-full object-contain" />
+          </div>
           <span className="text-[7px] font-black text-blue-600">HOME</span>
         </button>
         <button
@@ -553,6 +755,101 @@ export default function DashboardClient({
           <span className="text-[7px] font-black text-white">TOP</span>
         </button>
       </div>
+
+      {/* 이미지 수정 팝업 (관리자 전용) */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-5 animate-in fade-in duration-300">
+          <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-md" onClick={() => !isSaving && setIsEditModalOpen(false)} />
+          <div className="relative w-full max-w-lg bg-white rounded-[40px] shadow-2xl p-10 animate-in zoom-in-95 duration-300 border border-white">
+            <div className="text-center mb-8">
+              <div className="text-3xl mb-3">📸</div>
+              <h2 className="text-2xl font-black text-gray-900">이미지 주소 수정</h2>
+              <p className="text-gray-400 text-sm mt-1">게시글의 대표 이미지를 변경합니다.</p>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">New Image URL</label>
+                <textarea
+                  value={newImageUrl}
+                  onChange={(e) => setNewImageUrl(e.target.value)}
+                  className="w-full bg-gray-50 border border-gray-100 p-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-bold text-sm min-h-[100px]"
+                  placeholder="https://... 이미지 주소를 입력하세요"
+                  disabled={isSaving}
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setIsEditModalOpen(false)}
+                  disabled={isSaving}
+                  className="flex-1 bg-gray-100 text-gray-500 py-4 rounded-2xl text-sm font-black hover:bg-gray-200 transition-all disabled:opacity-50"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={saveImageChanges}
+                  disabled={isSaving}
+                  className="flex-[2] bg-blue-600 text-white py-4 rounded-2xl text-sm font-black shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {isSaving ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      저장 중...
+                    </>
+                  ) : "저장하기"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 텍스트 수정 팝업 (관리자 전용) */}
+      {isTextEditModalOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-5 animate-in fade-in duration-300">
+          <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-md" onClick={() => !isSaving && setIsTextEditModalOpen(false)} />
+          <div className="relative w-full max-w-4xl bg-white rounded-[40px] shadow-2xl p-10 animate-in zoom-in-95 duration-300 border border-white flex flex-col max-h-[90vh]">
+            <div className="text-center mb-8 flex-shrink-0">
+              <div className="text-3xl mb-3">📝</div>
+              <h2 className="text-2xl font-black text-gray-900">본문 내용 수정</h2>
+              <p className="text-gray-400 text-sm mt-1">게시글의 전체 텍스트 내용을 자유롭게 수정하세요.</p>
+            </div>
+
+            <div className="flex-1 overflow-hidden flex flex-col gap-6">
+              <textarea
+                value={editingText}
+                onChange={(e) => setEditingText(e.target.value)}
+                className="flex-1 w-full bg-gray-50 border border-gray-100 p-6 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-mono text-sm resize-none custom-scrollbar"
+                placeholder="마크다운 형식으로 내용을 입력하세요..."
+                disabled={isSaving}
+              />
+
+              <div className="flex gap-3 flex-shrink-0">
+                <button
+                  onClick={() => setIsTextEditModalOpen(false)}
+                  disabled={isSaving}
+                  className="flex-1 bg-gray-100 text-gray-500 py-4 rounded-2xl text-sm font-black hover:bg-gray-200 transition-all disabled:opacity-50"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={saveTextChanges}
+                  disabled={isSaving}
+                  className="flex-[2] bg-blue-600 text-white py-4 rounded-2xl text-sm font-black shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {isSaving ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      저장 중...
+                    </>
+                  ) : "본문 내용 저장하기"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx global>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }

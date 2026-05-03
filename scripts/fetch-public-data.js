@@ -56,23 +56,28 @@ async function fetchPublicData() {
              agencyName.includes(keyword);
     };
 
-    // 용인 또는 경기 정보 찾기
-    let targetItems = result.data.filter(item => 
-      filterKeyword(item, '용인') || 
-      filterKeyword(item, '경기')
-    );
+    // 카테고리별 성격에 맞게 데이터 분류 및 필터링
+    let targetItems = result.data.filter(item => {
+      const serviceName = item['서비스명'] || '';
+      const agencyName = item['소관기관명'] || '';
+      const summary = item['서비스목적요약'] || '';
 
-    if (targetItems.length < 10) {
-      const extraItems = result.data.slice(0, 15);
-      for (const extra of extraItems) {
-        if (targetItems.length >= 10) break;
-        if (!targetItems.find(t => t['서비스명'] === extra['서비스명'])) {
-          targetItems.push(extra);
-        }
+      // 1. 지원금: 용인시 정보 최우선
+      if (serviceName.includes('지원') || serviceName.includes('수당') || serviceName.includes('혜택')) {
+        return agencyName.includes('용인') || serviceName.includes('용인') || summary.includes('용인');
       }
-    }
+      
+      // 2. 지역행사: 전국 범위 (행사, 축제 키워드)
+      if (serviceName.includes('행사') || serviceName.includes('축제') || serviceName.includes('공연')) {
+        return true; // 전국 데이터 허용
+      }
 
-    console.log(`${targetItems.length}개의 데이터를 수집 대상으로 선정했습니다.`);
+      // 3. 생활정보: 경기도/용인 범위
+      return agencyName.includes('경기') || agencyName.includes('용인') || 
+             serviceName.includes('경기') || serviceName.includes('용인');
+    });
+
+    console.log(`${targetItems.length}개의 데이터를 카테고리별 맞춤 필터링으로 선정했습니다.`);
 
     const weatherInfo = await fetchWeather('Yongin');
     let addedCount = 0;
@@ -89,9 +94,10 @@ async function fetchPublicData() {
 
       // 3단계: Gemini AI로 가공 (v1 엔드포인트 및 최신 모델 사용)
       const prompt = `아래 공공데이터 1건을 분석해서 JSON 객체로 변환해줘. 형식:
-{id: 숫자, name: 서비스명, category: 'event' 또는 'grant', startDate: 'YYYY-MM-DD', endDate: 'YYYY-MM-DD', location: 장소 또는 기관명, target: 지원대상, summary: 한줄요약, link: 상세URL}
-category는 내용을 보고 행사/축제면 'event', 지원금/서비스/혜택이면 'grant'로 판단해.
-startDate가 없으면 오늘 날짜, endDate가 없으면 '상시'로 넣어.
+{id: 숫자, name: 서비스명, category: 'event' 또는 'grant' 또는 'info', startDate: 'YYYY-MM-DD', endDate: 'YYYY-MM-DD', location: 장소 또는 기관명, target: 지원대상, summary: 한줄요약, link: 상세URL}
+- 지원금/복지/혜택이면 'grant' (주로 용인시 대상)
+- 축제/행사/공연이면 'event' (전국 범위 가능)
+- 그 외 경기도/용인의 유익한 소식은 'info' (생활정보)
 반드시 JSON 객체만 출력해. 다른 텍스트 없이.
 
 공공데이터 내용:
