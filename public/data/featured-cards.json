@@ -1,11 +1,38 @@
 [
   {
+    "category": "지역행사",
+    "title": "🎸 [아시안 팝 페스티벌 2026] 아시아 최고의 뮤지션들이 모인다! 영종도의 뜨거운 밤",
+    "summary": "2026년 5월 30일~31일! 파라다이스시티에서 펼쳐지는 아시아 최대 규모의 팝 페스티벌 🎤",
+    "date": "2026-05-03",
+    "region": "인천시",
+    "image": "new_01.png",
+    "slug": "2026-asian-pop-fest"
+  },
+  {
+    "category": "도서정보",
+    "title": "📚 [용인 포곡도서관] 온 가족이 즐기는 '가정의 달' 독서 잔치!",
+    "summary": "5월 한 달간! 포곡도서관에서 펼쳐지는 풍성한 문화 행사와 창의 체험 클래스 🎨",
+    "date": "2026-05-03",
+    "region": "용인시",
+    "image": "new_01.png",
+    "slug": "2026-pogok-library"
+  },
+  {
+    "category": "지역행사",
+    "title": "🏺 [이천 도자기 축제] 천년의 숨결을 느끼다! 예스파크에서 즐기는 흙의 마법",
+    "summary": "2026년 5월 5일까지! 이천 예스파크에서 펼쳐지는 도자기 전시, 체험, 그리고 감성 가득한 마켓 🍵",
+    "date": "2026-05-03",
+    "region": "이천시",
+    "image": "new_01.png",
+    "slug": "2026-icheon-ceramic"
+  },
+  {
     "id": "e2026-1",
     "title": "🎮 [2026 플레이엑스포] 게임 매니아 집결! 킨텍스에서 열리는 역대급 게임 축제",
     "summary": "2026년 5월 21일부터 4일간! 대한민국 최대 게임 쇼 PlayX4가 돌아옵니다! ✨",
     "category": "지역행사",
     "date": "2026-05-03",
-    "image": "bike_01.png",
+    "image": "new_01.png",
     "slug": "2026-playx4",
     "is_popular": true,
     "region": "고양"
@@ -27,7 +54,7 @@
     "summary": "2026년 5월 9일부터 17일까지! 음악과 연극이 만나는 환상적인 무대 🎭",
     "category": "지역행사",
     "date": "2026-05-03",
-    "image": "rose_01.png",
+    "image": "new_01.png",
     "slug": "2026-uijeongbu-music",
     "is_popular": true,
     "region": "의정부"

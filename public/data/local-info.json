@@ -1,6 +1,33 @@
 {
   "events": [
     {
+      "id": "e2026-6",
+      "slug": "2026-asian-pop-fest",
+      "category": "지역행사",
+      "title": "🎸 [아시안 팝 페스티벌 2026] 아시아 최고의 뮤지션들이 모인다! 영종도의 뜨거운 밤",
+      "image": "new_01.png",
+      "date": "2026-05-30",
+      "region": "인천"
+    },
+    {
+      "id": "e2026-7",
+      "slug": "2026-pogok-library",
+      "category": "도서정보",
+      "title": "📚 [용인 포곡도서관] 온 가족이 즐기는 '가정의 달' 독서 잔치!",
+      "image": "new_01.png",
+      "date": "2026-05-01",
+      "region": "용인"
+    },
+    {
+      "id": "e2026-8",
+      "slug": "2026-icheon-ceramic",
+      "category": "지역행사",
+      "title": "🏺 [이천 도자기 축제] 천년의 숨결을 느끼다! 예스파크에서 즐기는 흙의 마법",
+      "image": "new_01.png",
+      "date": "2026-05-02",
+      "region": "이천"
+    },
+    {
       "id": "e2026-1",
       "name": "2026 플레이엑스포 (PlayX4)",
       "category": "지역행사",
@@ -10,7 +37,11 @@
       "target": "전 국민 누구나",
       "summary": "신작 게임 체험, 코스프레, e스포츠 페스티벌까지 즐기는 수도권 최대 게임쇼!",
       "link": "https://playx4.or.kr",
-      "weather": { "temp": "22", "desc": "Sunny", "humidity": "50" }
+      "weather": {
+        "temp": "22",
+        "desc": "Sunny",
+        "humidity": "50"
+      }
     },
     {
       "id": "e2026-2",
@@ -22,7 +53,11 @@
       "target": "가족 및 어린이",
       "summary": "구석기 바비큐 체험과 선사시대 문화 여행! 지금 바로 연천으로 떠나보세요.",
       "link": "http://festival.yeoncheon.go.kr",
-      "weather": { "temp": "21", "desc": "Cloudy", "humidity": "61" }
+      "weather": {
+        "temp": "21",
+        "desc": "Cloudy",
+        "humidity": "61"
+      }
     },
     {
       "id": "e2026-3",
@@ -34,7 +69,11 @@
       "target": "전 국민 누구나",
       "summary": "음악과 연극이 만나는 도심 속 예술 축제! 수준 높은 공연을 만나보세요.",
       "link": "http://www.uimt.or.kr",
-      "weather": { "temp": "20", "desc": "Clear", "humidity": "45" }
+      "weather": {
+        "temp": "20",
+        "desc": "Clear",
+        "humidity": "45"
+      }
     },
     {
       "id": "e2026-4",
@@ -46,7 +85,11 @@
       "target": "서브컬처 팬",
       "summary": "화려한 코스프레와 일러스트 굿즈가 가득한 서브컬처 매니아들의 천국!",
       "link": "https://illustar.net",
-      "weather": { "temp": "23", "desc": "Sunny", "humidity": "55" }
+      "weather": {
+        "temp": "23",
+        "desc": "Sunny",
+        "humidity": "55"
+      }
     }
   ],
   "benefits": [
@@ -60,7 +103,11 @@
       "target": "국공립 및 사립유치원에 다니는 3~5세 유아",
       "summary": "유치원에 다니는 3~5세 아동에게 유아학비, 방과후과정비 등 지원",
       "link": "https://www.childschool.go.kr",
-      "weather": { "temp": "21", "desc": "Cloudy", "humidity": "61" }
+      "weather": {
+        "temp": "21",
+        "desc": "Cloudy",
+        "humidity": "61"
+      }
     },
     {
       "id": "b3",
@@ -72,7 +119,11 @@
       "target": "○ 보증금 1억원 이하 및 월세금 60만원 이하인 월세 계약을 체결한 주택도시 기금 주거안정 월세대출 대상자",
       "summary": "일정요건의 월세대출 대상자에게 월세자금보증을 지원",
       "link": "https://www.hf.go.kr",
-      "weather": { "temp": "21", "desc": "Cloudy", "humidity": "61" }
+      "weather": {
+        "temp": "21",
+        "desc": "Cloudy",
+        "humidity": "61"
+      }
     }
   ],
   "lastUpdate": "2026-05-03"
