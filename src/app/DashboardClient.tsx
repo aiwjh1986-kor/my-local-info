@@ -78,12 +78,19 @@ export default function DashboardClient({
   const getCombinedData = () => {
     // 추천 카드(Featured)를 기본으로 하되, 블로그 데이터와 병합하여 상세 내용(content) 보강
     const combined = initialFeaturedCards.map(fCard => {
-      const fullData = initialBlogPosts.find(p => p.slug === fCard.slug || (p.id && p.id === fCard.id));
+      const fullData = initialBlogPosts.find(p => p.slug === fCard.slug || (p.id && fCard.id && p.id === fCard.id));
       return fullData ? { ...fullData, ...fCard, content: fullData.content } : fCard;
     });
 
     initialBlogPosts.forEach(post => {
-      if (!combined.find(c => c.slug === post.slug || (c.id && c.id === post.id))) {
+      // slug가 다르고, ID가 있는 경우에만 ID 비교를 수행하여 중복 체크
+      const isAlreadyIn = combined.find(c => {
+        const isSlugMatch = c.slug === post.slug;
+        const isIdMatch = (c.id && post.id) ? c.id === post.id : false;
+        return isSlugMatch || isIdMatch;
+      });
+
+      if (!isAlreadyIn) {
         combined.push({ ...post, is_popular: post.is_popular ?? false });
       }
     });

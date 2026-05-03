@@ -85,6 +85,7 @@ async function generateBlogPost() {
 아래 형식으로 출력해줘. 반드시 이 형식만 출력하고 다른 텍스트는 없이:
 ---
 title: (친근하고 흥미로운 제목)
+id: ${item.id}
 date: ${today}
 summary: (한 줄 요약)
 category: ${item.category || 'info'}
