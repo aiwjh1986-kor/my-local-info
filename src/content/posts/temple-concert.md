@@ -1,7 +1,7 @@
 ---
 title: 처인구 와우정사 산사 음악회 도심 속 힐링을 선사합니다
 date: '2026-05-20'
-category: event
+category: 지역행사
 summary: 아름다운 사찰에서 울려 퍼지는 선율! 무료 공연과 비빔밥 체험까지
 image: wow_01.png
 tags:

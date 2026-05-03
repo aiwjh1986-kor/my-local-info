@@ -98,7 +98,7 @@ export default function DashboardClient({
   const getFilteredBlogPosts = () => {
     const catMap: Record<string, string[]> = {
       "지원금": ["grant", "지원금", "subsidy"],
-      "행사": ["event", "행사", "지역행사", "지역 행사"],
+      "지역행사": ["event", "행사", "지역행사", "지역 행사"],
       "생활정보": ["info", "생활정보", "life"],
       "도서정보": ["book", "도서정보", "도서 소식", "도서"]
     };
@@ -466,7 +466,7 @@ export default function DashboardClient({
                 {[
                   { id: "홈", label: "홈", img: "icon-home.png", color: "bg-purple-100" },
                   { id: "지원금", label: "지원금 혜택", img: "icon-grant.png", color: "bg-purple-100" },
-                  { id: "행사", label: "지역 행사", img: "icon-event.png", color: "bg-purple-100" },
+                  { id: "지역행사", label: "지역행사", img: "icon-event.png", color: "bg-purple-100" },
                   { id: "생활정보", label: "생활 정보", img: "icon-info.png", color: "bg-purple-100" },
                   { id: "도서정보", label: "도서 소식", img: "icon-book.png", color: "bg-purple-100" }
                 ].map((item) => (
@@ -531,7 +531,7 @@ export default function DashboardClient({
                 <img
                   src={
                     activeTab === "지원금" ? IMG_BASE + "icon-grant.png?v=" + V_NUM :
-                    activeTab === "행사" ? IMG_BASE + "icon-event.png?v=" + V_NUM :
+                    activeTab === "지역행사" ? IMG_BASE + "icon-event.png?v=" + V_NUM :
                     activeTab === "도서정보" ? IMG_BASE + "icon-book.png?v=" + V_NUM :
                     IMG_BASE + "icon-info.png?v=" + V_NUM
                   }
@@ -546,7 +546,7 @@ export default function DashboardClient({
             {/* 블로그 탭인 경우 상단 카테고리 필터 */}
             {activeTab === "블로그" && (
               <div className="flex gap-2 overflow-x-auto pb-6 no-scrollbar">
-                {["전체", "지원금", "행사", "생활정보", "도서정보"].map((cat) => (
+                {["전체", "지원금", "지역행사", "생활정보", "도서정보"].map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setActiveBlogCat(cat)}
@@ -742,10 +742,10 @@ export default function DashboardClient({
             active={activeTab === "지원금"} 
           />
           <MenuLink 
-            onClick={() => { setActiveTab("행사"); setIsMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} 
+            onClick={() => { setActiveTab("지역행사"); setIsMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} 
             icon={IMG_BASE + "icon-event.png?v=" + V_NUM} 
-            label="행사" 
-            active={activeTab === "행사"} 
+            label="지역행사" 
+            active={activeTab === "지역행사"} 
           />
           <MenuLink 
             onClick={() => { setActiveTab("생활정보"); setIsMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} 
