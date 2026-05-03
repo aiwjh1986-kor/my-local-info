@@ -94,9 +94,22 @@ export default function DashboardClient({
       }
     });
 
+    const todayStr = "2026-05-03";
+
     return combined.sort((a, b) => {
-      const dateA = new Date((a.date || "").toString().replace(/\./g, '-')).getTime();
-      const dateB = new Date((b.date || "").toString().replace(/\./g, '-')).getTime();
+      const dateAStr = (a.date || "").toString().replace(/\./g, '-');
+      const dateBStr = (b.date || "").toString().replace(/\./g, '-');
+      
+      // 1순위: 오늘 날짜인 글을 무조건 위로
+      const isAToday = dateAStr === todayStr;
+      const isBToday = dateBStr === todayStr;
+      
+      if (isAToday && !isBToday) return -1;
+      if (!isAToday && isBToday) return 1;
+      
+      // 2순위: 그 외에는 날짜 내림차순 (최신순)
+      const dateA = new Date(dateAStr).getTime();
+      const dateB = new Date(dateBStr).getTime();
       return dateB - dateA;
     });
   };
@@ -951,10 +964,6 @@ export default function DashboardClient({
 
           <div className="flex flex-col items-center lg:items-end gap-3 text-gray-400 text-xs lg:text-xl font-bold">
             <p>© {new Date().getFullYear()} LUMI GUIDE. All Rights Reserved.</p>
-            <div className="flex items-center gap-6 opacity-40">
-              <span className="hover:text-accent cursor-pointer transition-colors">개인정보처리방침</span>
-              <span className="hover:text-accent cursor-pointer transition-colors">이용약관</span>
-            </div>
           </div>
         </div>
       </footer>

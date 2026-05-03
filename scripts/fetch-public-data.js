@@ -68,16 +68,34 @@ async function fetchPublicData() {
 
     console.log(`총 ${result.data.length}개 중 ${targetItems.length}개의 데이터를 용인 중심 필터링으로 선정했습니다.`);
 
+    // 홈페이지에 이미 게시된 글 제목들 가져오기
+    const postsDir = path.join(__dirname, '../src/content/posts');
+    const existingFiles = fs.readdirSync(postsDir);
+    const postTitles = existingFiles.map(file => {
+      if (!file.endsWith('.md')) return '';
+      const content = fs.readFileSync(path.join(postsDir, file), 'utf8');
+      const titleMatch = content.match(/title:\s*"(.*)"/) || content.match(/title:\s*(.*)/);
+      return titleMatch ? titleMatch[1].replace(/[^\wㄱ-ㅎ가-힣]/g, '') : '';
+    }).filter(t => t !== '');
+
+    console.log(`홈페이지에서 ${postTitles.length}개의 기존 게시글 제목을 확인했습니다.`);
+
     const weatherInfo = await fetchWeather('Yongin');
     let addedCount = 0;
 
     for (const item of targetItems) {
-      const allExistingNames = [
-        ...localData.events.map(e => e.name),
-        ...localData.benefits.map(b => b.name)
-      ];
+      const serviceNameRaw = item['서비스명'] || '';
+      const serviceNameClean = serviceNameRaw.replace(/[^\wㄱ-ㅎ가-힣]/g, '');
 
-      if (allExistingNames.includes(item['서비스명'])) {
+      // 1. local-info.json 데이터와 비교
+      const isInData = localData.events.some(e => (e.name || '').replace(/[^\wㄱ-ㅎ가-힣]/g, '').includes(serviceNameClean.substring(0, 10))) ||
+                       localData.benefits.some(b => (b.name || '').replace(/[^\wㄱ-ㅎ가-힣]/g, '').includes(serviceNameClean.substring(0, 10)));
+      
+      // 2. 실제 게시글(마크다운) 제목과 비교
+      const isInPosts = postTitles.some(pt => pt.includes(serviceNameClean.substring(0, 10)) || serviceNameClean.includes(pt.substring(0, 10)));
+
+      if (isInData || isInPosts) {
+        // console.log(`- 중복 제외: ${serviceNameRaw}`);
         continue;
       }
 

@@ -237,10 +237,6 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
 
           <div className="flex flex-col items-center lg:items-end gap-3 text-gray-400 text-xs lg:text-xl font-bold">
             <p>© {new Date().getFullYear()} LUMI GUIDE. All Rights Reserved.</p>
-            <div className="flex items-center gap-6 opacity-40">
-              <span className="hover:text-accent cursor-pointer transition-colors">개인정보처리방침</span>
-              <span className="hover:text-accent cursor-pointer transition-colors">이용약관</span>
-            </div>
           </div>
         </div>
       </footer>

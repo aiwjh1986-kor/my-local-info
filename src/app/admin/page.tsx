@@ -14,18 +14,19 @@ export default function AdminLogin() {
     setError("");
 
     try {
-      // 배포 환경(Static Export 등)에서 API 라우트가 작동하지 않을 경우를 대비하여 
-      // 클라이언트 측에서 직접 아이디/비밀번호를 확인합니다.
-      const adminId = "wonjihyo86"; // 사용자님의 아이디
-      const adminPassword = "password123!"; // 실제 사용하실 비밀번호로 설정하세요
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, password }),
+      });
 
-      if (id === adminId && password === adminPassword) {
-        // 쿠키 설정 (로그인 유지)
-        document.cookie = `is_admin=true; path=/; max-age=${60 * 60 * 24}`;
+      const result = await response.json();
+
+      if (result.success) {
         // 로그인 성공 시 홈으로 이동하며 새로고침
         window.location.href = "/";
       } else {
-        setError("아이디 또는 비밀번호가 틀렸습니다.");
+        setError(result.message || "아이디 또는 비밀번호가 틀렸습니다.");
       }
     } catch (err) {
       setError("로그인 처리 중 오류가 발생했습니다.");

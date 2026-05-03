@@ -51,7 +51,10 @@ async function generateBlogPost() {
 
       // 1. 중복 체크 (정규화된 텍스트 비교)
       const pureName = name.replace(/[^\wㄱ-ㅎ가-힣]/g, '');
-      if (existingContentNormalized.includes(pureName.substring(0, 15))) {
+      const isAlreadyIn = existingContentNormalized.includes(pureName.substring(0, 12)) || 
+                          existingFiles.some(file => file.replace(/[^\wㄱ-ㅎ가-힣]/g, '').includes(pureName.substring(0, 10)));
+
+      if (isAlreadyIn) {
         continue;
       }
 
