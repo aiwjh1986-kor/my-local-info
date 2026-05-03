@@ -415,11 +415,11 @@ export default function DashboardClient({
                 
                 <div className="flex-1 flex flex-col justify-start text-center lg:text-left mb-6 lg:mb-0">
                   <div className="animate-in fade-in slide-in-from-top duration-1000">
-                    <div className="flex items-center gap-2 mb-4 lg:mb-8 justify-center lg:justify-start">
+                    <div className="hidden lg:flex items-center gap-2 mb-4 lg:mb-8 justify-center lg:justify-start">
                       <span className="px-3 py-1 bg-blue-600 text-white text-[8px] lg:text-sm font-black rounded-full animate-pulse uppercase tracking-widest">Premium Guide</span>
                       <span className="text-[8px] lg:text-sm font-black text-blue-400 uppercase tracking-widest opacity-60">2024 New Update</span>
                     </div>
-                    <h2 className="text-3xl md:text-5xl lg:text-8xl font-black text-[#111111] mb-2 lg:mb-10 leading-tight tracking-tighter font-handwriting">
+                    <h2 className="text-3xl md:text-5xl lg:text-8xl font-black text-[#111111] mb-2 lg:mb-10 leading-tight tracking-tighter font-handwriting mt-10 lg:mt-0">
                       용인 생활의 모든 것,<br className="hidden lg:block" />
                       <span className="text-blue-600">루미 가이드</span>와 함께!
                     </h2>
@@ -427,7 +427,7 @@ export default function DashboardClient({
                       혜택, 행사, 정보까지 한 번에 확인하고<br className="hidden lg:block" /> 
                       더 똑똑한 용인 생활을 즐겨보세요.
                     </p>
-                    {/* 모바일에서는 버튼 숨김 (아이콘 메뉴가 상단에 배치되므로) */}
+                    {/* 모바일에서는 버튼 숨김 */}
                     <button 
                       onClick={() => router.push("/blog")}
                       className="hidden lg:inline-flex items-center gap-4 px-8 py-4 lg:px-16 lg:py-7 bg-accent text-white rounded-full text-lg lg:text-3xl font-black shadow-2xl shadow-accent/30 hover:scale-105 transition-all"
@@ -451,8 +451,8 @@ export default function DashboardClient({
                 </div>
               </div>
 
-              {/* [하단] 5대 핵심 메뉴 - 모바일에서 아이콘만 일렬로 초슬림 배치 */}
-              <div className="relative z-10 flex items-center justify-center mt-2 lg:mt-24 w-full px-2">
+              {/* [하단] 5대 핵심 메뉴 - 모바일에서는 숨김 (메뉴 버튼 사용 유도) */}
+              <div className="relative z-10 hidden lg:flex items-center justify-center mt-2 lg:mt-24 w-full px-2">
                 <div className="flex flex-nowrap items-center justify-center gap-1 lg:gap-6 bg-white/40 lg:bg-gray-100/60 backdrop-blur-md px-2 lg:px-12 py-2 lg:py-6 rounded-[24px] lg:rounded-full border border-white/50 shadow-lg lg:shadow-xl w-full max-w-[450px] lg:w-fit overflow-hidden">
                 {[
                   { id: "홈", label: "홈", img: "icon-home.png" },
