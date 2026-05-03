@@ -160,9 +160,10 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
               </ReactMarkdown>
             </div>
 
-            {/* 🛍️ 쿠팡 파트너스 다이나믹 배너 (실시간 상품 슬라이드) */}
-            <div className="mt-20">
+            {/* 🛍️ 쿠팡 파트너스 다이나믹 배너 (실시간 상품 슬라이드 - 최신 로직 적용) */}
+            <div className="mt-20 mb-10">
               <CoupangDynamicBanner 
+                key={post.title}
                 id={985786} 
                 trackingCode="AF1183921" 
                 height="170"
