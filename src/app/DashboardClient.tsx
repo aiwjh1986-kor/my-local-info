@@ -98,6 +98,7 @@ export default function DashboardClient({
   const getFilteredBlogPosts = () => {
     const catMap: Record<string, string[]> = {
       "지원금": ["grant", "지원금", "subsidy"],
+      "행사": ["event", "행사", "지역행사", "지역 행사"],
       "지역행사": ["event", "행사", "지역행사", "지역 행사"],
       "생활정보": ["info", "생활정보", "life"],
       "도서정보": ["book", "도서정보", "도서 소식", "도서"]
