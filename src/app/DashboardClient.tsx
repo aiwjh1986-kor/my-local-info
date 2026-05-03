@@ -76,25 +76,29 @@ export default function DashboardClient({
   
   // 중복 제거 및 데이터 통합 (제목 기준)
   const getCombinedData = () => {
-    // 추천 카드(Featured)를 기본으로 하되, 블로그 데이터와 병합하여 상세 내용(content) 보강
-    const combined = initialFeaturedCards.map(fCard => {
-      const fullData = initialBlogPosts.find(p => p.slug === fCard.slug || (p.id && fCard.id && p.id === fCard.id));
-      return fullData ? { ...fullData, ...fCard, content: fullData.content } : fCard;
-    });
+    // 1. 모든 블로그 포스트를 기본으로 시작
+    const combined = [...initialBlogPosts].map(post => ({
+      ...post,
+      is_popular: post.is_popular ?? false
+    }));
 
-    initialBlogPosts.forEach(post => {
-      // slug가 다르고, ID가 있는 경우에만 ID 비교를 수행하여 중복 체크
-      const isAlreadyIn = combined.find(c => {
-        const isSlugMatch = c.slug === post.slug;
-        const isIdMatch = (c.id && post.id) ? c.id === post.id : false;
-        return isSlugMatch || isIdMatch;
-      });
-
+    // 2. 추천 카드(Featured) 중 블로그에 없는 항목만 추가로 병합
+    initialFeaturedCards.forEach(fCard => {
+      const isAlreadyIn = combined.find(c => c.slug === fCard.slug || (c.id && fCard.id && c.id === fCard.id));
       if (!isAlreadyIn) {
-        combined.push({ ...post, is_popular: post.is_popular ?? false });
+        combined.push(fCard);
+      } else {
+        // 이미 있다면 추천 카드의 정보를 우선하여 덮어쓰기 (이미지 등)
+        const idx = combined.findIndex(c => c.slug === fCard.slug || (c.id && fCard.id && c.id === fCard.id));
+        combined[idx] = { ...combined[idx], ...fCard };
       }
     });
-    return combined.sort((a, b) => new Date(b.date.replace(/\./g, '-')).getTime() - new Date(a.date.replace(/\./g, '-')).getTime());
+
+    return combined.sort((a, b) => {
+      const dateA = new Date((a.date || "").toString().replace(/\./g, '-')).getTime();
+      const dateB = new Date((b.date || "").toString().replace(/\./g, '-')).getTime();
+      return dateB - dateA;
+    });
   };
 
   const allCards = getCombinedData();
