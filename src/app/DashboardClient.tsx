@@ -104,7 +104,10 @@ export default function DashboardClient({
     };
 
     if (activeBlogCat === "전체") return blogPosts;
-    const targets = (catMap[activeBlogCat] || [activeBlogCat]).map(t => t.toLowerCase().replace(/\s/g, ''));
+    
+    // 2중 안전장치: 버튼 이름이 '행사'여도 '지역행사' 정보를 찾아오게 함
+    const actualCat = (activeBlogCat === "행사" || activeBlogCat === "지역행사") ? "지역행사" : activeBlogCat;
+    const targets = (catMap[actualCat] || [actualCat]).map(t => t.toLowerCase().replace(/\s/g, ''));
     
     return blogPosts.filter((post) => {
       const postCat = (post.category || "").toLowerCase().replace(/\s/g, '');
@@ -566,19 +569,19 @@ export default function DashboardClient({
               {(activeTab === "블로그" ? filteredPosts : allCards.filter(c => {
                 const catMap: Record<string, string> = {
                   "지원금": "grant",
-                  "행사": "event",
+                  "지역행사": "event",
                   "생활정보": "info",
                   "도서정보": "book"
                 };
                 const korCatMap: Record<string, string> = {
                   "지원금": "지원금",
-                  "행사": "행사",
+                  "지역행사": "지역행사",
                   "생활정보": "생활정보",
                   "도서정보": "도서정보"
                 };
                 const match = c.category === catMap[activeTab] || 
                              c.category === korCatMap[activeTab] ||
-                             (activeTab === "행사" && c.category === "지역행사");
+                             (activeTab === "지역행사" && (c.category === "행사" || c.category === "지역행사"));
                 return match;
               })).map((card, idx) => (
                 <Card key={idx} card={card} onClick={() => setSelectedCard(card)} />
