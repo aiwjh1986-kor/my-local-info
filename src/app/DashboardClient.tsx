@@ -422,7 +422,7 @@ export default function DashboardClient({
                     </div>
                     <h2 className="text-3xl md:text-5xl lg:text-8xl font-black text-[#111111] mb-4 lg:mb-10 leading-[1.1] tracking-tighter font-handwriting">
                       용인 생활의 모든 것,<br className="hidden lg:block" />
-                      <span className="text-blue-600">루미 가이드</span>와 함께! 🏮
+                      <span className="text-blue-600">루미 가이드</span>와 함께!
                     </h2>
                     <p className="text-sm md:text-xl lg:text-3xl text-gray-500 font-bold leading-relaxed max-w-2xl opacity-80 mb-8 lg:mb-10">
                       혜택, 행사, 정보까지 한 번에 확인하고<br className="hidden lg:block" /> 
