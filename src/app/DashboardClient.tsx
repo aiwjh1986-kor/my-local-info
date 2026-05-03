@@ -690,9 +690,16 @@ export default function DashboardClient({
                       </span>
                     )
                   }}
-                >
-                  {selectedCard.content || selectedCard.detail || selectedCard.summary}
                 </ReactMarkdown>
+              </div>
+
+              {/* 🛍️ 쿠팡 파트너스 다이나믹 배너 (상세 팝업용) */}
+              <div className="mt-10 mb-6">
+                <CoupangDynamicBanner 
+                  id={985786} 
+                  trackingCode="AF1183921" 
+                  height="170"
+                />
               </div>
 
               <div className="mt-10 flex gap-3 sticky bottom-0 bg-white pt-4 pb-2">
