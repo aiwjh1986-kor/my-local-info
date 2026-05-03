@@ -451,9 +451,9 @@ export default function DashboardClient({
                 </div>
               </div>
 
-              {/* [하단] 5대 핵심 메뉴 - 모바일에서는 숨김 (메뉴 버튼 사용 유도) */}
-              <div className="relative z-10 hidden lg:flex items-center justify-center mt-2 lg:mt-24 w-full px-2">
-                <div className="flex flex-nowrap items-center justify-center gap-1 lg:gap-6 bg-white/40 lg:bg-gray-100/60 backdrop-blur-md px-2 lg:px-12 py-2 lg:py-6 rounded-[24px] lg:rounded-full border border-white/50 shadow-lg lg:shadow-xl w-full max-w-[450px] lg:w-fit overflow-hidden">
+              {/* [하단] 5대 핵심 메뉴 - 모바일에서는 숨김 (메뉴 버튼 사용 유도) / PC에서는 시원하게 노출 */}
+              <div className="relative z-10 hidden lg:flex items-center justify-center mt-12 lg:mt-24 w-full">
+                <div className="flex items-center justify-center gap-6 bg-white/60 lg:bg-gray-100/60 backdrop-blur-md px-12 py-6 rounded-full border border-white/50 shadow-xl w-fit">
                 {[
                   { id: "홈", label: "홈", img: "icon-home.png" },
                   { id: "지원금", label: "지원금 혜택", img: "icon-grant.png" },
