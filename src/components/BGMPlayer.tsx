@@ -51,7 +51,7 @@ export default function BGMPlayer() {
         }`}
         style={{ cursor: 'pointer' }}
       >
-        <span className={`text-lg lg:text-3xl pointer-events-none ${isPlaying ? "animate-spin-slow" : ""}`}>
+        <span className={`text-lg lg:text-3xl pointer-events-none ${isPlaying ? "animate-[spin_8s_linear_infinite]" : ""}`}>
           {isPlaying ? "🎵" : "🔇"}
         </span>
       </button>
@@ -67,20 +67,10 @@ export default function BGMPlayer() {
 
       <audio
         ref={audioRef}
-        src="/audio/Lumi song.mp3"
+        src="/audio/Lumi%20song.mp3"
         loop
         preload="auto"
       />
-
-      <style jsx>{`
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        .animate-spin-slow {
-          animation: spin-slow 8s linear infinite;
-        }
-      `}</style>
     </div>
   );
 }
