@@ -29,6 +29,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "용인시 생활 정보 및 여행가이드",
   description: "용인시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보 및 전국 여행 가이드를 매일 업데이트합니다.",
+  verification: {
+    google: "mheHADfMzfVfsc2CiF8hADt8XgNyQ4AhBUVsI1SW-4g",
+  },
   openGraph: {
     title: "용인시 생활 정보 및 여행가이드",
     description: "용인시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보를 매일 업데이트합니다.",
