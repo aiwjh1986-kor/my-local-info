@@ -413,25 +413,24 @@ export default function DashboardClient({
               
               <div className="relative z-10 flex flex-col lg:flex-row h-full">
                 
-                {/* [상단/좌측] 메인 텍스트 영역 */}
-                <div className="flex-1 flex flex-col justify-start text-center lg:text-left mb-10 lg:mb-0">
+                <div className="flex-1 flex flex-col justify-start text-center lg:text-left mb-6 lg:mb-0">
                   <div className="animate-in fade-in slide-in-from-top duration-1000">
                     <div className="flex items-center gap-2 mb-4 lg:mb-8 justify-center lg:justify-start">
-                      <span className="px-4 py-1 bg-blue-600 text-white text-[10px] lg:text-sm font-black rounded-full animate-pulse uppercase tracking-widest">Premium Guide</span>
-                      <span className="text-[10px] lg:text-sm font-black text-blue-400 uppercase tracking-widest opacity-60">2024 New Update</span>
+                      <span className="px-3 py-1 bg-blue-600 text-white text-[8px] lg:text-sm font-black rounded-full animate-pulse uppercase tracking-widest">Premium Guide</span>
+                      <span className="text-[8px] lg:text-sm font-black text-blue-400 uppercase tracking-widest opacity-60">2024 New Update</span>
                     </div>
-                    <h2 className="text-2xl md:text-5xl lg:text-8xl font-black text-[#111111] mb-2 lg:mb-10 leading-tight tracking-tighter font-handwriting">
+                    <h2 className="text-3xl md:text-5xl lg:text-8xl font-black text-[#111111] mb-2 lg:mb-10 leading-tight tracking-tighter font-handwriting">
                       용인 생활의 모든 것,<br className="hidden lg:block" />
                       <span className="text-blue-600">루미 가이드</span>와 함께!
                     </h2>
-                    <p className="text-[10px] md:text-xl lg:text-3xl text-gray-500 font-bold leading-relaxed max-w-2xl opacity-80 mb-6 lg:mb-10">
+                    <p className="hidden lg:block text-sm md:text-xl lg:text-3xl text-gray-500 font-bold leading-relaxed max-w-2xl opacity-80 mb-6 lg:mb-10">
                       혜택, 행사, 정보까지 한 번에 확인하고<br className="hidden lg:block" /> 
                       더 똑똑한 용인 생활을 즐겨보세요.
                     </p>
-                    {/* 🖱️ 블로그 버튼 복구 (모바일 대응) */}
+                    {/* 모바일에서는 버튼 숨김 (아이콘 메뉴가 상단에 배치되므로) */}
                     <button 
                       onClick={() => router.push("/blog")}
-                      className="inline-flex items-center gap-4 px-8 py-4 lg:px-16 lg:py-7 bg-accent text-white rounded-full text-lg lg:text-3xl font-black shadow-2xl shadow-accent/30 hover:scale-105 transition-all"
+                      className="hidden lg:inline-flex items-center gap-4 px-8 py-4 lg:px-16 lg:py-7 bg-accent text-white rounded-full text-lg lg:text-3xl font-black shadow-2xl shadow-accent/30 hover:scale-105 transition-all"
                     >
                       블로그 바로가기 <span>→</span>
                     </button>
@@ -452,9 +451,9 @@ export default function DashboardClient({
                 </div>
               </div>
 
-              {/* [하단] 5대 핵심 메뉴 - 완벽한 타원형(캡슐) 배경 바 적용 */}
-              <div className="relative z-10 flex items-center justify-center mt-12 lg:mt-24 w-full">
-                <div className="flex flex-wrap lg:flex-nowrap items-center justify-center gap-2 lg:gap-6 bg-gray-100/60 backdrop-blur-md px-6 lg:px-12 py-3 lg:py-6 rounded-[40px] lg:rounded-full border border-white/50 shadow-xl w-fit">
+              {/* [하단] 5대 핵심 메뉴 - 모바일에서 제목 바로 아래에 밀착 배치 */}
+              <div className="relative z-10 flex items-center justify-center mt-4 lg:mt-24 w-full">
+                <div className="flex flex-wrap lg:flex-nowrap items-center justify-center gap-2 lg:gap-6 bg-white/40 lg:bg-gray-100/60 backdrop-blur-md px-4 lg:px-12 py-2 lg:py-6 rounded-[30px] lg:rounded-full border border-white/50 shadow-lg lg:shadow-xl w-fit">
                 {[
                   { id: "홈", label: "홈", img: "icon-home.png", color: "bg-purple-100" },
                   { id: "지원금", label: "지원금 혜택", img: "icon-grant.png", color: "bg-purple-100" },
