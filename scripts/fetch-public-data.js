@@ -27,14 +27,14 @@ async function fetchPublicData() {
         humidity: current.humidity
       };
     } catch (err) {
-      console.error('날씨 정보를 가져오는 중 오류:', err);
+      console.error('날씨 정보를 가져오는 중 오류 (텍스트 응답일 수 있음):', err);
       return null;
     }
   }
 
   try {
-    // 1단계: 공공데이터포털 API에서 데이터 가져오기
-    const url = `https://api.odcloud.kr/api/gov24/v3/serviceList?page=1&perPage=100&returnType=JSON&serviceKey=${PUBLIC_DATA_API_KEY}`;
+    // 1단계: 공공데이터포털 API에서 데이터 가져오기 (더 많은 양을 가져오도록 확대)
+    const url = `https://api.odcloud.kr/api/gov24/v3/serviceList?page=1&perPage=500&returnType=JSON&serviceKey=${PUBLIC_DATA_API_KEY}`;
     const response = await fetch(url);
     const result = await response.json();
 
@@ -43,41 +43,30 @@ async function fetchPublicData() {
       return;
     }
 
-    // 필터링 규칙 적용
-    const filterKeyword = (item, keyword) => {
-      const serviceName = item['서비스명'] || '';
-      const serviceSummary = item['서비스목적요약'] || '';
-      const supportTarget = item['지원대상'] || '';
-      const agencyName = item['소관기관명'] || '';
-      
-      return serviceName.includes(keyword) || 
-             serviceSummary.includes(keyword) || 
-             supportTarget.includes(keyword) || 
-             agencyName.includes(keyword);
-    };
-
-    // 카테고리별 성격에 맞게 데이터 분류 및 필터링
+    // 카테고리별 성격에 맞게 데이터 분류 및 필터링 (용인 최우선)
     let targetItems = result.data.filter(item => {
       const serviceName = item['서비스명'] || '';
       const agencyName = item['소관기관명'] || '';
       const summary = item['서비스목적요약'] || '';
+      const target = item['지원대상'] || '';
 
-      // 1. 지원금: 용인시 정보 최우선
-      if (serviceName.includes('지원') || serviceName.includes('수당') || serviceName.includes('혜택')) {
-        return agencyName.includes('용인') || serviceName.includes('용인') || summary.includes('용인');
-      }
+      // 용인 관련 키워드 체크 (이름, 기관, 요약, 대상 등 어디라도 있으면 통과)
+      const isYongin = serviceName.includes('용인') || 
+                       agencyName.includes('용인') || 
+                       summary.includes('용인') || 
+                       target.includes('용인');
+
+      if (isYongin) return true;
       
-      // 2. 지역행사: 전국 범위 (행사, 축제 키워드)
+      // 지역행사는 전국 단위로 조금 더 허용
       if (serviceName.includes('행사') || serviceName.includes('축제') || serviceName.includes('공연')) {
-        return true; // 전국 데이터 허용
+        return true; 
       }
 
-      // 3. 생활정보: 경기도/용인 범위
-      return agencyName.includes('경기') || agencyName.includes('용인') || 
-             serviceName.includes('경기') || serviceName.includes('용인');
+      return false;
     });
 
-    console.log(`${targetItems.length}개의 데이터를 카테고리별 맞춤 필터링으로 선정했습니다.`);
+    console.log(`총 ${result.data.length}개 중 ${targetItems.length}개의 데이터를 용인 중심 필터링으로 선정했습니다.`);
 
     const weatherInfo = await fetchWeather('Yongin');
     let addedCount = 0;
@@ -103,7 +92,7 @@ async function fetchPublicData() {
 공공데이터 내용:
 ${JSON.stringify(item)}`;
 
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
       const geminiResponse = await fetch(geminiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

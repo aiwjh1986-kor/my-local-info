@@ -34,24 +34,36 @@ async function generateBlogPost() {
       fs.mkdirSync(postsDir, { recursive: true });
     }
     const existingFiles = fs.readdirSync(postsDir);
+    const existingContentNormalized = existingFiles.map(file => {
+      if (!file.endsWith('.md')) return '';
+      const content = fs.readFileSync(path.join(postsDir, file), 'utf8');
+      return content.replace(/[^\wㄱ-ㅎ가-힣]/g, ''); // 영문, 숫자, 한글만 남김
+    }).join('\n');
 
     for (const item of allItems) {
-      let isAlreadyPosted = false;
-      for (const file of existingFiles) {
-        if (file.endsWith('.md')) {
-          const content = fs.readFileSync(path.join(postsDir, file), 'utf8');
-          if (content.includes(item.name)) {
-            isAlreadyPosted = true;
-            break;
-          }
-        }
-      }
+      const name = item.name || item.title;
+      const agency = item.location || item.agencyName || '';
+      const summary = item.summary || '';
+      
+      const target = item.target || '';
+      
+      if (!name) continue;
 
-      if (isAlreadyPosted) {
+      // 1. 중복 체크 (정규화된 텍스트 비교)
+      const pureName = name.replace(/[^\wㄱ-ㅎ가-힣]/g, '');
+      if (existingContentNormalized.includes(pureName.substring(0, 15))) {
         continue;
       }
 
-      console.log(`- 블로그 글 생성 중: ${item.name}`);
+      // 2. 용인/경기 관련 필터링 강화 (지원대상 필드 포함)
+      const isTargetArea = name.includes('용인') || agency.includes('용인') || summary.includes('용인') || target.includes('용인') ||
+                           name.includes('경기') || agency.includes('경기') || summary.includes('경기') || target.includes('경기');
+      
+      if (!isTargetArea) {
+        continue;
+      }
+
+      console.log(`- 블로그 글 생성 중: ${name}`);
 
       const weatherText = item.weather
         ? `현재 ${item.location || '지역'} 날씨: ${item.weather.desc}, 기온: ${item.weather.temp}°C`
@@ -86,7 +98,7 @@ tags: [태그1, 태그2, 태그3]
 
 마지막 줄에 FILENAME: ${today}-${item.id} 형식으로 파일명도 출력해줘.`;
 
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
       const response = await fetch(geminiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -110,7 +122,7 @@ tags: [태그1, 태그2, 태그3]
       fs.writeFileSync(path.join(postsDir, fileName), content, 'utf8');
       generatedCount++;
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 3000));
     }
 
     if (generatedCount > 0) {
