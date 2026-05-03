@@ -97,18 +97,19 @@ export default function DashboardClient({
   // 블로그 필터링 로직
   const getFilteredBlogPosts = () => {
     const catMap: Record<string, string[]> = {
-      "지원금": ["grant", "지원금"],
-      "행사": ["event", "행사", "지역행사"],
-      "생활정보": ["info", "생활정보"],
-      "도서정보": ["book", "도서정보"]
+      "지원금": ["grant", "지원금", "subsidy"],
+      "행사": ["event", "행사", "지역행사", "지역 행사"],
+      "생활정보": ["info", "생활정보", "life"],
+      "도서정보": ["book", "도서정보", "도서 소식", "도서"]
     };
 
     if (activeBlogCat === "전체") return blogPosts;
-    const targets = catMap[activeBlogCat] || [activeBlogCat];
-    return blogPosts.filter((post) => 
-      targets.includes(post.category) || 
-      targets.includes(post.category.toLowerCase())
-    );
+    const targets = (catMap[activeBlogCat] || [activeBlogCat]).map(t => t.toLowerCase().replace(/\s/g, ''));
+    
+    return blogPosts.filter((post) => {
+      const postCat = (post.category || "").toLowerCase().replace(/\s/g, '');
+      return targets.includes(postCat);
+    });
   };
 
   const filteredPosts = getFilteredBlogPosts();
