@@ -198,15 +198,15 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
             <p className="text-gray-400 text-sm lg:text-xl font-bold whitespace-nowrap">용인시의 모든 정보가 모이는 곳</p>
           </div>
 
-          {/* 📊 프리미엄 방문자 통계 보드 */}
+          {/* 📊 실시간 방문자 통계 보드 (Real-time Engine) */}
           <div className="flex items-center gap-4 lg:gap-10 bg-white/80 p-6 lg:p-8 rounded-[40px] border border-white shadow-2xl">
-            <div className="flex flex-col items-center px-6 border-r border-gray-100">
-              <span className="text-[10px] lg:text-sm font-black text-gray-400 uppercase tracking-widest mb-2">Today</span>
-              <span className="text-2xl lg:text-4xl font-black text-blue-600">142</span>
-            </div>
-            <div className="flex flex-col items-center px-6 border-r border-gray-100">
-              <span className="text-[10px] lg:text-sm font-black text-gray-400 uppercase tracking-widest mb-2">Total</span>
-              <span className="text-2xl lg:text-4xl font-black text-gray-800 tracking-tighter">8,924</span>
+            <div className="flex flex-col items-center">
+              <span className="text-[10px] lg:text-sm font-black text-gray-400 uppercase tracking-widest mb-3">Visitor Statistics</span>
+              <div className="hover:scale-105 transition-transform cursor-pointer">
+                <a href="https://hits.seeyoufarm.com">
+                  <img src="https://hits.seeyoufarm.com/cgi-bin/badge.cgi?page=https://my-local-info-42x.pages.dev&style=20&nb_color=3b82f6&title_color=94a3b8&title=VISITORS&count_color=111111" alt="Hits" />
+                </a>
+              </div>
             </div>
             <div className="flex items-center gap-3 px-6 bg-green-500/5 py-3 rounded-full border border-green-500/10">
               <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
