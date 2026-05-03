@@ -4,48 +4,53 @@ import { useEffect, useRef } from "react";
 
 export default function CoupangDynamicBanner() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const loaded = useRef(false);
-  // 고유 ID 생성 (여러 개가 동시에 뜰 때를 대비)
-  const uniqueId = useRef(`coupang-banner-${Math.random().toString(36).substr(2, 9)}`);
 
   useEffect(() => {
-    if (loaded.current || !containerRef.current) return;
-    loaded.current = true;
+    if (!containerRef.current) return;
 
-    const targetContainer = containerRef.current;
-    targetContainer.innerHTML = "";
+    // iframe을 생성하여 독립적인 환경에서 쿠팡 스크립트 실행
+    // 이 방식이 리액트의 생명주기나 다른 스크립트와 충돌을 피하는 가장 확실한 방법입니다.
+    const iframe = document.createElement("iframe");
+    iframe.style.width = "100%";
+    iframe.style.height = "180px";
+    iframe.style.border = "none";
+    iframe.style.overflow = "hidden";
+    
+    containerRef.current.innerHTML = "";
+    containerRef.current.appendChild(iframe);
 
-    // 1단계: 쿠팡 파트너스 스크립트(g.js) 로드
-    const gScript = document.createElement("script");
-    gScript.src = "https://ads-partners.coupang.com/g.js";
-    gScript.async = true;
-    targetContainer.appendChild(gScript);
-
-    // 2단계: g.js 로드 완료 후 배너 초기화 (정확한 container ID 지정)
-    gScript.onload = () => {
-      const initScript = document.createElement("script");
-      initScript.textContent = `
-        new PartnersCoupang.G({
-          "id": 985786,
-          "trackingCode": "AF1183921",
-          "subId": null,
-          "template": "carousel",
-          "width": "1000",
-          "height": "170",
-          "container": "${uniqueId.current}"
-        });
-      `;
-      targetContainer.appendChild(initScript);
-    };
+    const doc = iframe.contentWindow?.document || iframe.contentDocument;
+    if (doc) {
+      doc.open();
+      doc.write(`
+        <html>
+          <body style="margin:0; padding:0; display:flex; justify-content:center; align-items:center;">
+            <script src="https://ads-partners.coupang.com/g.js"></script>
+            <script>
+              window.onload = function() {
+                new PartnersCoupang.G({
+                  "id": 985786,
+                  "trackingCode": "AF1183921",
+                  "subId": null,
+                  "template": "carousel",
+                  "width": "1000",
+                  "height": "170"
+                });
+              };
+            </script>
+          </body>
+        </html>
+      `);
+      doc.close();
+    }
   }, []);
 
   return (
     <div className="w-full flex flex-col items-center gap-3 overflow-hidden rounded-[30px] bg-white/40 backdrop-blur-sm p-6 border border-white/50 shadow-sm">
       <div
-        id={uniqueId.current}
         ref={containerRef}
         className="w-full flex justify-center overflow-hidden"
-        style={{ minHeight: "170px" }}
+        style={{ minHeight: "180px" }}
       />
       <div className="flex items-center gap-2 opacity-40">
         <div className="w-1 h-1 rounded-full bg-gray-400" />
