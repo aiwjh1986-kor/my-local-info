@@ -438,8 +438,8 @@ export default function DashboardClient({
                   </div>
                 </div>
 
-                {/* [우측] 초대형 캐릭터 영역 */}
-                <div className="relative flex-1 flex items-center justify-center lg:justify-end">
+                {/* [우측] 초대형 캐릭터 영역 (모바일에서는 텍스트 가독성을 위해 숨김) */}
+                <div className="relative flex-1 hidden lg:flex items-center justify-center lg:justify-end">
                   <div className="relative w-full max-w-[650px] lg:scale-125 lg:translate-x-10 transform-gpu transition-transform duration-1000">
                     <img 
                       src={IMG_BASE + "rabbit-hero-ultra.png?v=" + V_NUM} 
