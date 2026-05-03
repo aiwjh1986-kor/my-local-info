@@ -75,9 +75,14 @@ export default function DashboardClient({
   
   // 중복 제거 및 데이터 통합 (제목 기준)
   const getCombinedData = () => {
-    const combined = [...featuredCards];
-    blogPosts.forEach(post => {
-      if (!combined.find(c => c.title === post.title)) {
+    // 추천 카드(Featured)를 기본으로 하되, 블로그 데이터와 병합하여 상세 내용(content) 보강
+    const combined = initialFeaturedCards.map(fCard => {
+      const fullData = initialBlogPosts.find(p => p.slug === fCard.slug || (p.id && p.id === fCard.id));
+      return fullData ? { ...fullData, ...fCard, content: fullData.content } : fCard;
+    });
+
+    initialBlogPosts.forEach(post => {
+      if (!combined.find(c => c.slug === post.slug || (c.id && c.id === post.id))) {
         combined.push({ ...post, is_popular: post.is_popular ?? false });
       }
     });
