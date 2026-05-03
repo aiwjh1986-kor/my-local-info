@@ -203,8 +203,8 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
             <div className="flex flex-col items-center">
               <span className="text-[10px] lg:text-sm font-black text-gray-400 uppercase tracking-widest mb-3">Visitor Statistics</span>
               <div className="hover:scale-105 transition-transform cursor-pointer">
-                <a href="https://hits.seeyoufarm.com">
-                  <img src="https://hits.seeyoufarm.com/cgi-bin/badge.cgi?page=https://my-local-info-42x.pages.dev&style=20&nb_color=3b82f6&title_color=94a3b8&title=VISITORS&count_color=111111" alt="Hits" />
+                <a href="https://hits.dwyl.com/aiwjh1986-kor/my-local-info">
+                  <img src="https://hits.dwyl.com/aiwjh1986-kor/my-local-info.svg?style=flat-square&color=3b82f6" alt="Hits" />
                 </a>
               </div>
             </div>
