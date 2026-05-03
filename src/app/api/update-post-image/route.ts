@@ -39,6 +39,32 @@ export async function POST(request: Request) {
     // 파일 저장
     fs.writeFileSync(fullPath, updatedFileContent, 'utf8');
 
+    // 2. featured-cards.json 업데이트
+    const featuredPath = path.join(process.cwd(), 'public/data/featured-cards.json');
+    if (fs.existsSync(featuredPath)) {
+      const featuredData = JSON.parse(fs.readFileSync(featuredPath, 'utf8'));
+      const item = featuredData.find((i: any) => i.slug === slug);
+      if (item) {
+        item.image = newImageUrl;
+        fs.writeFileSync(featuredPath, JSON.stringify(featuredData, null, 2));
+      }
+    }
+
+    // 3. local-info.json 업데이트 (필요 시)
+    const infoPath = path.join(process.cwd(), 'public/data/local-info.json');
+    if (fs.existsSync(infoPath)) {
+      const infoData = JSON.parse(fs.readFileSync(infoPath, 'utf8'));
+      ['events', 'benefits'].forEach(key => {
+        if (infoData[key]) {
+          const item = infoData[key].find((i: any) => i.slug === slug);
+          if (item) {
+            item.image = newImageUrl;
+          }
+        }
+      });
+      fs.writeFileSync(infoPath, JSON.stringify(infoData, null, 2));
+    }
+
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error('Update error:', err);
