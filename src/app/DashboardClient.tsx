@@ -100,7 +100,11 @@ export default function DashboardClient({
 
     if (activeBlogCat === "전체") return blogPosts;
     const targetKey = catMap[activeBlogCat];
-    return blogPosts.filter((post) => post.category === targetKey || post.category === activeBlogCat);
+    return blogPosts.filter((post) => 
+      post.category === targetKey || 
+      post.category === activeBlogCat ||
+      (activeBlogCat === "행사" && post.category === "지역행사")
+    );
   };
 
   const filteredPosts = getFilteredBlogPosts();
@@ -232,6 +236,37 @@ export default function DashboardClient({
         window.location.reload();
       } else {
         alert("텍스트 수정에 실패했습니다.");
+      }
+    } catch (err) {
+      alert("서버 오류가 발생했습니다.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // 분류(카테고리) 수정 저장
+  const updateCategory = async (newCategory: string) => {
+    if (!selectedCard) return;
+    const targetSlug = selectedCard.slug || selectedCard.id;
+    if (!targetSlug) return;
+
+    setIsSaving(true);
+    try {
+      const res = await fetch("/api/update-post-category", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug: selectedCard.slug,
+          id: selectedCard.id,
+          category: newCategory
+        }),
+      });
+
+      if (res.ok) {
+        // 성공 시 페이지 새로고침하여 반영
+        window.location.reload();
+      } else {
+        alert("분류 수정에 실패했습니다.");
       }
     } catch (err) {
       alert("서버 오류가 발생했습니다.");
@@ -536,7 +571,10 @@ export default function DashboardClient({
                   "생활정보": "생활정보",
                   "도서정보": "도서정보"
                 };
-                return c.category === catMap[activeTab] || c.category === korCatMap[activeTab];
+                const match = c.category === catMap[activeTab] || 
+                             c.category === korCatMap[activeTab] ||
+                             (activeTab === "행사" && c.category === "지역행사");
+                return match;
               })).map((card, idx) => (
                 <Card key={idx} card={card} onClick={() => setSelectedCard(card)} />
               ))}
@@ -570,30 +608,45 @@ export default function DashboardClient({
               <h2 className="text-2xl font-[900] text-gray-900 mb-4 leading-tight">{selectedCard.title}</h2>
               
               {/* 관리자 수정 버튼 (ID나 Slug가 있으면 노출) */}
-              {isAdmin && (selectedCard.slug || selectedCard.id) && (
-                <div className="mb-6 flex gap-2">
-                  <button
-                    onClick={startTextEdit}
-                    className="flex-1 py-3 bg-gray-800 text-white rounded-xl text-xs font-black hover:bg-black transition-all flex items-center justify-center gap-2 shadow-lg"
-                  >
-                    📝 본문 글 내용 수정
-                  </button>
-                  <button
-                    onClick={(e) => startImageEdit(e, selectedCard)}
-                    className="flex-1 py-3 bg-blue-600 text-white rounded-xl text-xs font-black hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-lg"
-                  >
-                    📸 대표 이미지 수정
-                  </button>
-                  {/* 삭제 버튼 추가 */}
-                  <button
-                    onClick={deletePost}
-                    disabled={isSaving}
-                    className="px-4 py-3 bg-red-50 text-red-600 rounded-xl text-xs font-black hover:bg-red-600 hover:text-white transition-all flex items-center justify-center gap-2 border border-red-100"
-                  >
-                    🗑️ 삭제
-                  </button>
+                <div className="mb-6 flex flex-col gap-3">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={startTextEdit}
+                      className="flex-1 py-3 bg-gray-800 text-white rounded-xl text-xs font-black hover:bg-black transition-all flex items-center justify-center gap-2 shadow-lg"
+                    >
+                      📝 본문 수정
+                    </button>
+                    <button
+                      onClick={(e) => startImageEdit(e, selectedCard)}
+                      className="flex-1 py-3 bg-blue-600 text-white rounded-xl text-xs font-black hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-lg"
+                    >
+                      📸 이미지 수정
+                    </button>
+                    <button
+                      onClick={deletePost}
+                      disabled={isSaving}
+                      className="px-4 py-3 bg-red-50 text-red-600 rounded-xl text-xs font-black hover:bg-red-600 hover:text-white transition-all flex items-center justify-center gap-2 border border-red-100"
+                    >
+                      🗑️ 삭제
+                    </button>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-2xl border border-gray-100">
+                    <span className="text-[10px] font-black text-gray-400 px-2">분류 이동:</span>
+                    {["지원금", "지역행사", "생활정보"].map(cat => (
+                      <button
+                        key={cat}
+                        onClick={() => updateCategory(cat)}
+                        disabled={isSaving}
+                        className={`flex-1 py-2 rounded-xl text-[10px] font-black transition-all ${
+                          selectedCard.category === cat ? "bg-white shadow-sm text-blue-600" : "text-gray-400 hover:text-gray-600"
+                        }`}
+                      >
+                        {cat === "지역행사" ? "행사" : cat}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              )}
 
               <div className="flex gap-4 mb-8 text-[11px] font-bold text-gray-400">
                 <span className="flex items-center gap-1.5">📅 {selectedCard.date}</span>
