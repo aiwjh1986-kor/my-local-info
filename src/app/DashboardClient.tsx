@@ -592,29 +592,29 @@ export default function DashboardClient({
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-5 animate-in fade-in duration-300">
           <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onClick={() => setSelectedCard(null)} />
           <div 
-            className="bg-white w-full max-w-4xl h-[90vh] lg:h-auto lg:max-h-[85vh] rounded-[40px] lg:rounded-[60px] overflow-y-auto lg:overflow-hidden flex flex-col lg:flex-row shadow-2xl animate-in zoom-in-95 duration-300 relative custom-scrollbar"
+            className="bg-white w-full max-w-4xl h-[90vh] lg:h-[85vh] rounded-[40px] lg:rounded-[60px] overflow-y-auto shadow-2xl animate-in zoom-in-95 duration-300 relative custom-scrollbar flex flex-col"
             onClick={e => e.stopPropagation()}
           >
-            {/* 좌측/상단 이미지 영역 (모바일에서는 스크롤의 일부가 됨) */}
-            <div className="w-full lg:w-1/2 h-[250px] md:h-[400px] lg:h-auto relative flex-shrink-0">
+            {/* 상단 이미지 영역 (이제 본문과 함께 스크롤됨) */}
+            <div className="w-full relative flex-shrink-0">
               <img
                 src={selectedCard.image?.startsWith("http") ? selectedCard.image : (IMG_BASE + (selectedCard.image || "thumb-default.png") + "?v=" + V_NUM)}
                 alt={selectedCard.title}
-                className="w-full h-full object-cover"
+                className="w-full h-auto min-h-[300px] lg:min-h-[500px] object-cover"
               />
-              {/* 닫기 버튼 (모바일에서도 항상 잘 보이게 상단 고정 스타일) */}
+              {/* 닫기 버튼 (상단 이미지 위에 우아하게 배치) */}
               <button 
                 onClick={() => setSelectedCard(null)}
-                className="absolute top-6 right-6 z-[80] w-12 h-12 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-gray-400 hover:text-gray-800 shadow-xl border border-white hover:scale-110 transition-all text-3xl font-black pointer-events-auto"
+                className="absolute top-8 right-8 z-[80] w-14 h-14 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-gray-400 hover:text-gray-800 shadow-2xl border border-white hover:scale-110 transition-all text-3xl font-black pointer-events-auto"
               >
                 ✕
               </button>
-              <div className="absolute top-6 left-6">
+              <div className="absolute top-8 left-8">
                 {renderTags(selectedCard.category)}
               </div>
             </div>
-            {/* 우측/하단 본문 영역 */}
-            <div className="p-8 lg:overflow-y-auto lg:custom-scrollbar flex-1">
+            {/* 하단 본문 영역 (이미지 아래에 바로 이어짐) */}
+            <div className="p-10 lg:p-20">
               <h2 className="text-2xl font-[900] text-gray-900 mb-4 leading-tight">{selectedCard.title}</h2>
               
               {/* 관리자 수정 버튼 (ID나 Slug가 있으면 노출) */}
