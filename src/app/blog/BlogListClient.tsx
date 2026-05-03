@@ -12,7 +12,7 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
   const router = useRouter();
   const [activeCat, setActiveCat] = useState("전체");
 
-  const categories = ["전체", "지원금", "행사", "생활정보", "도서정보"];
+  const categories = ["전체", "지원금", "지역행사", "생활정보", "도서정보"];
   
   const getCategoryStyles = (cat: string) => {
     const c = (cat || "").toLowerCase();
@@ -26,13 +26,25 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
   const filteredPosts = activeCat === "전체" 
     ? allPosts 
     : allPosts.filter(p => {
-        const catMap: any = { "지원금": "grant", "행사": "event", "생활정보": "info", "도서정보": "book" };
+        const catMap: any = { "지원금": "grant", "지역행사": "event", "생활정보": "info", "도서정보": "book" };
         const target = catMap[activeCat] || activeCat;
-        return p.category === target || p.category === activeCat;
+        return p.category === target || 
+               p.category === activeCat || 
+               (activeCat === "지역행사" && (p.category === "행사" || p.category === "event"));
       });
 
   return (
-    <div className="min-h-screen bg-[#F8FAFF] font-sans text-gray-900 pb-20">
+    <div className="min-h-screen font-sans text-gray-900 pb-20 relative">
+      {/* 🖼️ 블로그 배경 이미지 */}
+      <div 
+        className="fixed inset-0 z-[-1] opacity-40 pointer-events-none"
+        style={{
+          backgroundImage: `url(${IMG_BASE}background1.png?v=${V_NUM})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      />
       {/* 1. 상단 프리미엄 내비게이션 바 */}
       <div className="fixed top-6 left-0 right-0 z-[60] px-6 flex items-center justify-between pointer-events-none">
         <Link href="/" className="pointer-events-auto bg-white/80 backdrop-blur-md border border-white/50 p-3 lg:p-4 rounded-2xl lg:rounded-3xl shadow-xl hover:scale-105 transition-all flex items-center gap-2 lg:gap-4">
@@ -44,7 +56,7 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
           <QuickLink icon={IMG_BASE + "icon-home.png?v=" + V_NUM} label="홈" onClick={() => router.push("/")} />
           <div className="w-[1px] h-4 bg-gray-200 mx-1" />
           <QuickLink icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금 혜택" onClick={() => router.push("/?tab=지원금")} />
-          <QuickLink icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역 행사" onClick={() => router.push("/?tab=행사")} />
+          <QuickLink icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" onClick={() => router.push("/?tab=지역행사")} />
           <QuickLink icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="생활 정보" onClick={() => router.push("/?tab=생활정보")} />
           <QuickLink icon={IMG_BASE + "icon-book.png?v=" + V_NUM} label="도서 소식" onClick={() => router.push("/?tab=도서정보")} />
         </div>
@@ -55,10 +67,10 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
       {/* 2. 히어로 타이틀 영역 */}
       <header className="pt-32 lg:pt-48 pb-12 lg:pb-20 px-6 text-center">
         <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-top duration-1000">
-          <h1 className="text-5xl lg:text-8xl font-black text-gray-800 mb-6 lg:mb-10 tracking-tighter font-handwriting">
-            루미의 <span className="text-accent underline decoration-accent/20 decoration-8 underline-offset-8">생생 블로그</span> 📝
+          <h1 className="text-5xl lg:text-8xl font-black text-gray-900 mb-6 lg:mb-10 tracking-tighter font-handwriting drop-shadow-sm">
+            루미의 <span className="text-blue-600 underline decoration-blue-200 decoration-8 underline-offset-8">생생 블로그</span>
           </h1>
-          <p className="text-xl lg:text-3xl text-gray-400 font-bold leading-relaxed font-handwriting">
+          <p className="text-xl lg:text-3xl text-gray-700 font-black leading-relaxed font-handwriting">
             용인시의 알찬 정보와 따끈따끈한 소식을 전해드려요!
           </p>
         </div>
@@ -103,7 +115,7 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
                     <div className="absolute top-6 left-6">
                       <span className={`px-4 py-2 backdrop-blur-md rounded-2xl text-[10px] lg:text-xs font-black uppercase tracking-widest shadow-lg border ${getCategoryStyles(post.category)}`}>
                         {post.category === "grant" ? "지원금" : 
-                         post.category === "event" ? "행사" : 
+                         post.category === "event" || post.category === "지역행사" || post.category === "행사" ? "지역행사" : 
                          post.category === "info" ? "생활정보" : 
                          post.category === "book" ? "도서소식" : post.category}
                       </span>

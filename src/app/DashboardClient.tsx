@@ -377,11 +377,21 @@ export default function DashboardClient({
   );
 
   return (
-    <div className="min-h-screen bg-transparent font-[family-name:var(--font-pretendard)] pb-24">
-      {/* 플로팅 배경 요소 */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-purple-200/30 blur-[100px] rounded-full" />
-        <div className="absolute bottom-[-5%] left-[-5%] w-[50%] h-[50%] bg-blue-200/30 blur-[120px] rounded-full" />
+    <div className="min-h-screen font-[family-name:var(--font-pretendard)] pb-24 relative">
+      {/* 🖼️ 메인 배경 이미지 */}
+      <div 
+        className="fixed inset-0 z-[-1] opacity-50 pointer-events-none"
+        style={{
+          backgroundImage: `url(${IMG_BASE}background1.png?v=${V_NUM})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      />
+      {/* 플로팅 배경 요소 (배경 이미지와 조화롭게 어우러짐) */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
+        <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-purple-200/20 blur-[100px] rounded-full" />
+        <div className="absolute bottom-[-5%] left-[-5%] w-[50%] h-[50%] bg-blue-200/20 blur-[120px] rounded-full" />
       </div>
 
       {/* 헤더 */}
@@ -433,11 +443,11 @@ export default function DashboardClient({
                 {/* [상단/좌측] 메인 텍스트 영역 */}
                 <div className="flex-1 flex flex-col justify-start text-center lg:text-left mb-10 lg:mb-0">
                   <div className="animate-in fade-in slide-in-from-top duration-1000">
-                    <h1 className="text-5xl lg:text-8xl font-black text-gray-800 leading-[1.1] mb-8 tracking-tighter font-handwriting">
+                    <h1 className="text-5xl lg:text-8xl font-black text-gray-900 leading-[1.1] mb-8 tracking-tighter font-handwriting">
                       용인의 모든 정보,<br />
-                      <span className="text-accent underline decoration-accent/20 decoration-8 underline-offset-8">한눈에 빠르게!</span>
+                      <span className="text-blue-600 underline decoration-blue-200 decoration-8 underline-offset-8">한눈에 빠르게!</span>
                     </h1>
-                    <p className="text-xl lg:text-3xl text-gray-400 font-bold leading-relaxed mb-8 font-handwriting">
+                    <p className="text-xl lg:text-3xl text-gray-700 font-black leading-relaxed mb-8 font-handwriting">
                       용인 시민을 위한 맞춤 정보를 확인하세요.
                     </p>
                     {/* 블로그 버튼 */}

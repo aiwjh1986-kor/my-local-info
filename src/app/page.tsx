@@ -1,7 +1,8 @@
 import { Suspense } from "react";
 import { getSortedPostsData } from "@/lib/posts";
 import DashboardClient from "./DashboardClient";
-import featuredCardsData from "../../public/data/featured-cards.json";
+import fs from 'fs';
+import path from 'path';
 
 export default function Page() {
   // 빌드 시점에 마크다운 파일들로부터 블로그 데이터를 가져옵니다.
@@ -21,7 +22,15 @@ export default function Page() {
     link: "/blog/" + p.slug + "/" // trailingSlash 활성화 대응
   }));
 
-  const featuredCards = featuredCardsData as any[];
+  // featured-cards.json을 실시간으로 읽어옵니다. (이미지 수정 즉시 반영을 위함)
+  const featuredPath = path.join(process.cwd(), 'public/data/featured-cards.json');
+  let featuredCards = [];
+  try {
+    const fileContent = fs.readFileSync(featuredPath, 'utf8');
+    featuredCards = JSON.parse(fileContent);
+  } catch (err) {
+    console.error("Failed to read featured-cards.json:", err);
+  }
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

@@ -28,14 +28,24 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
   const getCategoryStyles = (cat: string) => {
     const c = cat.toLowerCase();
     if (c === "grant" || c === "지원금") return "bg-orange-500 text-white";
-    if (c === "event" || c === "행사") return "bg-blue-500 text-white";
+    if (c === "event" || c === "행사" || c === "지역행사") return "bg-blue-500 text-white";
     if (c === "info" || c === "생활정보") return "bg-green-500 text-white";
     if (c === "book" || c === "도서소식" || c === "도서정보") return "bg-purple-500 text-white";
     return "bg-gray-500 text-white";
   };
 
   return (
-    <div className="dashboard-container bg-[#F8FAFF] min-h-screen">
+    <div className="dashboard-container min-h-screen relative">
+      {/* 🖼️ 상세페이지 배경 이미지 */}
+      <div 
+        className="fixed inset-0 z-[-1] opacity-30 pointer-events-none"
+        style={{
+          backgroundImage: `url(${IMG_BASE}background1.png?v=${V_NUM})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      />
       {/* 1. 메뉴 버튼 및 상단 퀵 내비게이션 */}
       <div className="fixed top-6 left-0 right-0 z-[60] px-6 flex items-center justify-between pointer-events-none">
         <button 
@@ -51,7 +61,7 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
           <QuickLink icon={IMG_BASE + "icon-home.png?v=" + V_NUM} label="홈" onClick={() => router.push("/")} />
           <div className="w-[1px] h-4 bg-gray-200 mx-1" />
           <QuickLink icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금 혜택" onClick={() => router.push("/?tab=지원금")} />
-          <QuickLink icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역 행사" onClick={() => router.push("/?tab=행사")} />
+          <QuickLink icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" onClick={() => router.push("/?tab=지역행사")} />
           <QuickLink icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="생활 정보" onClick={() => router.push("/?tab=생활정보")} />
           <QuickLink icon={IMG_BASE + "icon-book.png?v=" + V_NUM} label="도서 소식" onClick={() => router.push("/?tab=도서정보")} />
         </div>
@@ -65,7 +75,7 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
         <div className="pointer-events-auto flex items-center gap-2 bg-white/80 backdrop-blur-xl border border-white/40 p-2 rounded-2xl shadow-xl w-max">
           <QuickLink icon={IMG_BASE + "icon-home.png?v=" + V_NUM} label="홈" onClick={() => router.push("/")} isMobile />
           <QuickLink icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금" onClick={() => router.push("/?tab=지원금")} isMobile />
-          <QuickLink icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="행사" onClick={() => router.push("/?tab=행사")} isMobile />
+          <QuickLink icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" onClick={() => router.push("/?tab=지역행사")} isMobile />
           <QuickLink icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="정보" onClick={() => router.push("/?tab=생활정보")} isMobile />
           <QuickLink icon={IMG_BASE + "icon-book.png?v=" + V_NUM} label="도서" onClick={() => router.push("/?tab=도서정보")} isMobile />
         </div>
@@ -86,7 +96,7 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
         <nav className="flex flex-col gap-4 lg:gap-8 overflow-y-auto no-scrollbar">
           <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-home.png?v=" + V_NUM} label="홈" />
           <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금" />
-          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="행사" />
+          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" />
           <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="생활정보" />
           <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-blog.png?v=" + V_NUM} label="블로그" active={true} />
           <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-notice.png?v=" + V_NUM} label="공지" />
@@ -115,7 +125,7 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
             <div className="flex items-center gap-4 mb-8">
               <span className={`px-6 py-2 ${getCategoryStyles(post.category)} text-xs lg:text-xl font-black rounded-full uppercase tracking-widest shadow-lg`}>
                 {post.category === "grant" ? "지원금" : 
-                 post.category === "event" ? "행사" : 
+                 post.category === "event" || post.category === "행사" || post.category === "지역행사" ? "지역행사" : 
                  post.category === "info" ? "생활정보" : 
                  post.category === "book" ? "도서소식" : post.category}
               </span>
