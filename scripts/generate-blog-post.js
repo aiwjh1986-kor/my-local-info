@@ -88,6 +88,7 @@ title: (친근하고 흥미로운 제목)
 date: ${today}
 summary: (한 줄 요약)
 category: ${item.category || 'info'}
+image: new_01.png
 tags: [태그1, 태그2, 태그3]
 ---
 

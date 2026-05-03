@@ -105,13 +105,14 @@ export default function DashboardClient({
       "도서정보": ["book", "도서정보", "도서 소식", "도서"]
     };
 
-    if (activeBlogCat === "전체") return blogPosts;
+    const postsToFilter = allCards;
+    if (activeBlogCat === "전체") return postsToFilter;
     
     // 2중 안전장치: 버튼 이름이 '행사'여도 '지역행사' 정보를 찾아오게 함
     const actualCat = (activeBlogCat === "행사" || activeBlogCat === "지역행사") ? "지역행사" : activeBlogCat;
     const targets = (catMap[actualCat] || [actualCat]).map(t => t.toLowerCase().replace(/\s/g, ''));
     
-    return blogPosts.filter((post) => {
+    return postsToFilter.filter((post) => {
       const postCat = (post.category || "").toLowerCase().replace(/\s/g, '');
       return targets.includes(postCat);
     });
