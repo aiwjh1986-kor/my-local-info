@@ -51,10 +51,10 @@ export default function CustomCursor() {
         }
       `}</style>
       
-      {/* 1. 바깥 원 (세련된 잔상 효과) */}
+      {/* 1. 바깥 원 (커진 크기에 맞춰 조절) */}
       <div
-        className={`fixed top-0 left-0 w-12 h-12 rounded-full border-2 border-accent/30 pointer-events-none z-[9999] transition-all duration-150 ease-out ${
-          isHovered ? "scale-125 bg-accent/5 border-accent" : "scale-100"
+        className={`fixed top-0 left-0 w-20 h-20 rounded-full border-2 border-accent/20 pointer-events-none z-[9999] transition-all duration-150 ease-out ${
+          isHovered ? "scale-125 bg-accent/5 border-accent/40" : "scale-100"
         } ${isActive ? "scale-90" : ""}`}
         style={{
           left: `${position.x}px`,
@@ -63,15 +63,15 @@ export default function CustomCursor() {
         }}
       />
 
-      {/* 2. 사용자 정의 이미지 커서 (mouse.png) */}
+      {/* 2. 사용자 정의 이미지 커서 (180% 확대: 72px) */}
       <div
-        className={`fixed top-0 left-0 w-10 h-10 pointer-events-none z-[10000] ${
+        className={`fixed top-0 left-0 w-[72px] h-[72px] pointer-events-none z-[10000] ${
           isActive ? "scale-90" : "scale-100"
         } transition-transform duration-75 ease-out`}
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
-          transform: `translate3d(-50%, -50%, 0) ${isHovered ? "scale(1.1)" : "scale(1)"}`,
+          transform: `translate3d(-50%, -50%, 0) ${isHovered ? "scale(1.15)" : "scale(1)"}`,
         }}
       >
         <img 
@@ -79,7 +79,6 @@ export default function CustomCursor() {
           alt="cursor" 
           className="w-full h-full object-contain"
           onError={(e) => {
-            // 이미지 로드 실패 시 기본 점으로 대체
             (e.target as any).style.display = 'none';
           }}
         />
