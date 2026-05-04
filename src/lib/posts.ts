@@ -74,11 +74,22 @@ export function getSortedPostsData(): PostData[] {
       } as PostData;
     });
 
-  // 날짜순으로 정렬 (더 안전한 비교)
+  // 1. 진행 중인 글과 종료된 글을 분리하여 정렬
+  const TODAY = "2026-05-04";
+
   return allPostsData.sort((a, b) => {
-    const timeA = new Date(a.date).getTime();
-    const timeB = new Date(b.date).getTime();
-    return timeB - timeA;
+    const isClosedA = a.deadline && a.deadline < TODAY;
+    const isClosedB = b.deadline && b.deadline < TODAY;
+
+    // 둘 다 진행 중이거나 둘 다 종료된 경우 -> 날짜순 정렬
+    if (isClosedA === isClosedB) {
+      const timeA = new Date(a.date).getTime();
+      const timeB = new Date(b.date).getTime();
+      return timeB - timeA;
+    }
+
+    // 진행 중인 글(false)이 종료된 글(true)보다 앞으로 오게 함
+    return isClosedA ? 1 : -1;
   });
 }
 
