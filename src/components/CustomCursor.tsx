@@ -30,7 +30,7 @@ export default function CustomCursor() {
     const onMouseDown = () => setIsActive(true);
     const onMouseUp = () => setIsActive(false);
 
-    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
     window.addEventListener("mouseover", onMouseOver);
     window.addEventListener("mousedown", onMouseDown);
     window.addEventListener("mouseup", onMouseUp);
@@ -46,25 +46,34 @@ export default function CustomCursor() {
   return (
     <>
       <style jsx global>{`
-        body {
-          cursor: none !important;
-        }
-        a, button, [role="button"] {
+        * {
           cursor: none !important;
         }
       `}</style>
+      
+      {/* 1. 바깥 원 (살짝 뒤따라오는 느낌) */}
       <div
-        className={`fixed top-0 left-0 w-8 h-8 rounded-full border-2 border-accent/30 pointer-events-none z-[9999] transition-transform duration-300 ease-out flex items-center justify-center ${
+        className={`fixed top-0 left-0 w-8 h-8 rounded-full border-2 border-accent/40 pointer-events-none z-[9999] transition-all duration-150 ease-out ${
           isHovered ? "scale-150 bg-accent/10 border-accent" : "scale-100"
         } ${isActive ? "scale-90" : ""}`}
         style={{
-          transform: `translate3d(${position.x - 16}px, ${position.y - 16}px, 0) ${
-            isHovered ? "scale(1.5)" : "scale(1)"
-          }`,
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+          transform: `translate3d(-50%, -50%, 0)`,
         }}
-      >
-        <div className={`w-1 h-1 bg-accent rounded-full ${isActive ? "scale-150" : "scale-100"} transition-transform`} />
-      </div>
+      />
+
+      {/* 2. 안쪽 점 (실시간 즉각 반응) */}
+      <div
+        className={`fixed top-0 left-0 w-1.5 h-1.5 bg-accent rounded-full pointer-events-none z-[10000] ${
+          isActive ? "scale-150" : "scale-100"
+        } transition-transform duration-100`}
+        style={{
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+          transform: `translate3d(-50%, -50%, 0)`,
+        }}
+      />
     </>
   );
 }
