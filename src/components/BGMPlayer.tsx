@@ -6,13 +6,29 @@ export default function BGMPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+
+  // 01~06 음원 목록
+  const playlist = [
+    '/audio/01.mp3',
+    '/audio/02.mp3',
+    '/audio/03.mp3',
+    '/audio/04.mp3',
+    '/audio/05.mp3',
+    '/audio/06.mp3',
+  ];
+
+  // 처음 로드 시 랜덤 트랙 선택
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * playlist.length);
+    setCurrentTrackIndex(randomIndex);
+  }, []);
  
   // 사용자의 재생 의사를 기억하기 위한 효과
   useEffect(() => {
     const savedPlayStatus = localStorage.getItem('lumi-bgm-user-stop');
     
     const handleInitialPlay = () => {
-      // 사용자가 수동으로 정지한 기록이 없을 때만 자동 재생 시도
       if (audioRef.current && !hasInteracted && savedPlayStatus !== 'true') {
         audioRef.current.play().then(() => {
           setIsPlaying(true);
@@ -23,22 +39,35 @@ export default function BGMPlayer() {
       }
       window.removeEventListener('click', handleInitialPlay);
     };
- 
+
     if (savedPlayStatus !== 'true') {
       window.addEventListener('click', handleInitialPlay);
     }
     
     return () => window.removeEventListener('click', handleInitialPlay);
   }, [hasInteracted]);
+
+  // 노래가 끝나면 다음 곡으로 자동 재생
+  const handleEnded = () => {
+    const nextIndex = (currentTrackIndex + 1) % playlist.length;
+    setCurrentTrackIndex(nextIndex);
+  };
+
+  // 트랙이 바뀌면 재생 시도
+  useEffect(() => {
+    if (isPlaying && audioRef.current) {
+      audioRef.current.play().catch(err => console.log("Play failed on track change:", err));
+    }
+  }, [currentTrackIndex]);
  
   const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
-        localStorage.setItem('lumi-bgm-user-stop', 'true'); // 사용자가 정지했음을 기억
+        localStorage.setItem('lumi-bgm-user-stop', 'true');
       } else {
         audioRef.current.play();
-        localStorage.setItem('lumi-bgm-user-stop', 'false'); // 다시 재생 의사 표시
+        localStorage.setItem('lumi-bgm-user-stop', 'false');
       }
       setIsPlaying(!isPlaying);
       setHasInteracted(true);
@@ -69,14 +98,14 @@ export default function BGMPlayer() {
         isPlaying ? "opacity-100" : "opacity-0 scale-90"
       }`}>
         <span className="text-[7px] lg:text-[9px] font-black text-blue-600 uppercase tracking-tighter">
-          {isPlaying ? "PLAY" : ""}
+          {isPlaying ? `TRACK 0${currentTrackIndex + 1}` : ""}
         </span>
       </div>
-
+ 
       <audio
         ref={audioRef}
-        src="/audio/Lumi%20song.mp3"
-        loop
+        src={playlist[currentTrackIndex]}
+        onEnded={handleEnded}
         preload="auto"
       />
     </div>
