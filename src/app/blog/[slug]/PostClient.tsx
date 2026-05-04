@@ -51,7 +51,7 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
       <div className="fixed top-6 left-0 right-0 z-[60] px-6 flex items-center justify-between pointer-events-none">
         <button 
           onClick={() => setIsMenuOpen(true)}
-          className="fixed top-6 left-5 z-[60] bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 lg:px-8 lg:py-4 rounded-full shadow-xl hover:scale-110 transition-all flex items-center justify-center group"
+          className="fixed top-6 left-5 z-[60] bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 lg:px-8 lg:py-4 rounded-full shadow-xl hover:scale-110 transition-all flex items-center justify-center group pointer-events-auto"
         >
           <span className="text-xl lg:text-2xl font-extrabold text-gray-800 font-[family-name:var(--font-baloo-2)] tracking-wider group-hover:text-blue-600 transition-colors">MENU</span>
         </button>
@@ -70,16 +70,7 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
         <div className="w-[80px] lg:w-[150px] hidden md:block" />
       </div>
 
-      {/* 모바일용 퀵 바로가기 (하단 스크롤형) */}
-      <div className="md:hidden fixed top-[88px] left-0 right-0 z-[55] px-6 overflow-x-auto no-scrollbar pointer-events-none">
-        <div className="pointer-events-auto flex items-center gap-2 bg-white/80 backdrop-blur-xl border border-white/40 p-2 rounded-2xl shadow-xl w-max">
-          <QuickLink icon={IMG_BASE + "icon-home.png?v=" + V_NUM} label="홈" onClick={() => router.push("/")} isMobile />
-          <QuickLink icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금" onClick={() => router.push("/?tab=지원금")} isMobile />
-          <QuickLink icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" onClick={() => router.push("/?tab=지역행사")} isMobile />
-          <QuickLink icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="정보" onClick={() => router.push("/?tab=생활정보")} isMobile />
-          <QuickLink icon={IMG_BASE + "icon-book.png?v=" + V_NUM} label="도서" onClick={() => router.push("/?tab=도서정보")} isMobile />
-        </div>
-      </div>
+
 
       {/* 2. 사이드바 드로어 */}
       <aside className={`fixed left-0 top-0 bottom-0 w-[320px] lg:w-[450px] bg-white/95 backdrop-blur-2xl border-r border-gray-100 z-[70] flex flex-col p-8 lg:p-14 shadow-2xl transition-transform duration-500 ${
@@ -113,7 +104,7 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
           {/* 포스트 헤더 */}
           <header className="p-10 lg:p-24 bg-gradient-to-br from-white to-gray-50 border-b border-gray-100">
             {post.image && (
-              <div className="mb-12 lg:mb-24 rounded-[40px] lg:rounded-[80px] overflow-hidden shadow-2xl h-64 lg:h-[600px]">
+              <div className="mb-12 lg:mb-24 rounded-[40px] lg:rounded-[80px] overflow-hidden shadow-2xl aspect-video">
                 <img 
                   src={IMG_BASE + post.image.replace(".png", "") + ".png?v=" + V_NUM} 
                   className="w-full h-full object-cover" 
@@ -143,17 +134,17 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
 
           {/* 본문 콘텐츠 */}
           <div className="p-10 lg:p-24">
-            <div className="prose prose-xl lg:prose-2xl max-w-none">
+            <div className="prose prose-slate max-w-none">
               <ReactMarkdown 
                 remarkPlugins={[remarkGfm]}
                 components={{
-                  p: (props) => <p className="text-2xl lg:text-[42px] font-bold mb-10 lg:mb-16 leading-[1.6] text-gray-700" {...props} />,
-                  h1: (props) => <h1 className="text-5xl lg:text-[100px] font-black mb-14 lg:mb-24 text-[#111111] tracking-tighter" {...props} />,
-                  h2: (props) => <h2 className="text-4xl lg:text-[80px] font-black mb-12 lg:mb-20 text-[#111111] tracking-tighter border-b-8 border-accent/10 pb-4" {...props} />,
-                  h3: (props) => <h3 className="text-3xl lg:text-[60px] font-black mb-10 lg:mb-16 text-[#111111] tracking-tighter" {...props} />,
-                  li: (props) => <li className="text-2xl lg:text-[40px] font-bold mb-8 lg:mb-12 ml-8 lg:ml-16 list-disc text-gray-700" {...props} />,
-                  strong: (props) => <strong className="font-black text-accent border-b-4 border-accent/20" {...props} />,
-                  img: (props) => <img className="rounded-[40px] lg:rounded-[80px] shadow-2xl my-16 w-full object-cover" {...props} />,
+                  p: (props) => <p className="text-lg lg:text-3xl font-bold mb-8 lg:mb-12 leading-[1.6] text-gray-700" {...props} />,
+                  h1: (props) => <h1 className="text-3xl lg:text-7xl font-black mb-10 lg:mb-20 text-[#111111] tracking-tighter" {...props} />,
+                  h2: (props) => <h2 className="text-2xl lg:text-5xl font-black mb-8 lg:mb-16 text-[#111111] tracking-tighter border-b-4 border-accent/10 pb-3" {...props} />,
+                  h3: (props) => <h3 className="text-xl lg:text-4xl font-black mb-6 lg:mb-12 text-[#111111] tracking-tighter" {...props} />,
+                  li: (props) => <li className="text-lg lg:text-3xl font-bold mb-6 lg:mb-10 ml-6 lg:ml-12 list-disc text-gray-700" {...props} />,
+                  strong: (props) => <strong className="font-black text-accent border-b-2 border-accent/20" {...props} />,
+                  img: (props) => <img className="rounded-[30px] lg:rounded-[60px] shadow-2xl my-12 w-full object-cover aspect-video" {...props} />,
                 }}
               >
                 {post.content}
