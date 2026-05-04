@@ -795,6 +795,11 @@ export default function DashboardClient({
                     cards={impendingCards}
                     isCarousel={true}
                     onCardClick={setSelectedCard}
+                    onMoreClick={() => {
+                      setActiveTab("블로그");
+                      setActiveBlogCat("전체");
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
                   />
                 )}
 
