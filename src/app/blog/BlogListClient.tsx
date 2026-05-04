@@ -55,25 +55,27 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
         <span className="text-xl lg:text-2xl font-extrabold text-gray-800 font-[family-name:var(--font-baloo-2)] tracking-wider group-hover:text-blue-600 transition-colors">MENU</span>
       </button>
 
-      {/* 2. 사이드바 드로어 (홈 화면과 동일) */}
-      <aside className={`fixed left-0 top-0 bottom-0 w-[320px] lg:w-[450px] bg-white/95 backdrop-blur-2xl border-r border-gray-100 z-[70] flex flex-col p-8 lg:p-14 shadow-2xl transition-transform duration-500 ${
+      {/* 2. 사이드바 드로어 (홈 화면과 디자인 동기화) */}
+      <aside className={`fixed left-0 top-0 bottom-0 w-[300px] lg:w-[420px] bg-white/95 backdrop-blur-2xl border-r border-gray-100 z-[110] flex flex-col p-8 lg:p-12 shadow-2xl transition-transform duration-500 ${
         isMenuOpen ? "translate-x-0" : "-translate-x-full"
       }`}>
-        <div className="flex items-center justify-between mb-10 lg:mb-20">
-          <div className="flex items-center gap-5">
-            <span className="text-3xl lg:text-5xl">🏮</span>
-            <h1 className="text-xl lg:text-4xl font-black text-[#111111]">메뉴</h1>
+        <div className="flex items-center justify-between mb-8 lg:mb-16">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 lg:w-14 h-14">
+              <img src={IMG_BASE + "icon-menu-rabbit.png?v=" + V_NUM} alt="Menu Icon" className="w-full h-full object-contain" />
+            </div>
+            <h1 className="text-xl lg:text-3xl font-black text-[#111111]">메뉴</h1>
           </div>
-          <button onClick={() => setIsMenuOpen(false)} className="text-4xl lg:text-6xl text-gray-300 hover:text-gray-800">×</button>
+          <button onClick={() => setIsMenuOpen(false)} className="text-4xl lg:text-5xl text-gray-300 hover:text-gray-800">×</button>
         </div>
         
-        <nav className="flex flex-col gap-4 lg:gap-8 overflow-y-auto no-scrollbar">
+        <nav className="flex flex-col gap-3 lg:gap-6 overflow-y-auto no-scrollbar">
           <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-home.png?v=" + V_NUM} label="홈" />
-          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금" />
-          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" />
-          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="생활정보" />
-          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-blog.png?v=" + V_NUM} label="블로그" active={true} />
-          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-notice.png?v=" + V_NUM} label="공지" />
+          <MenuLink onClick={() => router.push("/?tab=지원금")} icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금" />
+          <MenuLink onClick={() => router.push("/?tab=지역행사")} icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" />
+          <MenuLink onClick={() => router.push("/?tab=생활정보")} icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="생활정보" />
+          <MenuLink onClick={() => router.push("/?tab=도서정보")} icon={IMG_BASE + "icon-book.png?v=" + V_NUM} label="도서정보" />
+          <MenuLink onClick={() => router.push("/blog")} icon={IMG_BASE + "icon-blog.png?v=" + V_NUM} label="블로그" active={true} />
         </nav>
       </aside>
 

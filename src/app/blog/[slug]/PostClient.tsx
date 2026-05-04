@@ -72,25 +72,27 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
 
 
 
-      {/* 2. 사이드바 드로어 */}
-      <aside className={`fixed left-0 top-0 bottom-0 w-[320px] lg:w-[450px] bg-white/95 backdrop-blur-2xl border-r border-gray-100 z-[70] flex flex-col p-8 lg:p-14 shadow-2xl transition-transform duration-500 ${
+      {/* 2. 사이드바 드로어 (홈 화면과 디자인 동기화) */}
+      <aside className={`fixed left-0 top-0 bottom-0 w-[300px] lg:w-[420px] bg-white/95 backdrop-blur-2xl border-r border-gray-100 z-[110] flex flex-col p-8 lg:p-12 shadow-2xl transition-transform duration-500 ${
         isMenuOpen ? "translate-x-0" : "-translate-x-full"
       }`}>
-        <div className="flex items-center justify-between mb-10 lg:mb-20">
-          <div className="flex items-center gap-5">
-            <span className="text-3xl lg:text-5xl">🏮</span>
-            <h1 className="text-xl lg:text-4xl font-black text-[#111111]">메뉴</h1>
+        <div className="flex items-center justify-between mb-8 lg:mb-16">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 lg:w-14 h-14">
+              <img src={IMG_BASE + "icon-menu-rabbit.png?v=" + V_NUM} alt="Menu Icon" className="w-full h-full object-contain" />
+            </div>
+            <h1 className="text-xl lg:text-3xl font-black text-[#111111]">메뉴</h1>
           </div>
-          <button onClick={() => setIsMenuOpen(false)} className="text-4xl lg:text-6xl text-gray-300 hover:text-gray-800">×</button>
+          <button onClick={() => setIsMenuOpen(false)} className="text-4xl lg:text-5xl text-gray-300 hover:text-gray-800">×</button>
         </div>
         
-        <nav className="flex flex-col gap-4 lg:gap-8 overflow-y-auto no-scrollbar">
+        <nav className="flex flex-col gap-3 lg:gap-6 overflow-y-auto no-scrollbar">
           <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-home.png?v=" + V_NUM} label="홈" />
-          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금" />
-          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" />
-          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="생활정보" />
-          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-blog.png?v=" + V_NUM} label="블로그" active={true} />
-          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-notice.png?v=" + V_NUM} label="공지" />
+          <MenuLink onClick={() => router.push("/?tab=지원금")} icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금" />
+          <MenuLink onClick={() => router.push("/?tab=지역행사")} icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" />
+          <MenuLink onClick={() => router.push("/?tab=생활정보")} icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="생활정보" />
+          <MenuLink onClick={() => router.push("/?tab=도서정보")} icon={IMG_BASE + "icon-book.png?v=" + V_NUM} label="도서정보" />
+          <MenuLink onClick={() => router.push("/blog")} icon={IMG_BASE + "icon-blog.png?v=" + V_NUM} label="블로그" active={true} />
         </nav>
       </aside>
 
@@ -98,9 +100,9 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
         <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[65]" onClick={() => setIsMenuOpen(false)} />
       )}
 
-      {/* 3. 본문 영역 */}
-      <main className="pt-32 lg:pt-56 pb-20 px-6">
-        <article className="max-w-7xl mx-auto bg-white rounded-[60px] lg:rounded-[100px] shadow-2xl overflow-hidden border border-white">
+      {/* 3. 본문 영역 (전체화면 스타일 적용) */}
+      <main className="pt-24 lg:pt-32 pb-20 px-0 sm:px-6">
+        <article className="max-w-[1600px] mx-auto bg-white rounded-none sm:rounded-[60px] lg:rounded-[80px] shadow-2xl overflow-hidden border-none sm:border border-white">
           {/* 포스트 헤더 */}
           <header className="p-10 lg:p-24 bg-gradient-to-br from-white to-gray-50 border-b border-gray-100">
             {post.image && (
@@ -123,11 +125,11 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
               <time className="text-sm lg:text-2xl font-bold text-gray-300">{post.date}</time>
             </div>
             
-            <h1 className="text-4xl lg:text-8xl font-black text-[#111111] mb-10 leading-tight tracking-tighter font-handwriting">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-8xl font-black text-[#111111] mb-6 lg:mb-10 leading-tight tracking-tighter font-handwriting">
               {post.title}
             </h1>
             
-            <p className="text-lg lg:text-3xl text-gray-500 font-bold leading-relaxed opacity-80">
+            <p className="text-base sm:text-lg md:text-xl lg:text-3xl text-gray-500 font-bold leading-relaxed opacity-80">
               {post.summary}
             </p>
           </header>
@@ -138,13 +140,13 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
               <ReactMarkdown 
                 remarkPlugins={[remarkGfm]}
                 components={{
-                  p: (props) => <p className="text-lg lg:text-3xl font-bold mb-8 lg:mb-12 leading-[1.6] text-gray-700" {...props} />,
-                  h1: (props) => <h1 className="text-3xl lg:text-7xl font-black mb-10 lg:mb-20 text-[#111111] tracking-tighter" {...props} />,
-                  h2: (props) => <h2 className="text-2xl lg:text-5xl font-black mb-8 lg:mb-16 text-[#111111] tracking-tighter border-b-4 border-accent/10 pb-3" {...props} />,
-                  h3: (props) => <h3 className="text-xl lg:text-4xl font-black mb-6 lg:mb-12 text-[#111111] tracking-tighter" {...props} />,
-                  li: (props) => <li className="text-lg lg:text-3xl font-bold mb-6 lg:mb-10 ml-6 lg:ml-12 list-disc text-gray-700" {...props} />,
+                  p: (props) => <p className="text-base sm:text-lg md:text-xl lg:text-3xl font-bold mb-6 lg:mb-12 leading-[1.6] text-gray-700" {...props} />,
+                  h1: (props) => <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-black mb-8 lg:mb-20 text-[#111111] tracking-tighter" {...props} />,
+                  h2: (props) => <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-black mb-6 lg:mb-16 text-[#111111] tracking-tighter border-b-4 border-accent/10 pb-3" {...props} />,
+                  h3: (props) => <h3 className="text-lg sm:text-xl md:text-3xl lg:text-4xl font-black mb-4 lg:mb-12 text-[#111111] tracking-tighter" {...props} />,
+                  li: (props) => <li className="text-base sm:text-lg md:text-xl lg:text-3xl font-bold mb-4 lg:mb-10 ml-6 lg:ml-12 list-disc text-gray-700" {...props} />,
                   strong: (props) => <strong className="font-black text-accent border-b-2 border-accent/20" {...props} />,
-                  img: (props) => <img className="rounded-[30px] lg:rounded-[60px] shadow-2xl my-12 w-full object-cover aspect-video" {...props} />,
+                  img: (props) => <img className="rounded-[20px] lg:rounded-[60px] shadow-2xl my-8 lg:my-12 w-full object-cover aspect-video" {...props} />,
                 }}
               >
                 {post.content}
