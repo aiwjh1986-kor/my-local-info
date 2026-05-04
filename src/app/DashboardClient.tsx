@@ -507,8 +507,8 @@ export default function DashboardClient({
       <section className="mb-16">
         <div className="flex items-center justify-between mb-8 px-2">
           <div className="flex items-center gap-4">
-            <div className={`${iconSize === "large" ? "w-14 h-14" : "w-12 h-12"} bg-white rounded-2xl shadow-lg flex items-center justify-center border border-white/50 shadow-gray-200/50`}>
-              <img src={icon} alt={title} className={iconSize === "large" ? "w-8 h-8" : "w-7 h-7"} />
+            <div className="w-14 h-14 bg-white rounded-2xl shadow-lg flex items-center justify-center border border-white/50 shadow-gray-200/50 overflow-hidden">
+              <img src={icon} alt={title} className="w-full h-full object-cover" />
             </div>
             <div>
               <h2 className="text-2xl font-black text-gray-900 tracking-tight">{title}</h2>
