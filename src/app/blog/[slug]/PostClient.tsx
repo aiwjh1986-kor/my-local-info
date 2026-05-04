@@ -215,15 +215,15 @@ function MenuLink({ onClick, icon, label, active = false }: any) {
   return (
     <div 
       onClick={onClick}
-      className={`flex items-center px-5 lg:px-10 py-3 lg:py-8 rounded-[20px] lg:rounded-[50px] transition-all font-black cursor-pointer group ${
-        active ? "bg-accent text-white shadow-2xl scale-[1.05]" : "text-gray-500 hover:bg-gray-50"
+      className={`flex items-center px-4 lg:px-6 py-2 lg:py-4 rounded-[16px] lg:rounded-[24px] transition-all font-black cursor-pointer group ${
+        active ? "bg-accent text-white shadow-lg scale-[1.02]" : "text-gray-500 hover:bg-gray-50"
       }`}
     >
-      <div className="flex items-center gap-3 lg:gap-10">
-        <div className="w-10 h-10 lg:w-32 h-32 flex items-center justify-center p-1 transform group-hover:scale-110 transition-transform">
+      <div className="flex items-center gap-3 lg:gap-6">
+        <div className="w-8 h-8 lg:w-12 h-12 flex items-center justify-center p-1 transform group-hover:scale-110 transition-transform">
           <img src={icon} className="w-full h-full object-contain" alt={label} />
         </div>
-        <span className="text-sm lg:text-[32px] tracking-tighter whitespace-nowrap">{label}</span>
+        <span className="text-sm lg:text-lg tracking-tighter whitespace-nowrap">{label}</span>
       </div>
     </div>
   );

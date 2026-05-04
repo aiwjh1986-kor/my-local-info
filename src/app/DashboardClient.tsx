@@ -597,7 +597,18 @@ export default function DashboardClient({
                              (activeTab === "지역행사" && (c.category === "행사" || c.category === "지역행사"));
                 return match;
               })).map((card, idx) => (
-                <Card key={idx} card={card} onClick={() => setSelectedCard(card)} />
+                <Card 
+                  key={idx} 
+                  card={card} 
+                  onClick={() => {
+                    // 블로그 탭이거나 카드에 slug가 있는 경우 상세 페이지로 직접 이동
+                    if ((activeTab === "블로그" || activeTab === "홈") && card.slug) {
+                      router.push(`/blog/${card.slug}`);
+                    } else {
+                      setSelectedCard(card);
+                    }
+                  }} 
+                />
               ))}
             </div>
           </div>
