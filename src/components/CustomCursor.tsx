@@ -63,7 +63,7 @@ export default function CustomCursor() {
         }}
       />
 
-      {/* 2. 사용자 정의 이미지 커서 (180% 확대: 72px) */}
+      {/* 2. 사용자 정의 이미지 커서 (클릭 지점을 끝쪽으로 조정) */}
       <div
         className={`fixed top-0 left-0 w-[72px] h-[72px] pointer-events-none z-[10000] ${
           isActive ? "scale-90" : "scale-100"
@@ -71,7 +71,8 @@ export default function CustomCursor() {
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
-          transform: `translate3d(-50%, -50%, 0) ${isHovered ? "scale(1.15)" : "scale(1)"}`,
+          // 중앙(-50%) 대신 살짝만 옮겨서 끝부분이 마우스 끝에 오도록 조정 (이미지에 따라 -10% ~ -20% 정도가 적당할 수 있음)
+          transform: `translate3d(-5%, -5%, 0) ${isHovered ? "scale(1.15)" : "scale(1)"}`,
         }}
       >
         <img 
