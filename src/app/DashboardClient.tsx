@@ -56,6 +56,7 @@ export default function DashboardClient({
   const [editingText, setEditingText] = useState("");
   const [isTipEdit, setIsTipEdit] = useState(false);
   const [editingTipId, setEditingTipId] = useState("");
+  const [isTipPaused, setIsTipPaused] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // 관리자 로그인 상태 확인 (쿠키 확인)
@@ -78,7 +79,7 @@ export default function DashboardClient({
 
   // ✨ 생활 팁 자동 슬라이더 로직
   useEffect(() => {
-    if (activeTab === "홈" && scrollRef.current) {
+    if (activeTab === "홈" && scrollRef.current && !isTipPaused) {
       const interval = setInterval(() => {
         if (scrollRef.current) {
           const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
@@ -92,7 +93,7 @@ export default function DashboardClient({
 
       return () => clearInterval(interval);
     }
-  }, [activeTab]);
+  }, [activeTab, isTipPaused]);
 
   const featuredCards = initialFeaturedCards;
   const blogPosts = initialBlogPosts;
@@ -424,10 +425,11 @@ export default function DashboardClient({
     isCarousel?: boolean;
   }) => {
     const sectionScrollRef = useRef<HTMLDivElement>(null);
+    const [isPaused, setIsPaused] = useState(false);
 
     // 섹션별 자동 슬라이더 (Carousel 모드일 때만)
     useEffect(() => {
-      if (isCarousel && sectionScrollRef.current) {
+      if (isCarousel && sectionScrollRef.current && !isPaused) {
         const interval = setInterval(() => {
           if (sectionScrollRef.current) {
             const maxScroll = sectionScrollRef.current.scrollWidth - sectionScrollRef.current.clientWidth;
@@ -437,11 +439,11 @@ export default function DashboardClient({
               sectionScrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
             }
           }
-        }, 4500 + Math.random() * 1000); // 각 섹션마다 약간씩 다른 타이밍으로 생동감 부여
+        }, 4500 + Math.random() * 1000);
 
         return () => clearInterval(interval);
       }
-    }, [isCarousel, cards]);
+    }, [isCarousel, cards, isPaused]);
 
     return (
       <section className="mb-16">
@@ -467,6 +469,8 @@ export default function DashboardClient({
         {isCarousel ? (
           <div 
             ref={sectionScrollRef}
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
             className="flex gap-6 overflow-x-auto pb-10 scroll-smooth hide-scrollbar snap-x"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
@@ -671,6 +675,8 @@ export default function DashboardClient({
 
                   <div 
                     ref={scrollRef}
+                    onMouseEnter={() => setIsTipPaused(true)}
+                    onMouseLeave={() => setIsTipPaused(false)}
                     className="flex gap-6 overflow-x-auto pb-8 scroll-smooth hide-scrollbar snap-x"
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                   >
