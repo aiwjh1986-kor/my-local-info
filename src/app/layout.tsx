@@ -52,6 +52,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${baloo2.variable} ${gamjaFlower.variable} h-full antialiased`}
     >
       <head>
+        <meta name="google-adsense-account" content="ca-pub-5327170974242376" />
         {process.env.NEXT_PUBLIC_ADSENSE_ID && process.env.NEXT_PUBLIC_ADSENSE_ID !== "나중에_입력" && (
           <Script
             id="adsense-id"
