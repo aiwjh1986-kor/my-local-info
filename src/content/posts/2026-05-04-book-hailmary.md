@@ -4,7 +4,7 @@ id: book-2026-05-04-02
 date: 2026-05-04
 summary: "영화 '마션' 작가의 역대급 SF 신작! 인류를 구하기 위한 우주에서의 고군분투를 루미와 함께 따라가 봐요."
 category: "book"
-image: "book_talk.png"
+image: "new_01.png"
 tags: ["베스트셀러", "앤디위어", "SF소설", "우주과학"]
 ---
 

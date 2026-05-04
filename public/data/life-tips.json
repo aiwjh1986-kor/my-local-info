@@ -1,0 +1,74 @@
+[
+  {
+    "id": "tip1",
+    "category": "주방청소",
+    "title": "✨ 만능 베이킹소다로 주방 기름때 싹!",
+    "description": "기름때가 가득한 가스레인지나 환풍기 필터, 베이킹소다 가루를 뿌리고 뜨거운 물을 부어보세요. 힘들이지 않고 반짝반짝해져요!",
+    "image": "new_01.png",
+    "productName": "생활필수품! 대용량 베이킹소다",
+    "productLink": "https://www.coupang.com/vp/products/6166162124"
+  },
+  {
+    "id": "tip2",
+    "category": "수납정리",
+    "title": "👗 좁은 옷장 2배로 넓히는 압축 정리법",
+    "description": "부피 큰 겨울 이불이나 패딩, 압축팩 하나면 공간이 마법처럼 늘어나요. 습기 제거제와 함께 보관하면 금상첨화!",
+    "image": "new_01.png",
+    "productName": "공간 창조! 고압축 진공 수납팩",
+    "productLink": "https://link.coupang.com/a/eqOhgO"
+  },
+  {
+    "id": "tip3",
+    "category": "가전관리",
+    "title": "💡 번거로운 전구 교체, 이제 LED로 끝내세요",
+    "description": "자주 나가는 일반 전구 대신 수명 길고 전기료 아끼는 LED 전구로 교체해보세요. 밝기는 훨씬 밝고 수명은 10배나 길답니다.",
+    "image": "new_01.png",
+    "productName": "눈이 편안한 삼성 LED 전구",
+    "productLink": "https://www.coupang.com/vp/products/188470503"
+  },
+  {
+    "id": "tip4",
+    "category": "욕실청소",
+    "title": "🚿 막힌 샤워기 구멍 뻥! 식초 세척법",
+    "description": "비닐봉지에 식초와 따뜻한 물을 섞어 샤워기를 1시간만 담가두세요. 막혔던 구멍이 뻥 뚫리고 반짝이는 광택은 덤!",
+    "image": "new_01.png",
+    "productName": "친환경 살림꾼! 넉넉한 식초 세트",
+    "productLink": "https://www.coupang.com/vp/products/5248545899"
+  },
+  {
+    "id": "tip5",
+    "category": "주방가전",
+    "title": "🍋 전자레인지 냄새 & 기름때 귤껍질로 싹!",
+    "description": "귤이나 레몬 껍질을 넣고 3분간 돌려보세요. 수증기가 때를 불려주고 상큼한 향기까지! 닦아내기만 하면 소독 완료예요.",
+    "image": "new_01.png",
+    "productName": "귀찮을 땐? 전자레인지 전용 세정제",
+    "productLink": "https://link.coupang.com/a/bCDeFgX"
+  },
+  {
+    "id": "tip6",
+    "category": "창문청소",
+    "title": "🌬️ 창틀 먼지 자석! 섬유유연제 활용법",
+    "description": "걸레에 섬유유연제를 살짝 묻혀 창틀을 닦아보세요. 정전기 방지 효과로 먼지가 훨씬 덜 앉고 향기도 폴폴 난답니다.",
+    "image": "new_01.png",
+    "productName": "먼지 킬러! 정전기 먼지떨이 세트",
+    "productLink": "https://link.coupang.com/a/bCDeFgY"
+  },
+  {
+    "id": "tip7",
+    "category": "새제품관리",
+    "title": "🏷️ 스티커 자국 끈적임 제로! 드라이기 신공",
+    "description": "새 그릇이나 가구 스티커, 드라이기로 따뜻하게 데운 뒤 천천히 떼어보세요. 자국 없이 깔끔하게 떨어지는 마법!",
+    "image": "new_01.png",
+    "productName": "강력 제거! 전용 스티커 클리너",
+    "productLink": "https://link.coupang.com/a/bCDeFgZ"
+  },
+  {
+    "id": "tip8",
+    "category": "배수구관리",
+    "title": "🧼 손 안 대고 코 푸는 배수구 청소법",
+    "description": "배수구 냄새가 고민일 땐 발포 클리너를 부어보세요. 풍성한 거품이 구석구석 찌든 때를 녹여준답니다. 물만 부으면 끝!",
+    "image": "new_01.png",
+    "productName": "살림 필수템! 배수구 발포 클리너",
+    "productLink": "https://link.coupang.com/a/bCDeFgW"
+  }
+]

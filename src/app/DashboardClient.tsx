@@ -6,6 +6,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import CoupangDynamicBanner from "@/components/CoupangDynamicBanner";
 import data from "../../public/data/local-info.json";
+import lifeTips from "../../public/data/life-tips.json";
+import { useRef } from "react";
 
 // 폰트 및 캐시 관련 상수
 const V_NUM = "5";
@@ -52,6 +54,9 @@ export default function DashboardClient({
   const [oldContentImageUrl, setOldContentImageUrl] = useState("");
   const [isTextEditModalOpen, setIsTextEditModalOpen] = useState(false);
   const [editingText, setEditingText] = useState("");
+  const [isTipEdit, setIsTipEdit] = useState(false);
+  const [editingTipId, setEditingTipId] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   // 관리자 로그인 상태 확인 (쿠키 확인)
   useEffect(() => {
@@ -70,6 +75,24 @@ export default function DashboardClient({
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [searchParams]);
+
+  // ✨ 생활 팁 자동 슬라이더 로직
+  useEffect(() => {
+    if (activeTab === "홈" && scrollRef.current) {
+      const interval = setInterval(() => {
+        if (scrollRef.current) {
+          const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
+          if (scrollRef.current.scrollLeft >= maxScroll - 5) {
+            scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
+          } else {
+            scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
+          }
+        }
+      }, 4000); // 4초마다 이동
+
+      return () => clearInterval(interval);
+    }
+  }, [activeTab]);
 
   const featuredCards = initialFeaturedCards;
   const blogPosts = initialBlogPosts;
@@ -94,7 +117,7 @@ export default function DashboardClient({
       }
     });
 
-    const todayStr = "2026-05-03";
+    const todayStr = new Date().toISOString().split('T')[0];
 
     return combined.sort((a, b) => {
       const dateAStr = (a.date || "").toString().replace(/\./g, '-');
@@ -115,9 +138,12 @@ export default function DashboardClient({
   };
 
   const allCards = getCombinedData();
-  const latestCards = allCards.slice(0, 10);
+  const latestCards = allCards.slice(0, 4);
+  const grantCards = allCards.filter(c => c.category === "지원금" || c.category === "grant");
+  const eventCards = allCards.filter(c => c.category === "지역행사" || c.category === "event");
+  const infoCards = allCards.filter(c => c.category === "생활정보" || c.category === "info");
+  const bookCards = allCards.filter(c => c.category === "도서정보" || c.category === "book");
   const popularCards = allCards.filter((c) => c.is_popular).slice(0, 3);
-  const bookCards = allCards.filter(c => c.category === "도서정보" || c.category === "book").slice(0, 3);
 
   // 블로그 필터링 로직
   const getFilteredBlogPosts = () => {
@@ -186,6 +212,25 @@ export default function DashboardClient({
 
   // 이미지 수정 저장
   const saveImageChanges = async () => {
+    if (isTipEdit) {
+      if (!editingTipId) return;
+      setIsSaving(true);
+      try {
+        const res = await fetch("/api/update-tip-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: editingTipId, newImageUrl: newImageUrl }),
+        });
+        if (res.ok) window.location.reload();
+        else alert("팁 이미지 수정에 실패했습니다.");
+      } catch (err) {
+        alert("서버 오류가 발생했습니다.");
+      } finally {
+        setIsSaving(false);
+      }
+      return;
+    }
+
     if (!editingCard || !editingCard.slug) return;
     
     setIsSaving(true);
@@ -367,7 +412,8 @@ export default function DashboardClient({
     cards,
     onCardClick,
     onMoreClick,
-    iconSize = "normal"
+    iconSize = "normal",
+    isCarousel = false
   }: {
     title: string;
     icon: string;
@@ -375,32 +421,71 @@ export default function DashboardClient({
     onCardClick: (card: FeaturedCard) => void;
     onMoreClick: () => void;
     iconSize?: "normal" | "large";
-  }) => (
-    <section className="mb-12">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className={`${iconSize === "large" ? "w-12 h-12" : "w-10 h-10"} bg-white rounded-2xl shadow-sm flex items-center justify-center border border-white/50`}>
-            <img src={icon} alt={title} className={iconSize === "large" ? "w-7 h-7" : "w-6 h-6"} />
+    isCarousel?: boolean;
+  }) => {
+    const sectionScrollRef = useRef<HTMLDivElement>(null);
+
+    // 섹션별 자동 슬라이더 (Carousel 모드일 때만)
+    useEffect(() => {
+      if (isCarousel && sectionScrollRef.current) {
+        const interval = setInterval(() => {
+          if (sectionScrollRef.current) {
+            const maxScroll = sectionScrollRef.current.scrollWidth - sectionScrollRef.current.clientWidth;
+            if (sectionScrollRef.current.scrollLeft >= maxScroll - 5) {
+              sectionScrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
+            } else {
+              sectionScrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
+            }
+          }
+        }, 4500 + Math.random() * 1000); // 각 섹션마다 약간씩 다른 타이밍으로 생동감 부여
+
+        return () => clearInterval(interval);
+      }
+    }, [isCarousel, cards]);
+
+    return (
+      <section className="mb-16">
+        <div className="flex items-center justify-between mb-8 px-2">
+          <div className="flex items-center gap-4">
+            <div className={`${iconSize === "large" ? "w-14 h-14" : "w-12 h-12"} bg-white rounded-2xl shadow-lg flex items-center justify-center border border-white/50 shadow-gray-200/50`}>
+              <img src={icon} alt={title} className={iconSize === "large" ? "w-8 h-8" : "w-7 h-7"} />
+            </div>
+            <div>
+              <h2 className="text-2xl font-black text-gray-900 tracking-tight">{title}</h2>
+              <p className="text-[10px] text-blue-500 font-black uppercase tracking-widest mt-1">Live Updates</p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-xl font-extrabold text-gray-900 tracking-tight">{title}</h2>
-            <p className="text-[10px] text-gray-400 font-medium">실시간 업데이트 완료</p>
-          </div>
+          <button
+            onClick={onMoreClick}
+            className="px-6 py-2 bg-white/80 backdrop-blur-md rounded-full text-xs font-black text-gray-500 hover:bg-blue-600 hover:text-white transition-all border border-gray-100 shadow-sm flex items-center gap-2 group"
+          >
+            <span>전체보기</span>
+            <span className="group-hover:translate-x-1 transition-transform">→</span>
+          </button>
         </div>
-        <button
-          onClick={onMoreClick}
-          className="px-4 py-1.5 bg-white/50 backdrop-blur-sm rounded-full text-[11px] font-bold text-gray-500 hover:bg-white hover:text-blue-500 transition-all border border-white/50"
-        >
-          더보기 +
-        </button>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {cards.map((card, idx) => (
-          <Card key={idx} card={card} onClick={() => onCardClick(card)} />
-        ))}
-      </div>
-    </section>
-  );
+
+        {isCarousel ? (
+          <div 
+            ref={sectionScrollRef}
+            className="flex gap-6 overflow-x-auto pb-10 scroll-smooth hide-scrollbar snap-x"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {cards.map((card, idx) => (
+              <div key={idx} className="min-w-[280px] md:min-w-[340px] snap-start">
+                <Card card={card} onClick={() => onCardClick(card)} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-2">
+            {cards.map((card, idx) => (
+              <Card key={idx} card={card} onClick={() => onCardClick(card)} />
+            ))}
+          </div>
+        )}
+      </section>
+    );
+  };
 
   return (
     <div className="min-h-screen font-[family-name:var(--font-pretendard)] pb-24 relative">
@@ -530,13 +615,118 @@ export default function DashboardClient({
                 />
 
                 <Section
+                  title="놓치면 아까운 지원금"
+                  icon={IMG_BASE + "icon-grant.png?v=" + V_NUM}
+                  cards={grantCards}
+                  isCarousel={true}
+                  onCardClick={setSelectedCard}
+                  onMoreClick={() => setActiveTab("지원금")}
+                />
+
+                <Section
+                  title="즐거운 지역 행사"
+                  icon={IMG_BASE + "icon-event.png?v=" + V_NUM}
+                  cards={eventCards}
+                  isCarousel={true}
+                  onCardClick={setSelectedCard}
+                  onMoreClick={() => setActiveTab("지역행사")}
+                />
+
+                <Section
+                  title="유익한 생활 정보"
+                  icon={IMG_BASE + "icon-info.png?v=" + V_NUM}
+                  cards={infoCards}
+                  isCarousel={true}
+                  onCardClick={setSelectedCard}
+                  onMoreClick={() => setActiveTab("생활정보")}
+                />
+
+                <Section
                   title="지혜가 쌓이는 도서 추천"
                   icon={IMG_BASE + "icon-book.png?v=" + V_NUM}
                   iconSize="large"
                   cards={bookCards}
+                  isCarousel={true}
                   onCardClick={setSelectedCard}
-                  onMoreClick={() => setActiveTab("도서정보")}
+                  onMoreClick={() => {
+                    setActiveTab("블로그");
+                    setActiveBlogCat("도서정보");
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
                 />
+
+                {/* ✨ 루미의 생활 팁! 전용 섹션 */}
+                <div className="mt-16 mb-10">
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-yellow-400 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-100">
+                        <span className="text-2xl">💡</span>
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-black text-gray-900 tracking-tight">루미의 실생활 꿀팁!</h2>
+                        <p className="text-xs text-gray-400 font-bold mt-1">삶이 편리해지는 작은 비결들을 모았어요.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div 
+                    ref={scrollRef}
+                    className="flex gap-6 overflow-x-auto pb-8 scroll-smooth hide-scrollbar snap-x"
+                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                  >
+                    {lifeTips.map((tip) => (
+                      <div key={tip.id} className="min-w-[300px] md:min-w-[380px] bg-white rounded-[32px] p-6 shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all group overflow-hidden relative snap-start">
+                        <div className="absolute top-0 right-0 p-4 flex gap-2">
+                          {isAdmin && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setIsTipEdit(true);
+                                setEditingTipId(tip.id);
+                                setNewImageUrl(tip.image);
+                                setIsEditModalOpen(true);
+                              }}
+                              className="bg-black/60 backdrop-blur-md text-white px-3 py-1 rounded-full text-[10px] font-black hover:scale-105 transition-all shadow-lg z-20"
+                            >
+                              📸 이미지 수정
+                            </button>
+                          )}
+                          <span className="bg-yellow-50 text-yellow-600 text-[10px] font-black px-3 py-1 rounded-full border border-yellow-100">
+                            {tip.category}
+                          </span>
+                        </div>
+                        
+                        <div className="mb-6 rounded-2xl overflow-hidden aspect-video bg-gray-50">
+                          <img 
+                            src={tip.image.startsWith('http') ? tip.image : IMG_BASE + tip.image + "?v=" + V_NUM} 
+                            alt={tip.title} 
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                          />
+                        </div>
+
+                        <h3 className="text-lg font-black text-gray-900 mb-3 leading-tight group-hover:text-blue-600 transition-colors">
+                          {tip.title}
+                        </h3>
+                        <p className="text-sm text-gray-500 leading-relaxed mb-8 font-medium line-clamp-3 h-[4.5rem]">
+                          {tip.description}
+                        </p>
+
+                        <div className="pt-6 border-t border-gray-50">
+                          <div className="text-[10px] text-gray-400 font-black mb-3 ml-1 uppercase tracking-widest">루미의 추천 아이템</div>
+                          <a 
+                            href={tip.productLink} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between bg-gray-50 hover:bg-yellow-400 p-4 rounded-2xl transition-all group/btn"
+                          >
+                            <span className="text-xs font-black text-gray-700 group-hover/btn:text-gray-900">{tip.productName}</span>
+                            <span className="text-lg group-hover/btn:translate-x-1 transition-transform">🛒</span>
+                          </a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </>
             )}
 
