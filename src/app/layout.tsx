@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Baloo_2, Gamja_Flower } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import BGMPlayer from "@/components/BGMPlayer";
+import CustomCursor from "@/components/CustomCursor";
 
 const baloo2 = Baloo_2({
   variable: "--font-baloo-2",
@@ -121,6 +122,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
+        <CustomCursor />
         {children}
         <BGMPlayer />
       </body>
