@@ -30,4 +30,4 @@ SF 소설이라고 해서 너무 어렵게 생각하지 마세요! 과학 용어
 
 👉 [공식 홈페이지에서 자세히 보기 및 신청하기](https://www.yes24.com/)
 
-FILENAME: 2026-05-04-book-hailmary.md
+
