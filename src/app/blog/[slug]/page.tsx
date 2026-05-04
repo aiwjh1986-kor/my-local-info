@@ -15,16 +15,21 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const post = getPostData(slug);
   if (!post) return { title: "Post Not Found" };
   
-  const title = post.title + " | 용인생활가이드";
+  const title = post.title + " | 루미 가이드";
   const description = post.summary || "용인시 지역 소식 및 유익한 생활 정보를 전해드립니다.";
-  const image = post.image ? `/images/${post.image}` : "/images/background1.png";
+  const baseUrl = "https://koreatripinfo.com";
+  const image = post.image ? `${baseUrl}/images/${post.image}` : `${baseUrl}/images/background1.png`;
 
   return { 
     title,
     description,
+    alternates: {
+      canonical: `${baseUrl}/blog/${slug}`,
+    },
     openGraph: {
       title,
       description,
+      url: `${baseUrl}/blog/${slug}`,
       images: [image],
       type: "article",
       publishedTime: post.date,
@@ -42,16 +47,29 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   }
 
   // 구글 검색용 구조화 데이터 (Article)
+  const baseUrl = "https://koreatripinfo.com";
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": post.title,
     "description": post.summary,
-    "image": post.image ? `https://my-local-info-42x.pages.dev/images/${post.image}` : "",
+    "image": post.image ? `${baseUrl}/images/${post.image}` : `${baseUrl}/images/background1.png`,
     "datePublished": post.date,
     "author": {
       "@type": "Person",
       "name": "루미"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "루미 가이드",
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${baseUrl}/images/icon-new.png`
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `${baseUrl}/blog/${slug}`
     }
   };
 

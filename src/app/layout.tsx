@@ -28,16 +28,48 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "용인시 생활 정보 및 여행가이드",
-  description: "용인시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보 및 전국 여행 가이드를 매일 업데이트합니다.",
+  title: {
+    default: "용인 가볼만한곳 & 용인 생활정보 가이드 | 루미 가이드",
+    template: "%s | 루미 가이드"
+  },
+  description: "2026년 용인 가볼만한곳, 지역 축제, 행사 정보부터 용인시 지원금, 이자 지원, 실생활 꿀팁까지! 용인 주민과 여행자를 위한 필수 정보를 매일 업데이트합니다.",
+  keywords: ["용인 가볼만한곳", "용인 여행", "용인 축제", "용인 행사", "용인 지원금", "용인 생활정보", "용인시 혜택", "용인 맛집", "용인 꿀팁"],
+  authors: [{ name: "LUMI GUIDE" }],
+  creator: "LUMI GUIDE",
+  publisher: "LUMI GUIDE",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   verification: {
     google: "mheHADfMzfVfsc2CiF8hADt8XgNyQ4AhBUVsI1SW-4g",
+    // 네이버 서치어드바이저용 (나중에 키 입력 가능)
+    other: {
+      "naver-site-verification": ["나중에_여기에_입력"],
+    },
   },
   openGraph: {
-    title: "용인시 생활 정보 및 여행가이드",
-    description: "용인시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보를 매일 업데이트합니다.",
+    title: "용인 가볼만한곳 & 용인 생활정보 가이드 | 루미 가이드",
+    description: "용인시 주민과 여행자를 위한 지역 행사, 축제, 지원금, 실생활 꿀팁 정보를 매일 확인하세요.",
+    url: "https://koreatripinfo.com",
+    siteName: "루미 가이드",
+    images: [
+      {
+        url: "https://koreatripinfo.com/images/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "루미 가이드 - 용인 생활 정보",
+      },
+    ],
     type: "website",
     locale: "ko_KR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "용인 가볼만한곳 & 용인 생활정보 가이드 | 루미 가이드",
+    description: "용인시 주민과 여행자를 위한 필수 정보를 매일 업데이트합니다.",
+    images: ["https://koreatripinfo.com/images/og-image.png"],
   },
 };
 
