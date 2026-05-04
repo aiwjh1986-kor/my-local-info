@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/private/',
     },
-    sitemap: 'https://my-local-info-42x.pages.dev/sitemap.xml',
+    sitemap: 'https://koreatripinfo.com/sitemap.xml',
   };
 }

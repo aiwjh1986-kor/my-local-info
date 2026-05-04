@@ -5,7 +5,7 @@ import path from 'path';
 export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://my-local-info-42x.pages.dev'; // 실제 도메인으로 변경 가능
+  const baseUrl = 'https://koreatripinfo.com'; // 실제 도메인으로 변경 완료
 
   // 블로그 글 목록 가져오기
   const postsDirectory = path.join(process.cwd(), 'src/content/posts');
