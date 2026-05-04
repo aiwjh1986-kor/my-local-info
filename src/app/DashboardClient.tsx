@@ -323,7 +323,7 @@ export default function DashboardClient({
       onClick={onClick}
       className="bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden shadow-sm border border-white/20 cursor-pointer hover:shadow-md transition-all group active:scale-[0.98]"
     >
-      <div className="relative h-40 overflow-hidden">
+      <div className="relative aspect-video overflow-hidden">
         <img
           src={card.image?.startsWith("http") ? card.image : (IMG_BASE + (card.image || "thumb-youth.png") + "?v=" + V_NUM)}
           alt={card.title}

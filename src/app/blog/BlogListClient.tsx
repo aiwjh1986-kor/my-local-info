@@ -139,7 +139,7 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
               >
                 <Link href={`/blog/${post.slug}`} className="block flex-1 flex flex-col">
                   {/* 카드 이미지 */}
-                  <div className="relative h-64 lg:h-80 overflow-hidden">
+                  <div className="relative aspect-video overflow-hidden">
                     <img 
                       src={IMG_BASE + (post.image || "thumb-default.png").replace(".png", "") + ".png?v=" + V_NUM} 
                       alt={post.title}
