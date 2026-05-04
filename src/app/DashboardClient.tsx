@@ -154,6 +154,15 @@ export default function DashboardClient({
   const bookCards = allCards.filter(c => c.category === "도서정보" || c.category === "book");
   const popularCards = allCards.filter((c) => c.is_popular).slice(0, 3);
 
+  // ⏰ 마감임박 카드 필터링 (7일 이내 마감되는 글)
+  const TODAY_TIME = new Date("2026-05-04").getTime();
+  const impendingCards = allCards.filter(p => {
+    if (!p.deadline) return false;
+    const deadlineTime = new Date(p.deadline).getTime();
+    const diffDays = (deadlineTime - TODAY_TIME) / (1000 * 60 * 60 * 24);
+    return diffDays >= 0 && diffDays <= 7;
+  });
+
   // 블로그 필터링 로직
   const getFilteredBlogPosts = () => {
     const catMap: Record<string, string[]> = {
@@ -671,48 +680,7 @@ export default function DashboardClient({
                   }}
                 />
 
-                <Section
-                  title="놓치면 아까운 지원금"
-                  icon={IMG_BASE + "icon-grant.png?v=" + V_NUM}
-                  cards={grantCards}
-                  isCarousel={true}
-                  onCardClick={setSelectedCard}
-                  onMoreClick={() => setActiveTab("지원금")}
-                />
-
-                <Section
-                  title="즐거운 지역 행사"
-                  icon={IMG_BASE + "icon-event.png?v=" + V_NUM}
-                  cards={eventCards}
-                  isCarousel={true}
-                  onCardClick={setSelectedCard}
-                  onMoreClick={() => setActiveTab("지역행사")}
-                />
-
-                <Section
-                  title="유익한 생활 정보"
-                  icon={IMG_BASE + "icon-info.png?v=" + V_NUM}
-                  cards={infoCards}
-                  isCarousel={true}
-                  onCardClick={setSelectedCard}
-                  onMoreClick={() => setActiveTab("생활정보")}
-                />
-
-                <Section
-                  title="지혜가 쌓이는 도서 추천"
-                  icon={IMG_BASE + "icon-book.png?v=" + V_NUM}
-                  iconSize="large"
-                  cards={bookCards}
-                  isCarousel={true}
-                  onCardClick={setSelectedCard}
-                  onMoreClick={() => {
-                    setActiveTab("블로그");
-                    setActiveBlogCat("도서정보");
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
-                />
-
-                {/* ✨ 루미의 생활 팁! 전용 섹션 */}
+                {/* ✨ 루미의 생활 팁! 전용 섹션 (순서 변경) */}
                 <div className="mt-16 mb-10">
                   <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-4">
@@ -751,7 +719,6 @@ export default function DashboardClient({
                     className={`flex gap-6 overflow-x-auto pb-8 hide-scrollbar snap-x ${isTipDragging ? "cursor-grabbing" : "cursor-grab"} ${isTipDragging ? "" : "scroll-smooth"}`}
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', userSelect: isTipDragging ? 'none' : 'auto' }}
                   >
-                    {/* 무한 루프를 위해 팁 목록을 3번 렌더링 */}
                     {[...lifeTips, ...lifeTips, ...lifeTips].map((tip, idx) => (
                       <div 
                         key={`${tip.id}-${idx}`} 
@@ -815,6 +782,58 @@ export default function DashboardClient({
                     ))}
                   </div>
                 </div>
+
+                {/* ⏰ 마감임박 전용 섹션 (신설) */}
+                {impendingCards.length > 0 && (
+                  <Section
+                    title="마감임박! 놓치지 마세요"
+                    icon={IMG_BASE + "icon-clock.png?v=" + V_NUM}
+                    cards={impendingCards}
+                    isCarousel={true}
+                    onCardClick={setSelectedCard}
+                  />
+                )}
+
+                <Section
+                  title="놓치면 아까운 지원금"
+                  icon={IMG_BASE + "icon-grant.png?v=" + V_NUM}
+                  cards={grantCards}
+                  isCarousel={true}
+                  onCardClick={setSelectedCard}
+                  onMoreClick={() => setActiveTab("지원금")}
+                />
+
+                <Section
+                  title="즐거운 지역 행사"
+                  icon={IMG_BASE + "icon-event.png?v=" + V_NUM}
+                  cards={eventCards}
+                  isCarousel={true}
+                  onCardClick={setSelectedCard}
+                  onMoreClick={() => setActiveTab("지역행사")}
+                />
+
+                <Section
+                  title="유익한 생활 정보"
+                  icon={IMG_BASE + "icon-info.png?v=" + V_NUM}
+                  cards={infoCards}
+                  isCarousel={true}
+                  onCardClick={setSelectedCard}
+                  onMoreClick={() => setActiveTab("생활정보")}
+                />
+
+                <Section
+                  title="지혜가 쌓이는 도서 추천"
+                  icon={IMG_BASE + "icon-book.png?v=" + V_NUM}
+                  iconSize="large"
+                  cards={bookCards}
+                  isCarousel={true}
+                  onCardClick={setSelectedCard}
+                  onMoreClick={() => {
+                    setActiveTab("블로그");
+                    setActiveBlogCat("도서정보");
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                />
               </>
             )}
 
