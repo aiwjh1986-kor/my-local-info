@@ -32,8 +32,42 @@ export default function Page() {
     console.error("Failed to read featured-cards.json:", err);
   }
 
+  // life-tips.json 읽어오기 (SEO용)
+  const tipsPath = path.join(process.cwd(), 'public/data/life-tips.json');
+  let lifeTips = [];
+  try {
+    const fileContent = fs.readFileSync(tipsPath, 'utf8');
+    lifeTips = JSON.parse(fileContent);
+  } catch (err) {
+    console.error("Failed to read life-tips.json:", err);
+  }
+
+  // 구글 검색용 구조화 데이터 (HowTo 모음)
+  const howToJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "루미의 실생활 꿀팁 모음",
+    "itemListElement": lifeTips.map((tip: any, index: number) => ({
+      "@type": "HowTo",
+      "position": index + 1,
+      "name": tip.title,
+      "description": tip.description,
+      "image": `https://my-local-info-42x.pages.dev/images/${tip.image}`,
+      "step": [
+        {
+          "@type": "HowToStep",
+          "text": tip.description
+        }
+      ]
+    }))
+  };
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
       <DashboardClient initialBlogPosts={blogPosts} initialFeaturedCards={featuredCards} />
     </Suspense>
   );
