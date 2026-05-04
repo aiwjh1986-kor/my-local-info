@@ -14,6 +14,7 @@ export interface PostData {
   content: string;
   link?: string;
   image?: string;
+  deadline?: string;
 }
 
 export function getSortedPostsData(): PostData[] {
@@ -51,6 +52,14 @@ export function getSortedPostsData(): PostData[] {
         console.error("Date parsing error for slug:", slug, e);
       }
 
+      // 마감일 처리
+      let deadline = matterResult.data.deadline;
+      if (deadline instanceof Date) {
+        deadline = deadline.toISOString().split('T')[0];
+      } else if (deadline) {
+        deadline = String(deadline).replace(/\./g, '-');
+      }
+
       return {
         ...matterResult.data,
         slug,
@@ -61,6 +70,7 @@ export function getSortedPostsData(): PostData[] {
         tags: Array.isArray(matterResult.data.tags) ? matterResult.data.tags : [],
         link: matterResult.data.link || '',
         content: matterResult.content || '',
+        deadline: deadline || null,
       } as PostData;
     });
 

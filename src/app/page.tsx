@@ -5,22 +5,33 @@ import fs from 'fs';
 import path from 'path';
 
 export default function Page() {
+  // 오늘 날짜 기준 (2026-05-04)
+  const TODAY = "2026-05-04";
+
   // 빌드 시점에 마크다운 파일들로부터 블로그 데이터를 가져옵니다.
-  const blogPosts = getSortedPostsData().map(p => ({
-    category: p.category,
-    title: p.title,
-    summary: p.summary,
-    date: p.date,
-    region: "전체",
-    cta: "글 읽어보기",
-    deadline: null,
-    is_urgent: false,
-    is_popular: true,
-    content: p.content,
-    slug: p.slug,
-    image: p.image,
-    link: "/blog/" + p.slug + "/" // trailingSlash 활성화 대응
-  }));
+  const blogPosts = getSortedPostsData()
+    .filter(p => {
+      // 마감일이 있는 경우 오늘 날짜와 비교하여 지난 글은 제외
+      if (p.deadline) {
+        return p.deadline >= TODAY;
+      }
+      return true; // 마감일이 없으면 항상 표시
+    })
+    .map(p => ({
+      category: p.category,
+      title: p.title,
+      summary: p.summary,
+      date: p.date,
+      region: "전체",
+      cta: "글 읽어보기",
+      deadline: p.deadline || null,
+      is_urgent: false,
+      is_popular: true,
+      content: p.content,
+      slug: p.slug,
+      image: p.image,
+      link: "/blog/" + p.slug + "/"
+    }));
 
   // featured-cards.json을 실시간으로 읽어옵니다. (이미지 수정 즉시 반영을 위함)
   const featuredPath = path.join(process.cwd(), 'public/data/featured-cards.json');
