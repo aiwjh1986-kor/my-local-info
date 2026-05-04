@@ -670,7 +670,7 @@ export default function DashboardClient({
                 {/* 섹션들 */}
                 <Section
                   title="최신 정보"
-                  icon={IMG_BASE + "icon-tip.png?v=" + V_NUM}
+                  icon={IMG_BASE + "icon-new.png?v=" + V_NUM}
                   cards={latestCards}
                   onCardClick={setSelectedCard}
                   onMoreClick={() => {
@@ -684,8 +684,12 @@ export default function DashboardClient({
                 <div className="mt-16 mb-10">
                   <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-yellow-400 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-100">
-                        <span className="text-2xl">💡</span>
+                      <div className="w-14 h-14 bg-yellow-400 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-100 overflow-hidden">
+                        <img 
+                          src={IMG_BASE + "icon-ggul.png?v=" + V_NUM} 
+                          alt="꿀팁 아이콘" 
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                       <div>
                         <h2 className="text-2xl font-black text-gray-900 tracking-tight">루미의 실생활 꿀팁!</h2>
