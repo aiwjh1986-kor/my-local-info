@@ -10,7 +10,7 @@ import lifeTips from "../../public/data/life-tips.json";
 import { useRef } from "react";
 
 // 폰트 및 캐시 관련 상수
-const V_NUM = "5";
+const V_NUM = "11";
 const IMG_BASE = "/images/";
 
 interface FeaturedCard {

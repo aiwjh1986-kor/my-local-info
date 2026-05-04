@@ -71,8 +71,8 @@ export default function CustomCursor() {
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
-          // 중앙(-50%) 대신 살짝만 옮겨서 끝부분이 마우스 끝에 오도록 조정 (이미지에 따라 -10% ~ -20% 정도가 적당할 수 있음)
-          transform: `translate3d(-5%, -5%, 0) ${isHovered ? "scale(1.15)" : "scale(1)"}`,
+          // 클릭 지점을 이미지 끝부분(0,0)으로 정확히 고정
+          transform: `translate3d(0, 0, 0) ${isHovered ? "scale(1.15)" : "scale(1)"}`,
         }}
       >
         <img 
