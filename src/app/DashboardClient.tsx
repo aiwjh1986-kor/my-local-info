@@ -63,6 +63,7 @@ export default function DashboardClient({
   const [selectedTip, setSelectedTip] = useState<any>(null);
   const [isTipModalOpen, setIsTipModalOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const lifeTipRef = useRef<HTMLDivElement>(null);
 
   // 관리자 로그인 상태 확인 (쿠키 확인)
   useEffect(() => {
@@ -82,20 +83,19 @@ export default function DashboardClient({
     }
   }, [searchParams]);
 
-  // ✨ 생활 팁 자동 슬라이더 로직 (무한 루프)
+  // ✨ 생활 팁 자동 슬라이더 로직 (무한 루프) - 전용 lifeTipRef 사용
   useEffect(() => {
-    if (activeTab === "홈" && scrollRef.current && !isTipPaused) {
+    if (activeTab === "홈" && lifeTipRef.current && !isTipPaused) {
       const interval = setInterval(() => {
-        if (scrollRef.current) {
-          const { scrollLeft, scrollWidth } = scrollRef.current;
-          const oneSetWidth = scrollWidth / 3; // 3배 복제 기준
+        if (lifeTipRef.current) {
+          const { scrollLeft, scrollWidth } = lifeTipRef.current;
+          const oneSetWidth = scrollWidth / 3;
           
-          // 두 번째 세트 중간을 넘어가면 첫 번째 세트의 같은 위치로 워프
           if (scrollLeft >= oneSetWidth * 2) {
-            scrollRef.current.scrollTo({ left: scrollLeft - oneSetWidth, behavior: "auto" });
+            lifeTipRef.current.scrollTo({ left: scrollLeft - oneSetWidth, behavior: "auto" });
           }
           
-          scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
+          lifeTipRef.current.scrollBy({ left: 300, behavior: "smooth" });
         }
       }, 4000);
 
@@ -695,25 +695,25 @@ export default function DashboardClient({
                   </div>
 
                   <div 
-                    ref={scrollRef}
+                    ref={lifeTipRef}
                     onMouseEnter={() => setIsTipPaused(true)}
                     onMouseLeave={() => { setIsTipPaused(false); setIsTipDragging(false); }}
                     onMouseDown={(e) => {
-                      if (!scrollRef.current) return;
+                      if (!lifeTipRef.current) return;
                       setIsTipDragging(true);
-                      setTipStartX(e.pageX - scrollRef.current.offsetLeft);
-                      setTipScrollLeft(scrollRef.current.scrollLeft);
+                      setTipStartX(e.pageX - lifeTipRef.current.offsetLeft);
+                      setTipScrollLeft(lifeTipRef.current.scrollLeft);
                     }}
                     onMouseMove={(e) => {
-                      if (!isTipDragging || !scrollRef.current) return;
+                      if (!isTipDragging || !lifeTipRef.current) return;
                       e.preventDefault();
-                      const x = e.pageX - scrollRef.current.offsetLeft;
+                      const x = e.pageX - lifeTipRef.current.offsetLeft;
                       const walk = (x - tipStartX) * 1.5;
-                      scrollRef.current.scrollLeft = tipScrollLeft - walk;
-                      const { scrollLeft, scrollWidth } = scrollRef.current;
+                      lifeTipRef.current.scrollLeft = tipScrollLeft - walk;
+                      const { scrollLeft, scrollWidth } = lifeTipRef.current;
                       const oneSetWidth = scrollWidth / 3;
-                      if (scrollLeft >= oneSetWidth * 2) scrollRef.current.scrollTo({ left: scrollLeft - oneSetWidth, behavior: "auto" });
-                      else if (scrollLeft <= 5) scrollRef.current.scrollTo({ left: scrollLeft + oneSetWidth, behavior: "auto" });
+                      if (scrollLeft >= oneSetWidth * 2) lifeTipRef.current.scrollTo({ left: scrollLeft - oneSetWidth, behavior: "auto" });
+                      else if (scrollLeft <= 5) lifeTipRef.current.scrollTo({ left: scrollLeft + oneSetWidth, behavior: "auto" });
                     }}
                     onMouseUp={() => setIsTipDragging(false)}
                     className={`flex gap-6 overflow-x-auto pb-8 hide-scrollbar snap-x ${isTipDragging ? "cursor-grabbing" : "cursor-grab"} ${isTipDragging ? "" : "scroll-smooth"}`}
