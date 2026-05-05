@@ -6,7 +6,8 @@
     "date": "2026-05-05",
     "region": "용인시",
     "image": "new_01.png",
-    "slug": "2026-05-05-03"
+    "slug": "2026-05-05-03",
+    "link": "https://www.yicf.or.kr/main/show/view.do?show_type=all&viewType=img&SHOW_IDX=16475"
   },
   {
     "category": "어린이공연",
@@ -15,7 +16,8 @@
     "date": "2026-05-05",
     "region": "용인시",
     "image": "new_01.png",
-    "slug": "2026-05-05-02"
+    "slug": "2026-05-05-02",
+    "link": "https://www.yicf.or.kr/main/show/view.do?show_type=all&viewType=img&SHOW_IDX=16497"
   },
   {
     "category": "정보",
@@ -24,7 +26,8 @@
     "date": "2026-05-05",
     "region": "용인시",
     "image": "new_01.png",
-    "slug": "2026-05-05-01"
+    "slug": "2026-05-05-01",
+    "link": "https://www.yicf.or.kr/main/show/view.do?show_type=all&viewType=img&SHOW_IDX=16693"
   },
   {
     "category": "지역행사",
