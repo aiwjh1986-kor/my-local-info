@@ -10,7 +10,7 @@ import lifeTips from "../../public/data/life-tips.json";
 import { useRef } from "react";
 
 // 폰트 및 캐시 관련 상수
-const V_NUM = "11";
+const V_NUM = "12";
 const IMG_BASE = "/images/";
 
 interface FeaturedCard {
@@ -90,11 +90,11 @@ export default function DashboardClient({
         if (lifeTipRef.current) {
           const { scrollLeft, scrollWidth } = lifeTipRef.current;
           const oneSetWidth = scrollWidth / 3;
-          
+
           if (scrollLeft >= oneSetWidth * 2) {
             lifeTipRef.current.scrollTo({ left: scrollLeft - oneSetWidth, behavior: "auto" });
           }
-          
+
           lifeTipRef.current.scrollBy({ left: 300, behavior: "smooth" });
         }
       }, 4000);
@@ -105,7 +105,7 @@ export default function DashboardClient({
 
   const featuredCards = initialFeaturedCards;
   const blogPosts = initialBlogPosts;
-  
+
   // 중복 제거 및 데이터 통합 (제목 기준)
   const getCombinedData = () => {
     // 1. 모든 블로그 포스트를 기본으로 시작
@@ -126,28 +126,42 @@ export default function DashboardClient({
       }
     });
 
-    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStr = "2026-05-05";
 
     return combined.sort((a, b) => {
       const dateAStr = (a.date || "").toString().replace(/\./g, '-');
       const dateBStr = (b.date || "").toString().replace(/\./g, '-');
-      
+
       // 1순위: 오늘 날짜인 글을 무조건 위로
       const isAToday = dateAStr === todayStr;
       const isBToday = dateBStr === todayStr;
-      
+
       if (isAToday && !isBToday) return -1;
       if (!isAToday && isBToday) return 1;
-      
+
       // 2순위: 그 외에는 날짜 내림차순 (최신순)
       const dateA = new Date(dateAStr).getTime();
       const dateB = new Date(dateBStr).getTime();
+      
+      // 날짜가 같으면 파일명이나 제목 등으로 정렬할 수 있지만, 일단 날짜순
       return dateB - dateA;
     });
   };
 
   const allCards = getCombinedData();
-  const latestCards = allCards.slice(0, 4);
+  // 🆕 최근 5일 이내 게시글 필터링 (최신 정보)
+  const TODAY_STR = "2026-05-05";
+  const todayObj = new Date(TODAY_STR);
+  const fiveDaysAgo = new Date(todayObj);
+  fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+  
+  const latestCardsRaw = allCards.filter(c => {
+    const postDate = new Date(c.date);
+    // 오늘 날짜보다 이후인 글(미래 글)도 최신 정보로 포함
+    return postDate >= fiveDaysAgo;
+  });
+  // 데이터가 너무 적으면 상위 8개를 기본으로 보여줌
+  const latestCards = latestCardsRaw.length >= 4 ? latestCardsRaw : allCards.slice(0, 8);
   const grantCards = allCards.filter(c => c.category === "지원금" || c.category === "grant");
   const eventCards = allCards.filter(c => c.category === "지역행사" || c.category === "event");
   const infoCards = allCards.filter(c => c.category === "생활정보" || c.category === "info");
@@ -155,7 +169,7 @@ export default function DashboardClient({
   const popularCards = allCards.filter((c) => c.is_popular).slice(0, 3);
 
   // ⏰ 마감임박 카드 필터링 (7일 이내 마감되는 글)
-  const TODAY_TIME = new Date("2026-05-04").getTime();
+  const TODAY_TIME = new Date("2026-05-05").getTime();
   const impendingCards = allCards.filter(p => {
     if (!p.deadline) return false;
     const deadlineTime = new Date(p.deadline).getTime();
@@ -175,11 +189,11 @@ export default function DashboardClient({
 
     const postsToFilter = allCards;
     if (activeBlogCat === "전체") return postsToFilter;
-    
+
     // 2중 안전장치: 버튼 이름이 '행사'여도 '지역행사' 정보를 찾아오게 함
     const actualCat = (activeBlogCat === "행사" || activeBlogCat === "지역행사") ? "지역행사" : activeBlogCat;
     const targets = (catMap[actualCat] || [actualCat]).map(t => t.toLowerCase().replace(/\s/g, ''));
-    
+
     return postsToFilter.filter((post) => {
       const postCat = (post.category || "").toLowerCase().replace(/\s/g, '');
       return targets.includes(postCat);
@@ -250,11 +264,11 @@ export default function DashboardClient({
     }
 
     if (!editingCard || !editingCard.slug) return;
-    
+
     setIsSaving(true);
     try {
       const endpoint = isContentEdit ? "/api/update-content-image" : "/api/update-post-image";
-      const body = isContentEdit 
+      const body = isContentEdit
         ? { slug: editingCard.slug, oldImageUrl: oldContentImageUrl, newImageUrl: newImageUrl }
         : { slug: editingCard.slug, newImageUrl: newImageUrl };
 
@@ -282,7 +296,7 @@ export default function DashboardClient({
     // slug가 있으면 우선 사용, 없으면 id 사용
     const targetSlug = selectedCard?.slug || selectedCard?.id;
     if (!selectedCard || !targetSlug) return;
-    
+
     if (!confirm("정말 이 게시글을 삭제하시겠습니까?\n삭제된 글은 복구할 수 없습니다.")) {
       return;
     }
@@ -318,7 +332,7 @@ export default function DashboardClient({
   // 텍스트 수정 저장
   const saveTextChanges = async () => {
     if (!selectedCard || !selectedCard.slug) return;
-    
+
     setIsSaving(true);
     try {
       const res = await fetch("/api/update-post-text", {
@@ -346,12 +360,12 @@ export default function DashboardClient({
   const getImageUrl = (path: string) => {
     if (!path) return "/images/background1.png";
     if (path.startsWith("http")) return path;
-    
+
     // 이미 images/ 나 /images/ 가 포함되어 있다면 중복 방지
     let cleanPath = path;
     if (cleanPath.startsWith("/images/")) cleanPath = cleanPath.replace("/images/", "");
     if (cleanPath.startsWith("images/")) cleanPath = cleanPath.replace("images/", "");
-    
+
     return `${IMG_BASE}${cleanPath}?v=${V_NUM}`;
   };
 
@@ -399,19 +413,37 @@ export default function DashboardClient({
       onClick={onClick}
       className="bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden shadow-sm border border-white/20 cursor-pointer hover:shadow-md transition-all group active:scale-[0.98]"
     >
-      <div className="relative aspect-video overflow-hidden">
+      <div className="relative aspect-video overflow-hidden bg-gray-50 flex items-center justify-center">
         <img
           src={card.image?.startsWith("http") ? card.image : (IMG_BASE + (card.image || "thumb-youth.png") + "?v=" + V_NUM)}
           alt={card.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
         />
-        <div className="absolute top-3 left-3 flex gap-1.5">
+        <div className="absolute top-3 left-3 flex gap-1.5 items-center">
           {renderTags(card.category)}
-          {card.is_urgent && (
-            <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold animate-pulse">
-              마감임박
-            </span>
-          )}
+          {(() => {
+            // 실시간 마감 임박 계산 (7일 전)
+            const TODAY = "2026-05-04";
+            const todayDate = new Date(TODAY);
+            const targetDate = card.endDate || card.deadline;
+            let autoUrgent = false;
+
+            if (targetDate) {
+              const dDate = new Date(targetDate);
+              const diffTime = dDate.getTime() - todayDate.getTime();
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              if (diffDays >= 0 && diffDays <= 7) autoUrgent = true;
+            }
+
+            if (card.is_urgent || autoUrgent) {
+              return (
+                <span className="bg-red-500/90 text-white text-[10px] px-2.5 py-1 rounded-lg font-black animate-pulse shadow-lg shadow-red-200 border border-red-400/50 backdrop-blur-sm">
+                  마감임박
+                </span>
+              );
+            }
+            return null;
+          })()}
         </div>
         {/* 관리자 수정 버튼 */}
         {isAdmin && card.slug && (
@@ -525,7 +557,7 @@ export default function DashboardClient({
         </div>
 
         {isCarousel ? (
-          <div 
+          <div
             ref={sectionScrollRef}
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => { setIsPaused(false); handleMouseUp(); }}
@@ -556,7 +588,7 @@ export default function DashboardClient({
   return (
     <div className="min-h-screen font-[family-name:var(--font-pretendard)] pb-24 relative">
       {/* 🖼️ 메인 배경 이미지 */}
-      <div 
+      <div
         className="fixed inset-0 z-[-1] opacity-50 pointer-events-none"
         style={{
           backgroundImage: `url(${IMG_BASE}background1.png?v=${V_NUM})`,
@@ -572,7 +604,7 @@ export default function DashboardClient({
       </div>
 
       {/* 🏮 메뉴 버튼 (상단 바 없이 단독으로 플로팅) */}
-      <button 
+      <button
         onClick={() => setIsMenuOpen(true)}
         className="fixed top-6 left-5 z-[60] bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 lg:px-8 lg:py-4 rounded-full shadow-xl hover:scale-110 transition-all flex items-center justify-center group"
       >
@@ -581,287 +613,282 @@ export default function DashboardClient({
 
       <main className="relative z-10 max-w-[1600px] mx-auto px-5 lg:px-10 pt-24 lg:pt-8 transition-all duration-500">
 
-            {/* 🏮 초대형 와이드 개편 배너 (모바일 초슬림 최적화) */}
-            <div className="mb-12 relative overflow-hidden bg-[#E9EBF3] rounded-[40px] lg:rounded-[60px] p-6 lg:p-20 shadow-2xl border border-white group min-h-[280px] lg:min-h-[600px] flex flex-col justify-center lg:justify-between transition-all duration-500">
-              
-              {/* 배경 장식 요소 (고급스러움 추가) */}
-              <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-white/20 to-transparent pointer-events-none" />
-              
-              <div className="relative z-10 flex flex-col lg:flex-row h-full">
-                
-                <div className="flex-1 flex flex-col justify-start text-center lg:text-left mb-6 lg:mb-0">
-                  <div className="animate-in fade-in slide-in-from-top duration-1000">
-                    <div className="hidden lg:flex items-center gap-2 mb-4 lg:mb-8 justify-center lg:justify-start">
-                      <span className="px-3 py-1 bg-blue-600 text-white text-[8px] lg:text-sm font-black rounded-full animate-pulse uppercase tracking-widest">Premium Guide</span>
-                      <span className="text-[8px] lg:text-sm font-black text-blue-400 uppercase tracking-widest opacity-60">2024 New Update</span>
-                    </div>
-                    <h2 className="text-3xl md:text-5xl lg:text-8xl font-black text-[#111111] mb-2 lg:mb-10 leading-tight tracking-tighter font-handwriting mt-10 lg:mt-0">
-                      용인 생활의 모든 것,<br className="hidden lg:block" />
-                      <span className="text-blue-600">루미 가이드</span>와 함께!
-                    </h2>
-                    <p className="hidden lg:block text-sm md:text-xl lg:text-3xl text-gray-500 font-bold leading-relaxed max-w-2xl opacity-80 mb-6 lg:mb-10">
-                      혜택, 행사, 정보까지 한 번에 확인하고<br className="hidden lg:block" /> 
-                      더 똑똑한 용인 생활을 즐겨보세요.
-                    </p>
-                    {/* 모바일에서는 버튼 숨김 */}
-                    <button 
-                      onClick={() => router.push("/blog")}
-                      className="hidden lg:inline-flex items-center gap-4 px-8 py-4 lg:px-16 lg:py-7 bg-accent text-white rounded-full text-lg lg:text-3xl font-black shadow-2xl shadow-accent/30 hover:scale-105 transition-all"
-                    >
-                      블로그 바로가기 <span>→</span>
-                    </button>
-                  </div>
-                </div>
+        {/* 🏮 초대형 와이드 개편 배너 (모바일 초슬림 최적화) */}
+        <div className="mb-12 relative overflow-hidden bg-[#E9EBF3] rounded-[40px] lg:rounded-[60px] p-6 lg:p-20 shadow-2xl border border-white group min-h-[280px] lg:min-h-[600px] flex flex-col justify-center lg:justify-between transition-all duration-500">
 
-                {/* [우측] 초대형 캐릭터 영역 (모바일에서는 텍스트 가독성을 위해 숨김) */}
-                <div className="relative flex-1 hidden lg:flex items-center justify-center lg:justify-end">
-                  <div className="relative w-full max-w-[650px] lg:scale-125 lg:translate-x-10 transform-gpu transition-transform duration-1000">
-                    <img 
-                      src={IMG_BASE + "rabbit-hero-ultra.png?v=" + V_NUM} 
-                      alt="Lumi Rabbit" 
-                      className="w-full h-auto object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.15)] animate-in zoom-in duration-1000" 
-                    />
-                    {/* 캐릭터 주변 장식 */}
-                    <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-white/30 rounded-full blur-3xl" />
-                  </div>
+          {/* 배경 장식 요소 (고급스러움 추가) */}
+          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-white/20 to-transparent pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col lg:flex-row h-full">
+
+            <div className="flex-1 flex flex-col justify-start text-center lg:text-left mb-6 lg:mb-0">
+              <div className="animate-in fade-in slide-in-from-top duration-1000">
+                <div className="hidden lg:flex items-center gap-2 mb-4 lg:mb-8 justify-center lg:justify-start">
+                  <span className="px-3 py-1 bg-blue-600 text-white text-[8px] lg:text-sm font-black rounded-full animate-pulse uppercase tracking-widest">Premium Guide</span>
+                  <span className="text-[8px] lg:text-sm font-black text-blue-400 uppercase tracking-widest opacity-60">2024 New Update</span>
                 </div>
+                <h2 className="text-3xl md:text-5xl lg:text-8xl font-black text-[#111111] mb-2 lg:mb-10 leading-tight tracking-tighter font-handwriting mt-10 lg:mt-0">
+                  용인 생활의 모든 것,<br className="hidden lg:block" />
+                  <span className="text-blue-600">루미 가이드</span>와 함께!
+                </h2>
+                <p className="hidden lg:block text-sm md:text-xl lg:text-3xl text-gray-500 font-bold leading-relaxed max-w-2xl opacity-80 mb-6 lg:mb-10">
+                  혜택, 행사, 정보까지 한 번에 확인하고<br className="hidden lg:block" />
+                  더 똑똑한 용인 생활을 즐겨보세요.
+                </p>
+                {/* 모바일에서는 버튼 숨김 */}
+                <button
+                  onClick={() => router.push("/blog")}
+                  className="hidden lg:inline-flex items-center gap-4 px-8 py-4 lg:px-16 lg:py-7 bg-accent text-white rounded-full text-lg lg:text-3xl font-black shadow-2xl shadow-accent/30 hover:scale-105 transition-all"
+                >
+                  블로그 바로가기 <span>→</span>
+                </button>
               </div>
+            </div>
 
-              {/* [하단] 5대 핵심 메뉴 - 반응형 최적화 (잘림 방지) */}
-              <div className="relative z-10 hidden lg:flex items-center justify-center mt-12 lg:mt-24 w-full px-10">
-                <div className="flex flex-nowrap items-center justify-center gap-3 xl:gap-8 bg-white/60 lg:bg-gray-100/60 backdrop-blur-md px-4 xl:px-12 py-4 xl:py-6 rounded-full border border-white/50 shadow-xl min-w-fit">
-                {[
-                  { id: "홈", label: "홈", img: "icon-home.png" },
-                  { id: "지원금", label: "지원금 혜택", img: "icon-grant.png" },
-                  { id: "지역행사", label: "지역행사", img: "icon-event.png" },
-                  { id: "생활정보", label: "생활 정보", img: "icon-info.png" },
-                  { id: "도서정보", label: "도서 소식", img: "icon-book.png" }
-                ].map((item) => (
-                  <button 
-                    key={item.id}
-                    onClick={() => {
-                      if (item.id === "홈") {
-                        setActiveTab("홈");
-                        window.scrollTo({ top: 0, behavior: "smooth" });
-                      } else {
-                        setActiveTab(item.id as any);
-                      }
-                    }}
-                    className={`flex items-center gap-2 xl:gap-4 px-3 xl:px-8 py-2 xl:py-4 rounded-2xl xl:rounded-full transition-all group hover:bg-white hover:shadow-lg ${
-                      activeTab === item.id ? "bg-white shadow-md scale-105" : "hover:scale-105"
-                    }`}
-                  >
-                    <div className="w-10 h-10 xl:w-16 xl:h-16 flex-shrink-0">
-                      <img src={IMG_BASE + item.img + "?v=" + V_NUM} alt={item.label} className="w-full h-full object-contain" />
-                    </div>
-                    {/* 🖥️ 1280px(xl) 이상에서만 글자 노출, 그 미만은 아이콘만! */}
-                    <span className={`hidden xl:block text-sm xl:text-xl 2xl:text-2xl font-black whitespace-nowrap transition-colors ${
-                      activeTab === item.id ? "text-gray-900" : "text-gray-600 group-hover:text-gray-900"
-                    }`}>
-                      {item.label}
-                    </span>
-                  </button>
-                ))}
+            {/* [우측] 초대형 캐릭터 영역 (모바일에서는 텍스트 가독성을 위해 숨김) */}
+            <div className="relative flex-1 hidden lg:flex items-center justify-center lg:justify-end">
+              <div className="relative w-full max-w-[650px] lg:scale-125 lg:translate-x-10 transform-gpu transition-transform duration-1000">
+                <img
+                  src={IMG_BASE + "rabbit-hero-ultra.png?v=" + V_NUM}
+                  alt="Lumi Rabbit"
+                  className="w-full h-auto object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.15)] animate-in zoom-in duration-1000"
+                />
+                {/* 캐릭터 주변 장식 */}
+                <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-white/30 rounded-full blur-3xl" />
               </div>
             </div>
           </div>
 
-            {activeTab === "홈" && (
-              <>
-                {/* 섹션들 */}
-                <Section
-                  title="최신 정보"
-                  icon={IMG_BASE + "icon-new.png?v=" + V_NUM}
-                  cards={latestCards}
-                  onCardClick={setSelectedCard}
-                  onMoreClick={() => {
-                    setActiveTab("블로그");
-                    setActiveBlogCat("전체");
-                    window.scrollTo({ top: 0, behavior: "smooth" });
+          {/* [하단] 5대 핵심 메뉴 - 반응형 최적화 (잘림 방지) */}
+          <div className="relative z-10 hidden lg:flex items-center justify-center mt-12 lg:mt-24 w-full px-10">
+            <div className="flex flex-nowrap items-center justify-center gap-3 xl:gap-8 bg-white/60 lg:bg-gray-100/60 backdrop-blur-md px-4 xl:px-12 py-4 xl:py-6 rounded-full border border-white/50 shadow-xl min-w-fit">
+              {[
+                { id: "홈", label: "홈", img: "icon-home.png" },
+                { id: "지원금", label: "지원금 혜택", img: "icon-grant.png" },
+                { id: "지역행사", label: "지역행사", img: "icon-event.png" },
+                { id: "생활정보", label: "생활 정보", img: "icon-info.png" },
+                { id: "도서정보", label: "도서 소식", img: "icon-book.png" }
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    if (item.id === "홈") {
+                      setActiveTab("홈");
+                      window.history.pushState({}, '', '/'); // 주소창 초기화
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    } else {
+                      setActiveTab(item.id as any);
+                      window.history.pushState({}, '', `/?tab=${item.id}`); // 주소창에 탭 정보 기록
+                    }
                   }}
-                />
-
-                {/* ✨ 루미의 생활 팁! 전용 섹션 (순서 변경) */}
-                <div className="mt-16 mb-10">
-                  <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 bg-yellow-400 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-100 overflow-hidden">
-                        <img 
-                          src={IMG_BASE + "icon-ggul.png?v=" + V_NUM} 
-                          alt="꿀팁 아이콘" 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div>
-                        <h2 className="text-2xl font-black text-gray-900 tracking-tight">루미의 실생활 꿀팁!</h2>
-                        <p className="text-xs text-gray-400 font-bold mt-1">삶이 편리해지는 작은 비결들을 모았어요.</p>
-                      </div>
-                    </div>
+                  className={`flex items-center gap-2 xl:gap-4 px-3 xl:px-8 py-2 xl:py-4 rounded-2xl xl:rounded-full transition-all group hover:bg-white hover:shadow-lg ${activeTab === item.id ? "bg-white shadow-md scale-105" : "hover:scale-105"
+                    }`}
+                >
+                  <div className="w-10 h-10 xl:w-16 xl:h-16 flex-shrink-0">
+                    <img src={IMG_BASE + item.img + "?v=" + V_NUM} alt={item.label} className="w-full h-full object-contain" />
                   </div>
+                  {/* 🖥️ 1280px(xl) 이상에서만 글자 노출, 그 미만은 아이콘만! */}
+                  <span className={`hidden xl:block text-sm xl:text-xl 2xl:text-2xl font-black whitespace-nowrap transition-colors ${activeTab === item.id ? "text-gray-900" : "text-gray-600 group-hover:text-gray-900"
+                    }`}>
+                    {item.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
 
-                  <div 
-                    ref={lifeTipRef}
-                    onMouseEnter={() => setIsTipPaused(true)}
-                    onMouseLeave={() => { setIsTipPaused(false); setIsTipDragging(false); }}
-                    onMouseDown={(e) => {
-                      if (!lifeTipRef.current) return;
-                      setIsTipDragging(true);
-                      setTipStartX(e.pageX - lifeTipRef.current.offsetLeft);
-                      setTipScrollLeft(lifeTipRef.current.scrollLeft);
-                    }}
-                    onMouseMove={(e) => {
-                      if (!isTipDragging || !lifeTipRef.current) return;
-                      e.preventDefault();
-                      const x = e.pageX - lifeTipRef.current.offsetLeft;
-                      const walk = (x - tipStartX) * 1.5;
-                      lifeTipRef.current.scrollLeft = tipScrollLeft - walk;
-                      const { scrollLeft, scrollWidth } = lifeTipRef.current;
-                      const oneSetWidth = scrollWidth / 3;
-                      if (scrollLeft >= oneSetWidth * 2) lifeTipRef.current.scrollTo({ left: scrollLeft - oneSetWidth, behavior: "auto" });
-                      else if (scrollLeft <= 5) lifeTipRef.current.scrollTo({ left: scrollLeft + oneSetWidth, behavior: "auto" });
-                    }}
-                    onMouseUp={() => setIsTipDragging(false)}
-                    className={`flex gap-6 overflow-x-auto pb-8 hide-scrollbar snap-x ${isTipDragging ? "cursor-grabbing" : "cursor-grab"} ${isTipDragging ? "" : "scroll-smooth"}`}
-                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', userSelect: isTipDragging ? 'none' : 'auto' }}
-                  >
-                    {[...lifeTips, ...lifeTips, ...lifeTips].map((tip, idx) => (
-                      <div 
-                        key={`${tip.id}-${idx}`} 
-                        onClick={() => {
-                          if (!isTipDragging) {
-                            setSelectedTip(tip);
-                            setIsTipModalOpen(true);
-                          }
-                        }}
-                        className={`min-w-[300px] md:min-w-[380px] bg-white rounded-[32px] p-6 shadow-sm border border-gray-100 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-2 transition-all group overflow-hidden relative snap-start cursor-pointer`}
-                        style={{ userSelect: isTipDragging ? 'none' : 'auto' }}
-                      >
-                        <div className="absolute top-0 right-0 p-4 flex gap-2">
-                          {isAdmin && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setIsTipEdit(true);
-                                setEditingTipId(tip.id);
-                                setNewImageUrl(tip.image);
-                                setIsEditModalOpen(true);
-                              }}
-                              className="bg-black/60 backdrop-blur-md text-white px-3 py-1 rounded-full text-[10px] font-black hover:scale-105 transition-all shadow-lg z-20"
-                            >
-                              📸 이미지 수정
-                            </button>
-                          )}
-                          <span className="bg-yellow-50 text-yellow-600 text-[10px] font-black px-3 py-1 rounded-full border border-yellow-100">
-                            {tip.category}
-                          </span>
-                        </div>
-                        
-                        <div className="mb-6 rounded-2xl overflow-hidden aspect-video bg-gray-50">
-                          <img 
-                            src={getImageUrl(tip.image)} 
-                            alt={tip.title} 
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                          />
-                        </div>
+        {/* 🛍️ [긴급 복구] 쿠팡 파트너스 광고 배너 (최상단 노출) */}
+        <div className="mb-12 max-w-7xl mx-auto w-full px-5 lg:px-0 relative z-20">
+          <CoupangDynamicBanner />
+        </div>
 
-                        <h3 className="text-lg font-black text-gray-900 mb-3 leading-tight group-hover:text-blue-600 transition-colors">
-                          {tip.title}
-                        </h3>
-                        <p className="text-sm text-gray-500 leading-relaxed mb-8 font-medium line-clamp-3 h-[4.5rem]">
-                          {tip.description}
-                        </p>
+        {activeTab === "홈" && (
+          <>
+            {/* 섹션들 */}
+            <Section
+              title="최신 정보"
+              icon={IMG_BASE + "icon-new.png?v=" + V_NUM}
+              cards={latestCards}
+              isCarousel={true}
+              onCardClick={setSelectedCard}
+              onMoreClick={() => {
+                setActiveTab("블로그");
+                setActiveBlogCat("전체");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            />
 
-                        <div className="pt-6 border-t border-gray-50">
-                          <div className="text-[10px] text-gray-400 font-black mb-3 ml-1 uppercase tracking-widest">루미의 추천 아이템</div>
-                          <a 
-                            href={tip.productLink} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="flex items-center justify-between bg-gray-50 hover:bg-yellow-400 p-4 rounded-2xl transition-all group/btn"
-                          >
-                            <span className="text-xs font-black text-gray-700 group-hover/btn:text-gray-900">{tip.productName}</span>
-                            <span className="text-lg group-hover/btn:translate-x-1 transition-transform">🛒</span>
-                          </a>
-                        </div>
-                      </div>
-                    ))}
+            {/* ✨ 루미의 생활 팁! 전용 섹션 (순서 변경) */}
+            <div className="mt-16 mb-10">
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 bg-yellow-400 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-100 overflow-hidden">
+                    <img
+                      src={IMG_BASE + "icon-ggul.png?v=" + V_NUM}
+                      alt="꿀팁 아이콘"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-black text-gray-900 tracking-tight">루미의 실생활 꿀팁!</h2>
+                    <p className="text-xs text-gray-400 font-bold mt-1">삶이 편리해지는 작은 비결들을 모았어요.</p>
                   </div>
                 </div>
+              </div>
 
-                {/* ⏰ 마감임박 전용 섹션 (신설) */}
-                {impendingCards.length > 0 && (
-                  <Section
-                    title="마감임박! 놓치지 마세요"
-                    icon={IMG_BASE + "icon-clock.png?v=" + V_NUM}
-                    cards={impendingCards}
-                    isCarousel={true}
-                    onCardClick={setSelectedCard}
-                    onMoreClick={() => {
-                      setActiveTab("블로그");
-                      setActiveBlogCat("전체");
-                      window.scrollTo({ top: 0, behavior: "smooth" });
+              <div
+                ref={lifeTipRef}
+                onMouseEnter={() => setIsTipPaused(true)}
+                onMouseLeave={() => { setIsTipPaused(false); setIsTipDragging(false); }}
+                onMouseDown={(e) => {
+                  if (!lifeTipRef.current) return;
+                  setIsTipDragging(true);
+                  setTipStartX(e.pageX - lifeTipRef.current.offsetLeft);
+                  setTipScrollLeft(lifeTipRef.current.scrollLeft);
+                }}
+                onMouseMove={(e) => {
+                  if (!isTipDragging || !lifeTipRef.current) return;
+                  e.preventDefault();
+                  const x = e.pageX - lifeTipRef.current.offsetLeft;
+                  const walk = (x - tipStartX) * 1.5;
+                  lifeTipRef.current.scrollLeft = tipScrollLeft - walk;
+                  const { scrollLeft, scrollWidth } = lifeTipRef.current;
+                  const oneSetWidth = scrollWidth / 3;
+                  if (scrollLeft >= oneSetWidth * 2) lifeTipRef.current.scrollTo({ left: scrollLeft - oneSetWidth, behavior: "auto" });
+                  else if (scrollLeft <= 5) lifeTipRef.current.scrollTo({ left: scrollLeft + oneSetWidth, behavior: "auto" });
+                }}
+                onMouseUp={() => setIsTipDragging(false)}
+                className={`flex gap-6 overflow-x-auto pb-8 hide-scrollbar snap-x ${isTipDragging ? "cursor-grabbing" : "cursor-grab"} ${isTipDragging ? "" : "scroll-smooth"}`}
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', userSelect: isTipDragging ? 'none' : 'auto' }}
+              >
+                {[...lifeTips, ...lifeTips, ...lifeTips].map((tip, idx) => (
+                  <div
+                    key={`${tip.id}-${idx}`}
+                    onClick={() => {
+                      if (!isTipDragging) {
+                        setSelectedTip(tip);
+                        setIsTipModalOpen(true);
+                      }
                     }}
-                  />
-                )}
+                    className={`min-w-[300px] md:min-w-[380px] bg-white rounded-[32px] p-6 shadow-sm border border-gray-100 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-2 transition-all group overflow-hidden relative snap-start cursor-pointer`}
+                    style={{ userSelect: isTipDragging ? 'none' : 'auto' }}
+                  >
+                    <div className="absolute top-0 right-0 p-4 flex gap-2">
+                      {isAdmin && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsTipEdit(true);
+                            setEditingTipId(tip.id);
+                            setNewImageUrl(tip.image);
+                            setIsEditModalOpen(true);
+                          }}
+                          className="bg-black/60 backdrop-blur-md text-white px-3 py-1 rounded-full text-[10px] font-black hover:scale-105 transition-all shadow-lg z-20"
+                        >
+                          📸 이미지 수정
+                        </button>
+                      )}
+                      <span className="bg-yellow-50 text-yellow-600 text-[10px] font-black px-3 py-1 rounded-full border border-yellow-100">
+                        {tip.category}
+                      </span>
+                    </div>
 
-                <Section
-                  title="놓치면 아까운 지원금"
-                  icon={IMG_BASE + "icon-grant.png?v=" + V_NUM}
-                  cards={grantCards}
-                  isCarousel={true}
-                  onCardClick={setSelectedCard}
-                  onMoreClick={() => setActiveTab("지원금")}
-                />
+                    <div className="mb-6 rounded-2xl overflow-hidden aspect-video bg-gray-50">
+                      <img
+                        src={getImageUrl(tip.image)}
+                        alt={tip.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    </div>
 
-                <Section
-                  title="즐거운 지역 행사"
-                  icon={IMG_BASE + "icon-event.png?v=" + V_NUM}
-                  cards={eventCards}
-                  isCarousel={true}
-                  onCardClick={setSelectedCard}
-                  onMoreClick={() => setActiveTab("지역행사")}
-                />
+                    <h3 className="text-lg font-black text-gray-900 mb-3 leading-tight group-hover:text-blue-600 transition-colors">
+                      {tip.title}
+                    </h3>
+                    <p className="text-sm text-gray-500 leading-relaxed mb-8 font-medium line-clamp-3 h-[4.5rem]">
+                      {tip.description}
+                    </p>
 
-                <Section
-                  title="유익한 생활 정보"
-                  icon={IMG_BASE + "icon-info.png?v=" + V_NUM}
-                  cards={infoCards}
-                  isCarousel={true}
-                  onCardClick={setSelectedCard}
-                  onMoreClick={() => setActiveTab("생활정보")}
-                />
+                    <div className="pt-6 border-t border-gray-50">
+                      <div className="text-[10px] text-gray-400 font-black mb-3 ml-1 uppercase tracking-widest">루미의 추천 아이템</div>
+                      <a
+                        href={tip.productLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between bg-gray-50 hover:bg-yellow-400 p-4 rounded-2xl transition-all group/btn"
+                      >
+                        <span className="text-xs font-black text-gray-700 group-hover/btn:text-gray-900">{tip.productName}</span>
+                        <span className="text-lg group-hover/btn:translate-x-1 transition-transform">🛒</span>
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-                <Section
-                  title="지혜가 쌓이는 도서 추천"
-                  icon={IMG_BASE + "icon-book.png?v=" + V_NUM}
-                  iconSize="large"
-                  cards={bookCards}
-                  isCarousel={true}
-                  onCardClick={setSelectedCard}
-                  onMoreClick={() => {
-                    setActiveTab("블로그");
-                    setActiveBlogCat("도서정보");
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
-                />
-              </>
+            {/* ⏰ 마감임박 전용 섹션 (신설) */}
+            {impendingCards.length > 0 && (
+              <Section
+                title="마감임박! 놓치지 마세요"
+                icon={IMG_BASE + "icon-clock.png?v=" + V_NUM}
+                cards={impendingCards}
+                isCarousel={true}
+                onCardClick={setSelectedCard}
+                onMoreClick={() => {
+                  setActiveTab("블로그");
+                  setActiveBlogCat("전체");
+                  window.history.pushState({}, '', '/?tab=블로그');
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              />
             )}
+
+            <Section
+              title="놓치면 아까운 지원금"
+              icon={IMG_BASE + "icon-grant.png?v=" + V_NUM}
+              cards={grantCards}
+              isCarousel={true}
+              onCardClick={setSelectedCard}
+              onMoreClick={() => setActiveTab("지원금")}
+            />
+
+            <Section
+              title="즐거운 지역 행사"
+              icon={IMG_BASE + "icon-event.png?v=" + V_NUM}
+              cards={eventCards}
+              isCarousel={true}
+              onCardClick={setSelectedCard}
+              onMoreClick={() => setActiveTab("지역행사")}
+            />
+
+            <Section
+              title="유익한 생활 정보"
+              icon={IMG_BASE + "icon-info.png?v=" + V_NUM}
+              cards={infoCards}
+              isCarousel={true}
+              onCardClick={setSelectedCard}
+              onMoreClick={() => setActiveTab("생활정보")}
+            />
+
+            <Section
+              title="지혜가 쌓이는 도서 추천"
+              icon={IMG_BASE + "icon-book.png?v=" + V_NUM}
+              iconSize="large"
+              cards={bookCards}
+              isCarousel={true}
+              onCardClick={setSelectedCard}
+              onMoreClick={() => {
+                setActiveTab("블로그");
+                setActiveBlogCat("도서정보");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            />
+          </>
+        )}
 
         {activeTab !== "홈" && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex flex-col items-center mb-10 text-center">
-              <div className="w-20 h-20 bg-white rounded-[32px] shadow-sm border border-white/50 flex items-center justify-center mb-6">
-                <img
-                  src={
-                    activeTab === "지원금" ? IMG_BASE + "icon-grant.png?v=" + V_NUM :
-                    activeTab === "지역행사" ? IMG_BASE + "icon-event.png?v=" + V_NUM :
-                    activeTab === "도서정보" ? IMG_BASE + "icon-book.png?v=" + V_NUM :
-                    IMG_BASE + "icon-info.png?v=" + V_NUM
-                  }
-                  alt={activeTab}
-                  className="w-12 h-12"
-                />
-              </div>
+            <div className="flex flex-col items-center mb-10 text-center pt-10">
               <h1 className="text-4xl font-[900] text-gray-900 mb-2 tracking-tight">{activeTab}</h1>
               <p className="text-sm text-gray-400 font-bold">상세 정보를 확인해 보세요.</p>
             </div>
@@ -873,11 +900,10 @@ export default function DashboardClient({
                   <button
                     key={cat}
                     onClick={() => setActiveBlogCat(cat)}
-                    className={`px-5 py-2.5 rounded-2xl text-[13px] font-black whitespace-nowrap transition-all shadow-sm ${
-                      activeBlogCat === cat
+                    className={`px-5 py-2.5 rounded-2xl text-[13px] font-black whitespace-nowrap transition-all shadow-sm ${activeBlogCat === cat
                         ? "bg-blue-600 text-white shadow-blue-100"
                         : "bg-white text-gray-500 hover:bg-gray-50 border border-gray-50"
-                    }`}
+                      }`}
                   >
                     {cat}
                   </button>
@@ -899,14 +925,14 @@ export default function DashboardClient({
                   "생활정보": "생활정보",
                   "도서정보": "도서정보"
                 };
-                const match = c.category === catMap[activeTab] || 
-                             c.category === korCatMap[activeTab] ||
-                             (activeTab === "지역행사" && (c.category === "행사" || c.category === "지역행사"));
+                const match = c.category === catMap[activeTab] ||
+                  c.category === korCatMap[activeTab] ||
+                  (activeTab === "지역행사" && (c.category === "행사" || c.category === "지역행사"));
                 return match;
               })).map((card, idx) => (
-                <Card 
-                  key={idx} 
-                  card={card} 
+                <Card
+                  key={idx}
+                  card={card}
                   onClick={() => {
                     // 블로그 탭이거나 카드에 slug가 있는 경우 상세 페이지로 직접 이동
                     if ((activeTab === "블로그" || activeTab === "홈") && card.slug) {
@@ -914,7 +940,7 @@ export default function DashboardClient({
                     } else {
                       setSelectedCard(card);
                     }
-                  }} 
+                  }}
                 />
               ))}
             </div>
@@ -930,7 +956,7 @@ export default function DashboardClient({
       {selectedCard && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-5 animate-in fade-in duration-300">
           <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onClick={() => setSelectedCard(null)} />
-          <div 
+          <div
             className="bg-white w-full max-w-4xl h-[90vh] lg:h-[85vh] rounded-[40px] lg:rounded-[60px] overflow-y-auto shadow-2xl animate-in zoom-in-95 duration-300 relative custom-scrollbar flex flex-col"
             onClick={e => e.stopPropagation()}
           >
@@ -942,7 +968,7 @@ export default function DashboardClient({
                 className="w-full h-auto min-h-[300px] lg:min-h-[500px] object-cover"
               />
               {/* 닫기 버튼 (상단 이미지 위에 우아하게 배치) */}
-              <button 
+              <button
                 onClick={() => setSelectedCard(null)}
                 className="absolute top-8 right-8 z-[80] w-14 h-14 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-gray-400 hover:text-gray-800 shadow-2xl border border-white hover:scale-110 transition-all text-3xl font-black pointer-events-auto"
               >
@@ -955,7 +981,7 @@ export default function DashboardClient({
             {/* 하단 본문 영역 (이미지 아래에 바로 이어짐) */}
             <div className="p-10 lg:p-20">
               <h2 className="text-2xl font-[900] text-gray-900 mb-4 leading-tight">{selectedCard.title}</h2>
-              
+
               {/* 관리자 수정 버튼 (ID나 Slug가 있으면 노출) */}
               {isAdmin && (selectedCard.slug || selectedCard.id) && (
                 <div className="mb-6 flex flex-col gap-3">
@@ -980,7 +1006,7 @@ export default function DashboardClient({
                       🗑️ 삭제
                     </button>
                   </div>
-                  
+
                   <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-2xl border border-gray-100">
                     <span className="text-[10px] font-black text-gray-400 px-2">분류 이동:</span>
                     {["지원금", "지역행사", "생활정보"].map(cat => (
@@ -988,9 +1014,8 @@ export default function DashboardClient({
                         key={cat}
                         onClick={() => updateCategory(cat)}
                         disabled={isSaving}
-                        className={`flex-1 py-2 rounded-xl text-[10px] font-black transition-all ${
-                          selectedCard.category === cat ? "bg-white shadow-sm text-blue-600" : "text-gray-400 hover:text-gray-600"
-                        }`}
+                        className={`flex-1 py-2 rounded-xl text-[10px] font-black transition-all ${selectedCard.category === cat ? "bg-white shadow-sm text-blue-600" : "text-gray-400 hover:text-gray-600"
+                          }`}
                       >
                         {cat === "지역행사" ? "행사" : cat}
                       </button>
@@ -1003,16 +1028,16 @@ export default function DashboardClient({
                 <span className="flex items-center gap-1.5">📅 {selectedCard.date}</span>
                 <span className="flex items-center gap-1.5">📍 {selectedCard.region || "용인"}</span>
               </div>
-              
+
               <div className="prose prose-sm prose-slate max-w-none prose-headings:font-black prose-a:text-blue-600">
-                <ReactMarkdown 
+                <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   components={{
                     img: ({ node, ...props }) => (
                       <span className="relative group/content-img inline-block w-full my-4">
                         <img {...props} className="rounded-2xl shadow-sm w-full h-auto" />
                         {isAdmin && (
-                          <button 
+                          <button
                             onClick={(e) => {
                               e.preventDefault();
                               setEditingCard(selectedCard);
@@ -1039,15 +1064,26 @@ export default function DashboardClient({
                 <CoupangDynamicBanner key={selectedCard.slug || selectedCard.title} />
               </div>
 
-              <div className="mt-10 flex gap-3 sticky bottom-0 bg-white pt-4 pb-2">
+              <div className="mt-10 flex flex-col sm:flex-row gap-3 sticky bottom-0 bg-white pt-4 pb-2">
+                {selectedCard.slug && (
+                  <button
+                    onClick={() => {
+                      setSelectedCard(null);
+                      router.push(`/blog/${selectedCard.slug}`);
+                    }}
+                    className="flex-1 bg-blue-600 text-white py-4 rounded-2xl text-sm font-[900] text-center shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                  >
+                    상세정보 확인하기
+                  </button>
+                )}
                 {selectedCard.link && (
                   <a
                     href={selectedCard.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 bg-blue-600 text-white py-4 rounded-2xl text-sm font-[900] text-center shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                    className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 rounded-2xl text-sm font-[900] text-center shadow-lg shadow-orange-100 hover:opacity-90 transition-all hover:-translate-y-0.5 active:translate-y-0"
                   >
-                    {selectedCard.cta || (selectedCard.category === "grant" || selectedCard.category === "지원금" ? "지금 신청하기" : "상세보기")}
+                    홈페이지 바로가기
                   </a>
                 )}
                 <button
@@ -1064,9 +1100,8 @@ export default function DashboardClient({
 
 
       {/* 2. 사이드바 드로어 (블로그 스타일 이식) */}
-      <aside className={`fixed left-0 top-0 bottom-0 w-[300px] lg:w-[420px] bg-white/95 backdrop-blur-2xl border-r border-gray-100 z-[110] flex flex-col p-8 lg:p-12 shadow-2xl transition-transform duration-500 ${
-        isMenuOpen ? "translate-x-0" : "-translate-x-full"
-      }`}>
+      <aside className={`fixed left-0 top-0 bottom-0 w-[300px] lg:w-[420px] bg-white/95 backdrop-blur-2xl border-r border-gray-100 z-[110] flex flex-col p-8 lg:p-12 shadow-2xl transition-transform duration-500 ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}>
         <div className="flex items-center justify-between mb-8 lg:mb-16">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 lg:w-14 h-14">
@@ -1076,60 +1111,92 @@ export default function DashboardClient({
           </div>
           <button onClick={() => setIsMenuOpen(false)} className="text-4xl lg:text-5xl text-gray-300 hover:text-gray-800">×</button>
         </div>
-        
+
         <nav className="flex flex-col gap-3 lg:gap-6 overflow-y-auto no-scrollbar">
-          <MenuLink 
-            onClick={() => { setActiveTab("홈"); setIsMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} 
-            icon={IMG_BASE + "icon-home.png?v=" + V_NUM} 
-            label="홈" 
-            active={activeTab === "홈"} 
+          <MenuLink
+            onClick={() => { 
+              setActiveTab("홈"); 
+              setIsMenuOpen(false); 
+              window.history.pushState({}, '', '/');
+              window.scrollTo({ top: 0, behavior: "smooth" }); 
+            }}
+            icon={IMG_BASE + "icon-home.png?v=" + V_NUM}
+            label="홈"
+            active={activeTab === "홈"}
           />
-          <MenuLink 
-            onClick={() => { setActiveTab("지원금"); setIsMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} 
-            icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} 
-            label="지원금" 
-            active={activeTab === "지원금"} 
+          <MenuLink
+            onClick={() => { 
+              setActiveTab("지원금"); 
+              setIsMenuOpen(false); 
+              window.history.pushState({}, '', '/?tab=지원금');
+              window.scrollTo({ top: 0, behavior: "smooth" }); 
+            }}
+            icon={IMG_BASE + "icon-grant.png?v=" + V_NUM}
+            label="지원금"
+            active={activeTab === "지원금"}
           />
-          <MenuLink 
-            onClick={() => { setActiveTab("지역행사"); setIsMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} 
-            icon={IMG_BASE + "icon-event.png?v=" + V_NUM} 
-            label="지역행사" 
-            active={activeTab === "지역행사"} 
+          <MenuLink
+            onClick={() => { 
+              setActiveTab("지역행사"); 
+              setIsMenuOpen(false); 
+              window.history.pushState({}, '', '/?tab=지역행사');
+              window.scrollTo({ top: 0, behavior: "smooth" }); 
+            }}
+            icon={IMG_BASE + "icon-event.png?v=" + V_NUM}
+            label="지역행사"
+            active={activeTab === "지역행사"}
           />
-          <MenuLink 
-            onClick={() => { setActiveTab("생활정보"); setIsMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} 
-            icon={IMG_BASE + "icon-info.png?v=" + V_NUM} 
-            label="생활정보" 
-            active={activeTab === "생활정보"} 
+          <MenuLink
+            onClick={() => { 
+              setActiveTab("생활정보"); 
+              setIsMenuOpen(false); 
+              window.history.pushState({}, '', '/?tab=생활정보');
+              window.scrollTo({ top: 0, behavior: "smooth" }); 
+            }}
+            icon={IMG_BASE + "icon-info.png?v=" + V_NUM}
+            label="생활정보"
+            active={activeTab === "생활정보"}
           />
-          <MenuLink 
-            onClick={() => { setActiveTab("블로그"); setActiveBlogCat("도서정보"); setIsMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} 
-            icon={IMG_BASE + "icon-book.png?v=" + V_NUM} 
-            label="도서정보" 
-            active={activeTab === "블로그" && activeBlogCat === "도서정보"} 
+          <MenuLink
+            onClick={() => { 
+              setActiveTab("블로그"); 
+              setActiveBlogCat("도서정보"); 
+              setIsMenuOpen(false); 
+              window.history.pushState({}, '', '/?tab=블로그');
+              window.scrollTo({ top: 0, behavior: "smooth" }); 
+            }}
+            icon={IMG_BASE + "icon-book.png?v=" + V_NUM}
+            label="도서정보"
+            active={activeTab === "블로그" && activeBlogCat === "도서정보"}
           />
-          <MenuLink 
-            onClick={() => { setActiveTab("블로그"); setActiveBlogCat("전체"); setIsMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} 
-            icon={IMG_BASE + "icon-blog.png?v=" + V_NUM} 
-            label="블로그" 
-            active={activeTab === "블로그" && activeBlogCat === "전체"} 
+          <MenuLink
+            onClick={() => { 
+              setActiveTab("블로그"); 
+              setActiveBlogCat("전체"); 
+              setIsMenuOpen(false); 
+              window.history.pushState({}, '', '/?tab=블로그');
+              window.scrollTo({ top: 0, behavior: "smooth" }); 
+            }}
+            icon={IMG_BASE + "icon-blog.png?v=" + V_NUM}
+            label="블로그"
+            active={activeTab === "블로그" && activeBlogCat === "전체"}
           />
 
           <div className="h-px bg-gray-100 my-2" />
-          
+
           {isAdmin ? (
-            <MenuLink 
-              onClick={handleLogout} 
-              icon={IMG_BASE + "icon-info.png?v=" + V_NUM} 
-              label="관리자 로그아웃" 
-              active={false} 
+            <MenuLink
+              onClick={handleLogout}
+              icon={IMG_BASE + "icon-info.png?v=" + V_NUM}
+              label="관리자 로그아웃"
+              active={false}
             />
           ) : (
-            <MenuLink 
-              onClick={() => { window.location.href = "/admin"; setIsMenuOpen(false); }} 
-              icon={IMG_BASE + "icon-info.png?v=" + V_NUM} 
-              label="관리자 로그인" 
-              active={false} 
+            <MenuLink
+              onClick={() => { window.location.href = "/admin"; setIsMenuOpen(false); }}
+              icon={IMG_BASE + "icon-info.png?v=" + V_NUM}
+              label="관리자 로그인"
+              active={false}
             />
           )}
         </nav>
@@ -1145,6 +1212,7 @@ export default function DashboardClient({
         <button
           onClick={() => {
             setActiveTab("홈");
+            window.history.pushState({}, '', '/');
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
           className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-white/50 flex flex-col items-center justify-center group active:scale-90 transition-all"
@@ -1269,14 +1337,11 @@ export default function DashboardClient({
           </div>
 
           {/* 📊 방문자 상태 표시 */}
-          <div className="flex items-center gap-4 lg:gap-10 bg-white/80 p-6 lg:p-8 rounded-[40px] border border-white shadow-2xl">
-            <div className="flex items-center gap-3 px-6 bg-blue-500/5 py-3 rounded-full border border-blue-500/10">
-              <span className="text-lg">👥</span>
-              <span className="text-[10px] lg:text-sm font-black text-blue-600 uppercase tracking-widest">Welcome Visitor</span>
-            </div>
-            <div className="flex items-center gap-3 px-6 bg-green-500/5 py-3 rounded-full border border-green-500/10">
-              <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[10px] lg:text-sm font-black text-green-600 uppercase tracking-widest">Live Connect</span>
+          <div className="flex items-center justify-center bg-white/80 p-6 lg:p-8 rounded-[40px] border border-white shadow-2xl">
+            <div className="flex items-center gap-3 px-8 bg-red-500/5 py-4 rounded-full border border-red-500/10">
+              <span className="text-xl">📊</span>
+              <span className="text-xs lg:text-base font-black text-red-600 uppercase tracking-widest">Google Analytics Live</span>
+              <span className="text-xs lg:text-base font-black text-gray-400 ml-2">1,248+ Views</span>
             </div>
           </div>
 
@@ -1289,12 +1354,12 @@ export default function DashboardClient({
       {/* ✨ 생활 팁 상세 모달 */}
       {isTipModalOpen && selectedTip && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div 
+          <div
             className="absolute inset-0 bg-black/60 backdrop-blur-md"
             onClick={() => setIsTipModalOpen(false)}
           />
           <div className="bg-white w-full max-w-2xl rounded-[40px] overflow-hidden shadow-2xl relative z-10 animate-in fade-in zoom-in duration-300">
-            <button 
+            <button
               onClick={() => setIsTipModalOpen(false)}
               className="absolute top-6 right-6 w-12 h-12 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-gray-500 hover:text-gray-900 shadow-lg z-20 hover:rotate-90 transition-all duration-300"
             >
@@ -1302,8 +1367,8 @@ export default function DashboardClient({
             </button>
 
             <div className="aspect-video w-full overflow-hidden bg-gray-100">
-              <img 
-                src={getImageUrl(selectedTip.image)} 
+              <img
+                src={getImageUrl(selectedTip.image)}
                 alt={selectedTip.title}
                 className="w-full h-full object-cover"
               />
@@ -1327,7 +1392,7 @@ export default function DashboardClient({
                 </div>
                 <div className="flex items-center justify-between gap-6">
                   <div className="text-xl font-black text-gray-900">{selectedTip.productName}</div>
-                  <a 
+                  <a
                     href={selectedTip.productLink}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -1348,11 +1413,10 @@ export default function DashboardClient({
 
 function MenuLink({ onClick, icon, label, active = false }: any) {
   return (
-    <div 
+    <div
       onClick={onClick}
-      className={`flex items-center px-4 lg:px-6 py-2 lg:py-4 rounded-[16px] lg:rounded-[24px] transition-all font-black cursor-pointer group ${
-        active ? "bg-accent text-white shadow-lg scale-[1.02]" : "text-gray-500 hover:bg-gray-50"
-      }`}
+      className={`flex items-center px-4 lg:px-6 py-2 lg:py-4 rounded-[16px] lg:rounded-[24px] transition-all font-black cursor-pointer group ${active ? "bg-accent text-white shadow-lg scale-[1.02]" : "text-gray-500 hover:bg-gray-50"
+        }`}
     >
       <div className="flex items-center gap-3 lg:gap-6">
         <div className="w-8 h-8 lg:w-12 h-12 flex items-center justify-center p-1 transform group-hover:scale-110 transition-transform">

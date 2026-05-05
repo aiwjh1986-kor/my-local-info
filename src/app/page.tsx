@@ -30,7 +30,7 @@ export default function Page() {
       content: p.content,
       slug: p.slug,
       image: p.image,
-      link: "/blog/" + p.slug + "/"
+      link: p.link
     }));
 
   // featured-cards.json을 실시간으로 읽어옵니다. (이미지 수정 즉시 반영을 위함)

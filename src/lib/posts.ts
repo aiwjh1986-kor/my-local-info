@@ -60,6 +60,20 @@ export function getSortedPostsData(): PostData[] {
         deadline = String(deadline).replace(/\./g, '-');
       }
 
+      // 마감 임박 계산 (마감 7일 전)
+      const TODAY = "2026-05-04";
+      const todayDate = new Date(TODAY);
+      let is_urgent = false;
+      
+      if (deadline) {
+        const dDate = new Date(deadline);
+        const diffTime = dDate.getTime() - todayDate.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays >= 0 && diffDays <= 7) {
+          is_urgent = true;
+        }
+      }
+
       return {
         ...matterResult.data,
         slug,
@@ -71,6 +85,7 @@ export function getSortedPostsData(): PostData[] {
         link: matterResult.data.link || '',
         content: matterResult.content || '',
         deadline: deadline || null,
+        is_urgent: is_urgent || matterResult.data.is_urgent || false,
       } as PostData;
     });
 

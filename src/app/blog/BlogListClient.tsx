@@ -141,19 +141,41 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
               >
                 <Link href={`/blog/${post.slug}`} className="block flex-1 flex flex-col">
                   {/* 카드 이미지 */}
-                  <div className="relative aspect-video overflow-hidden">
+                  <div className="relative aspect-video overflow-hidden bg-gray-50 flex items-center justify-center">
                     <img 
                       src={IMG_BASE + (post.image || "thumb-default.png").replace(".png", "") + ".png?v=" + V_NUM} 
                       alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700"
                     />
-                    <div className="absolute top-6 left-6">
+                    <div className="absolute top-6 left-6 flex gap-2 items-center">
                       <span className={`px-4 py-2 backdrop-blur-md rounded-2xl text-[10px] lg:text-xs font-black uppercase tracking-widest shadow-lg border ${getCategoryStyles(post.category)}`}>
                         {post.category === "grant" ? "지원금" : 
                          post.category === "event" || post.category === "지역행사" || post.category === "행사" ? "지역행사" : 
                          post.category === "info" ? "생활정보" : 
                          post.category === "book" ? "도서소식" : post.category}
                       </span>
+                      {(() => {
+                        const TODAY = "2026-05-04";
+                        const todayDate = new Date(TODAY);
+                        const targetDate = post.deadline || post.endDate;
+                        let autoUrgent = false;
+
+                        if (targetDate) {
+                          const dDate = new Date(targetDate);
+                          const diffTime = dDate.getTime() - todayDate.getTime();
+                          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                          if (diffDays >= 0 && diffDays <= 7) autoUrgent = true;
+                        }
+
+                        if (post.is_urgent || autoUrgent) {
+                          return (
+                            <span className="bg-red-500/90 text-white text-[10px] lg:text-xs px-4 py-2 rounded-2xl font-black animate-pulse shadow-lg shadow-red-200 border border-red-400/50 backdrop-blur-sm">
+                              마감임박
+                            </span>
+                          );
+                        }
+                        return null;
+                      })()}
                     </div>
                   </div>
 

@@ -1,5 +1,5 @@
 ---
-title: "[용인] 중앙시장 별빛 야시장 개장! 전통시장 먹거리 총출동 안내"
+title: "[용인시] 중앙시장 별빛 야시장 총정리 (먹거리·시간·가는법)"
 date: '2026-05-08'
 category: 지역행사
 summary: '매주 금/토 저녁, 맛있는 먹거리와 신나는 공연이 가득한 야시장이 열립니다!'
@@ -9,7 +9,7 @@ tags:
   - 중앙시장
   - 야시장
   - 버스킹
-link: 'https://www.yongin.go.kr'
+link: 'https://www.yongin.go.kr/user/bbs/BD_selectBbs.do?q_bbsCode=1001&q_clCode=1&q_bbscttSn=20260428164809920'
 ---
 
 # 🌟 용인 중앙시장 별빛 야시장 개장!

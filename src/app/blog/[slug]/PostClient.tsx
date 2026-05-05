@@ -66,8 +66,16 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
           <QuickLink icon={IMG_BASE + "icon-book.png?v=" + V_NUM} label="도서 소식" onClick={() => router.push("/?tab=도서정보")} />
         </div>
 
-        {/* 우측 여백 확보용 (균형) */}
-        <div className="w-[80px] lg:w-[150px] hidden md:block" />
+        {/* 우측 상단 닫기 버튼 (X) */}
+        <div className="fixed top-6 right-6 z-[60] pointer-events-auto">
+          <button 
+            onClick={() => router.back()}
+            className="w-14 h-14 bg-white/80 backdrop-blur-md border border-gray-100 rounded-full shadow-xl hover:scale-110 hover:bg-white transition-all flex items-center justify-center text-gray-400 hover:text-gray-800 text-3xl font-black"
+            title="닫기"
+          >
+            ✕
+          </button>
+        </div>
       </div>
 
 
@@ -132,6 +140,20 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
             <p className="text-base sm:text-lg md:text-xl lg:text-3xl text-gray-500 font-bold leading-relaxed opacity-80">
               {post.summary}
             </p>
+
+            {/* 🚀 상단 퀵 예매/신청 버튼 (글 시작하자마자 보이게!) */}
+            {post.link && (
+              <div className="mt-8 lg:mt-16">
+                <button 
+                  onClick={() => window.open(post.link, "_blank")}
+                  className="w-full py-6 lg:py-12 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-[30px] lg:rounded-[60px] font-black text-xl lg:text-5xl shadow-[0_20px_50px_rgba(249,115,22,0.3)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4 lg:gap-8 group"
+                >
+                  <span className="text-2xl lg:text-6xl animate-bounce">🔗</span>
+                  <span>홈페이지 바로가기</span>
+                  <span className="text-2xl lg:text-6xl group-hover:translate-x-4 transition-transform">➔</span>
+                </button>
+              </div>
+            )}
           </header>
 
           {/* 본문 콘텐츠 */}
@@ -174,11 +196,11 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
                   onClick={() => window.open(post.link, "_blank")}
                   className="flex-1 py-10 lg:py-14 bg-accent text-white rounded-[40px] lg:rounded-[60px] font-black text-2xl lg:text-5xl shadow-2xl hover:scale-[1.02] transition-all"
                 >
-                  공식 홈페이지 바로가기 ➔
+                  홈페이지 바로가기 ➔
                 </button>
               )}
               <button 
-                onClick={() => router.push("/")}
+                onClick={() => router.back()}
                 className="py-10 lg:py-14 px-12 lg:px-20 bg-gray-100 text-gray-400 rounded-[40px] lg:rounded-[60px] font-black text-2xl lg:text-5xl"
               >
                 목록으로
@@ -207,6 +229,7 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
           <span className="text-[10px] lg:text-lg font-black tracking-tighter">TOP</span>
         </button>
       </div>
+
     </div>
   );
 }
