@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     telephone: false,
   },
   verification: {
-    google: "mheHADfMzfVfsc2CiF8hADt8XgNyQ4AhBUVsI1SW-4g",
+    google: "8SgfASfYUu2c3pm5pYJyro_aYc8OEK7RSYHySCoJ8Ho",
     // 네이버 서치어드바이저용 (나중에 키 입력 가능)
     other: {
       "naver-site-verification": ["나중에_여기에_입력"],
