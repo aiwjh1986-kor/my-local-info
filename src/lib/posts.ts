@@ -14,7 +14,13 @@ export interface PostData {
   content: string;
   link?: string;
   image?: string;
-  deadline?: string;
+  deadline?: string | null;
+  is_urgent?: boolean;
+  is_popular?: boolean;
+  endDate?: string | null;
+  region?: string;
+  cta?: string;
+  id?: string | number;
 }
 
 export function getSortedPostsData(): PostData[] {
