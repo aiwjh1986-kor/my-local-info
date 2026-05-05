@@ -60,7 +60,7 @@ export default function CoupangDynamicBanner() {
   }, []);
 
   return (
-    <div className="w-full flex flex-col items-center gap-3 overflow-hidden rounded-[30px] bg-white/40 backdrop-blur-md p-6 border border-white shadow-sm my-6 relative z-30">
+    <div className="w-full max-w-5xl mx-auto flex flex-col items-center gap-3 overflow-hidden rounded-[30px] bg-white/60 backdrop-blur-md p-6 border border-white shadow-xl my-10 relative z-30">
       <div
         ref={containerRef}
         className="w-full flex justify-center items-center overflow-hidden min-h-[170px] relative"
