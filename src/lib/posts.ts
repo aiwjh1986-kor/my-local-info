@@ -43,13 +43,13 @@ export function getSortedPostsData(): PostData[] {
       try {
         const rawDate = matterResult.data.date;
         if (rawDate instanceof Date) {
-          date = rawDate.toISOString().split('T')[0];
+          date = rawDate.toISOString();
         } else if (rawDate) {
           // "2026.05.02" 형식을 "2026-05-02"로 변환 시도
           const dateStr = String(rawDate).replace(/\./g, '-');
           const d = new Date(dateStr);
           if (!isNaN(d.getTime())) {
-            date = d.toISOString().split('T')[0];
+            date = d.toISOString();
           } else {
             date = dateStr;
           }
@@ -61,7 +61,7 @@ export function getSortedPostsData(): PostData[] {
       // 마감일 처리
       let deadline = matterResult.data.deadline;
       if (deadline instanceof Date) {
-        deadline = deadline.toISOString().split('T')[0];
+        deadline = deadline.toISOString();
       } else if (deadline) {
         deadline = String(deadline).replace(/\./g, '-');
       }
@@ -106,7 +106,14 @@ export function getSortedPostsData(): PostData[] {
     if (isClosedA === isClosedB) {
       const timeA = new Date(a.date).getTime();
       const timeB = new Date(b.date).getTime();
-      return timeB - timeA;
+      
+      // 날짜가 다르면 날짜순 정렬
+      if (timeB !== timeA) {
+        return timeB - timeA;
+      }
+      
+      // 날짜가 같으면 파일명(slug) 기준 내림차순 정렬 (02가 01보다 위로)
+      return b.slug.localeCompare(a.slug);
     }
 
     // 진행 중인 글(false)이 종료된 글(true)보다 앞으로 오게 함
@@ -127,7 +134,7 @@ export function getPostData(slug: string): PostData | null {
   // 날짜 처리
   let date = matterResult.data.date;
   if (date instanceof Date) {
-    date = date.toISOString().split('T')[0];
+    date = date.toISOString();
   } else if (typeof date !== 'string') {
     date = String(date);
   }
