@@ -29,6 +29,7 @@ interface FeaturedCard {
   link?: string;
   image?: string;
   id?: string;
+  endDate?: string | null;
 }
 
 export default function DashboardClient({
