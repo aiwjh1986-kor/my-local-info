@@ -76,6 +76,7 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
           <MenuLink onClick={() => router.push("/?tab=생활정보")} icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="생활정보" />
           <MenuLink onClick={() => router.push("/?tab=도서정보")} icon={IMG_BASE + "icon-book.png?v=" + V_NUM} label="도서정보" />
           <MenuLink onClick={() => router.push("/blog")} icon={IMG_BASE + "icon-blog.png?v=" + V_NUM} label="블로그" active={true} />
+          <MenuLink onClick={() => router.push("/tips")} icon={IMG_BASE + "icon-ggul.png?v=" + V_NUM} label="실생활 꿀팁" />
         </nav>
       </aside>
 
@@ -94,6 +95,7 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
           <QuickLink icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" onClick={() => router.push("/?tab=지역행사")} />
           <QuickLink icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="생활 정보" onClick={() => router.push("/?tab=생활정보")} />
           <QuickLink icon={IMG_BASE + "icon-book.png?v=" + V_NUM} label="도서 소식" onClick={() => router.push("/?tab=도서정보")} />
+          <QuickLink icon={IMG_BASE + "icon-ggul.png?v=" + V_NUM} label="실생활 꿀팁" onClick={() => router.push("/tips")} />
         </div>
 
         <div className="w-[80px] lg:w-[150px] hidden md:block" />

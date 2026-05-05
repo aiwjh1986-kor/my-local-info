@@ -1,6 +1,7 @@
 [
   {
     "id": "tip1",
+    "slug": "kitchen-oil-cleaning",
     "category": "주방청소",
     "title": "✨ 만능 베이킹소다로 주방 기름때 싹!",
     "description": "기름때가 가득한 가스레인지나 환풍기 필터, 베이킹소다 가루를 뿌리고 뜨거운 물을 부어보세요. 힘들이지 않고 반짝반짝해져요!",
@@ -10,6 +11,7 @@
   },
   {
     "id": "tip2",
+    "slug": "closet-storage-tip",
     "category": "수납정리",
     "title": "👗 좁은 옷장 2배로 넓히는 압축 정리법",
     "description": "부피 큰 겨울 이불이나 패딩, 압축팩 하나면 공간이 마법처럼 늘어나요. 습기 제거제와 함께 보관하면 금상첨화!",
@@ -19,6 +21,7 @@
   },
   {
     "id": "tip3",
+    "slug": "led-bulb-replacement",
     "category": "가전관리",
     "title": "💡 번거로운 전구 교체, 이제 LED로 끝내세요",
     "description": "자주 나가는 일반 전구 대신 수명 길고 전기료 아끼는 LED 전구로 교체해보세요. 밝기는 훨씬 밝고 수명은 10배나 길답니다.",
@@ -28,6 +31,7 @@
   },
   {
     "id": "tip4",
+    "slug": "showerhead-vinegar-cleaning",
     "category": "욕실청소",
     "title": "🚿 막힌 샤워기 구멍 뻥! 식초 세척법",
     "description": "비닐봉지에 식초와 따뜻한 물을 섞어 샤워기를 1시간만 담가두세요. 막혔던 구멍이 뻥 뚫리고 반짝이는 광택은 덤!",
@@ -37,6 +41,7 @@
   },
   {
     "id": "tip5",
+    "slug": "microwave-odor-removal",
     "category": "주방가전",
     "title": "🍋 전자레인지 냄새 & 기름때 귤껍질로 싹!",
     "description": "귤이나 레몬 껍질을 넣고 3분간 돌려보세요. 수증기가 때를 불려주고 상큼한 향기까지! 닦아내기만 하면 소독 완료예요.",
@@ -46,6 +51,7 @@
   },
   {
     "id": "tip6",
+    "slug": "window-frame-dust-cleaning",
     "category": "창문청소",
     "title": "🌬️ 창틀 먼지 자석! 섬유유연제 활용법",
     "description": "걸레에 섬유유연제를 살짝 묻혀 창틀을 닦아보세요. 정전기 방지 효과로 먼지가 훨씬 덜 앉고 향기도 폴폴 난답니다.",
@@ -55,6 +61,7 @@
   },
   {
     "id": "tip7",
+    "slug": "sticker-residue-removal",
     "category": "새제품관리",
     "title": "🏷️ 스티커 자국 끈적임 제로! 드라이기 신공",
     "description": "새 그릇이나 가구 스티커, 드라이기로 따뜻하게 데운 뒤 천천히 떼어보세요. 자국 없이 깔끔하게 떨어지는 마법!",
@@ -64,11 +71,62 @@
   },
   {
     "id": "tip8",
+    "slug": "drain-cleaning-tip",
     "category": "배수구관리",
     "title": "🧼 손 안 대고 코 푸는 배수구 청소법",
     "description": "배수구 냄새가 고민일 땐 발포 클리너를 부어보세요. 풍성한 거품이 구석구석 찌든 때를 녹여준답니다. 물만 부으면 끝!",
     "image": "coopang/08.png",
     "productName": "살림 필수템! 배수구 발포 클리너",
     "productLink": "https://www.coupang.com/np/search?q=%EB%B0%B0%EC%88%98%EA%B5%AC+%EB%B0%9C%ED%8F%AC+%ED%81%B4%EB%A6%AC%EB%84%88"
+  },
+  {
+    "id": "tip9",
+    "slug": "shoe-odor-removal-tips",
+    "category": "생활정보",
+    "title": "👟 꼬릿한 신발 냄새 안녕! 10원짜리 동전과 신문지 활용법",
+    "description": "구리 성분의 10원짜리 동전과 습기를 흡수하는 신문지로 지독한 신발 냄새를 싹 잡아보세요.",
+    "image": "coopang/09.png",
+    "productName": "강력 탈취! 신발 전용 데오도란트 스프레이",
+    "productLink": "https://www.coupang.com/np/search?q=%EC%8B%A0%EB%B0%9C+%EB%8D%B0%EC%98%A4%EB%8F%84%EB%9E%80%ED%8A%B8"
+  },
+  {
+    "id": "tip10",
+    "slug": "fruit-washing-guide",
+    "category": "생활정보",
+    "title": "🍎 잔류 농약 걱정 뚝! 깨끗한 과일 세척 '5분 담금법'",
+    "description": "흐르는 물보다 효과적인 담금 세척법! 영양소 파괴 없이 농약만 싹 제거하는 노하우를 공개합니다.",
+    "image": "coopang/10.png",
+    "productName": "안심 세정! 1종 주방세제 과일 채소 세정제",
+    "productLink": "https://www.coupang.com/np/search?q=%EA%B3%BC%EC%9D%BC+%EC%84%B8%EC%A0%95%EC%A0%9C"
+  },
+  {
+    "id": "tip11",
+    "slug": "refrigerator-organization-tips",
+    "category": "생활정보",
+    "title": "🧊 냉장고 공간이 2배로! 식재료 신선도를 지키는 수납법",
+    "description": "소분 보관과 세로 수납으로 냉장고 공간 확보는 물론, 식재료 신선도까지 챙기는 똑똑한 방법!",
+    "image": "coopang/11.png",
+    "productName": "깔끔 수납! 냉장고 투명 정리함 세트",
+    "productLink": "https://www.coupang.com/np/search?q=%EB%83%89%EC%9E%A5%EA%B3%A0+%EC%A0%95%EB%A6%AC%ED%95%A8"
+  },
+  {
+    "id": "tip12",
+    "slug": "towel-smell-removal",
+    "category": "생활정보",
+    "title": "🧺 수건 쉰내 완벽 제거! 뽀송하게 되살리는 식초 세탁법",
+    "description": "빨아도 안 지워지는 퀴퀴한 수건 냄새, 과탄산소다와 식초를 활용한 살균 세탁법으로 해결하세요.",
+    "image": "coopang/12.png",
+    "productName": "살림 필수품! 대용량 과탄산소다",
+    "productLink": "https://www.coupang.com/np/search?q=%EA%B3%BC%ED%83%84%EC%82%B0%EC%86%8C%EB%8B%A4"
+  },
+  {
+    "id": "tip13",
+    "slug": "coffee-grounds-reuse-guide",
+    "category": "생활정보",
+    "title": "☕ 버리기 아까운 커피 찌꺼기, 100% 활용하는 꿀팁",
+    "description": "주방 기름때 제거부터 옷장 탈취제까지! 버려지는 커피 찌꺼기의 놀라운 변신을 확인해 보세요.",
+    "image": "coopang/13.png",
+    "productName": "간편한 활용! 다용도 국물팩/거름망",
+    "productLink": "https://www.coupang.com/np/search?q=%EB%8B%A4%EC%9A%A9%EB%8F%84+%EA%B1%B0%EB%A6%84%EB%A7%9D"
   }
 ]

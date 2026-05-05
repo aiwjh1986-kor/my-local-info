@@ -6,8 +6,19 @@ export default function CustomCursor() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const [isActive, setIsActive] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
+    // 마우스가 있는 기기인지 확인 (모바일/태블릿 제외)
+    const checkMobile = () => {
+      const isTouch = window.matchMedia("(pointer: coarse)").matches;
+      setIsMobile(isTouch);
+    };
+
+    checkMobile();
+    
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
     const onMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
     };
@@ -42,6 +53,8 @@ export default function CustomCursor() {
       window.removeEventListener("mouseup", onMouseUp);
     };
   }, []);
+
+  if (isMobile) return null;
 
   return (
     <>

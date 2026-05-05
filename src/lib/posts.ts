@@ -23,6 +23,21 @@ export interface PostData {
   id?: string | number;
 }
 
+export interface TipData {
+  slug: string;
+  id: string;
+  title: string;
+  date: string;
+  category: string;
+  summary: string;
+  image: string;
+  productName: string;
+  productLink: string;
+  content: string;
+}
+
+const tipsDirectory = path.join(process.cwd(), 'src/content/tips');
+
 export function getSortedPostsData(): PostData[] {
   // src/content/posts 폴더가 없으면 빈 배열 반환
   if (!fs.existsSync(postsDirectory)) {
@@ -150,4 +165,45 @@ export function getPostData(slug: string): PostData | null {
     link: matterResult.data.link || '',
     content: matterResult.content,
   } as PostData;
+}
+
+export function getSortedTipsData(): TipData[] {
+  if (!fs.existsSync(tipsDirectory)) {
+    return [];
+  }
+
+  const fileNames = fs.readdirSync(tipsDirectory);
+  const allTipsData = fileNames
+    .filter((fileName) => fileName.endsWith('.md'))
+    .map((fileName) => {
+      const slug = fileName.replace(/\.md$/, '');
+      const fullPath = path.join(tipsDirectory, fileName);
+      const fileContents = fs.readFileSync(fullPath, 'utf8');
+      const matterResult = matter(fileContents);
+
+      return {
+        ...matterResult.data,
+        slug,
+        content: matterResult.content,
+      } as TipData;
+    });
+
+  return allTipsData.sort((a, b) => (a.date < b.date ? 1 : -1));
+}
+
+export function getTipData(slug: string): TipData | null {
+  const fullPath = path.join(tipsDirectory, `${slug}.md`);
+
+  if (!fs.existsSync(fullPath)) {
+    return null;
+  }
+
+  const fileContents = fs.readFileSync(fullPath, 'utf8');
+  const matterResult = matter(fileContents);
+
+  return {
+    ...matterResult.data,
+    slug,
+    content: matterResult.content,
+  } as TipData;
 }

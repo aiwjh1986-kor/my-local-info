@@ -58,11 +58,9 @@ export default function DashboardClient({
   const [isTipEdit, setIsTipEdit] = useState(false);
   const [editingTipId, setEditingTipId] = useState("");
   const [isTipPaused, setIsTipPaused] = useState(false);
-  const [isTipDragging, setIsTipDragging] = useState(false);
   const [tipStartX, setTipStartX] = useState(0);
   const [tipScrollLeft, setTipScrollLeft] = useState(0);
-  const [selectedTip, setSelectedTip] = useState<any>(null);
-  const [isTipModalOpen, setIsTipModalOpen] = useState(false);
+  const [isTipDragging, setIsTipDragging] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const lifeTipRef = useRef<HTMLDivElement>(null);
 
@@ -736,6 +734,13 @@ export default function DashboardClient({
                     <p className="text-xs text-gray-400 font-bold mt-1">삶이 편리해지는 작은 비결들을 모았어요.</p>
                   </div>
                 </div>
+                <button 
+                  onClick={() => router.push("/tips")}
+                  className="bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 rounded-full shadow-lg hover:scale-105 transition-all font-black text-gray-800 text-sm flex items-center gap-2 group"
+                >
+                  <span>전체보기</span>
+                  <span className="group-hover:translate-x-1 transition-transform">➔</span>
+                </button>
               </div>
 
               <div
@@ -767,9 +772,8 @@ export default function DashboardClient({
                   <div
                     key={`${tip.id}-${idx}`}
                     onClick={() => {
-                      if (!isTipDragging) {
-                        setSelectedTip(tip);
-                        setIsTipModalOpen(true);
+                      if (!isTipDragging && tip.slug) {
+                        router.push(`/tips/${tip.slug}`);
                       }
                     }}
                     className={`min-w-[300px] md:min-w-[380px] bg-white rounded-[32px] p-6 shadow-sm border border-gray-100 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-2 transition-all group overflow-hidden relative snap-start cursor-pointer`}
@@ -1182,6 +1186,15 @@ export default function DashboardClient({
             label="블로그"
             active={activeTab === "블로그" && activeBlogCat === "전체"}
           />
+          <MenuLink
+            onClick={() => { 
+              setIsMenuOpen(false); 
+              router.push("/tips");
+            }}
+            icon={IMG_BASE + "icon-ggul.png?v=" + V_NUM}
+            label="실생활 꿀팁"
+            active={false}
+          />
 
           <div className="h-px bg-gray-100 my-2" />
 
@@ -1352,62 +1365,6 @@ export default function DashboardClient({
         </div>
       </footer>
 
-      {/* ✨ 생활 팁 상세 모달 */}
-      {isTipModalOpen && selectedTip && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-md"
-            onClick={() => setIsTipModalOpen(false)}
-          />
-          <div className="bg-white w-full max-w-2xl rounded-[40px] overflow-hidden shadow-2xl relative z-10 animate-in fade-in zoom-in duration-300">
-            <button
-              onClick={() => setIsTipModalOpen(false)}
-              className="absolute top-6 right-6 w-12 h-12 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-gray-500 hover:text-gray-900 shadow-lg z-20 hover:rotate-90 transition-all duration-300"
-            >
-              <span className="text-2xl">✕</span>
-            </button>
-
-            <div className="aspect-video w-full overflow-hidden bg-gray-100">
-              <img
-                src={getImageUrl(selectedTip.image)}
-                alt={selectedTip.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            <div className="p-10">
-              <div className="inline-block bg-yellow-50 text-yellow-600 text-xs font-black px-4 py-1.5 rounded-full border border-yellow-100 mb-6 uppercase tracking-wider">
-                {selectedTip.category}
-              </div>
-              <h2 className="text-3xl font-black text-gray-900 mb-6 leading-tight">
-                {selectedTip.title}
-              </h2>
-              <p className="text-lg text-gray-600 leading-relaxed font-medium mb-10 whitespace-pre-wrap">
-                {selectedTip.description}
-              </p>
-
-              <div className="bg-gray-50 rounded-3xl p-8 border border-gray-100">
-                <div className="text-xs text-gray-400 font-black mb-4 uppercase tracking-[0.2em] flex items-center gap-2">
-                  <span className="w-8 h-[2px] bg-gray-200"></span>
-                  루미의 추천 아이템
-                </div>
-                <div className="flex items-center justify-between gap-6">
-                  <div className="text-xl font-black text-gray-900">{selectedTip.productName}</div>
-                  <a
-                    href={selectedTip.productLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 px-8 py-4 rounded-2xl font-black flex items-center gap-3 shadow-xl shadow-yellow-100 hover:scale-105 transition-all"
-                  >
-                    <span>최저가 확인</span>
-                    <span className="text-2xl">🛒</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
