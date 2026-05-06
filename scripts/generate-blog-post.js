@@ -2,107 +2,67 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env.local') });
 
-async function generateBlogPost() {
+async function generateBlogPosts() {
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+  const postsDir = path.join(__dirname, '../src/content/posts');
+  const localInfoPath = path.join(__dirname, '../public/data/local-info.json');
 
   if (!GEMINI_API_KEY) {
-    console.error('필요한 환경변수가 없습니다. (GEMINI_API_KEY)');
+    console.error('GEMINI_API_KEY가 없습니다.');
     return;
   }
-
-  const dataFilePath = path.join(__dirname, '../public/data/local-info.json');
-  const postsDir = path.join(__dirname, '../src/content/posts');
-
-  if (!fs.existsSync(dataFilePath)) {
-    console.error('데이터 파일이 없습니다.');
-    return;
-  }
-
-  const localData = JSON.parse(fs.readFileSync(dataFilePath, 'utf8'));
 
   try {
-    const allItems = [...localData.events, ...localData.benefits];
-    if (allItems.length === 0) {
-      console.log('가공할 데이터가 없습니다.');
-      return;
-    }
-
+    const localInfo = JSON.parse(fs.readFileSync(localInfoPath, 'utf8'));
+    const items = localInfo.items || [];
     const today = new Date().toISOString().split('T')[0];
+
     let generatedCount = 0;
 
-    if (!fs.existsSync(postsDir)) {
-      fs.mkdirSync(postsDir, { recursive: true });
-    }
-    const existingFiles = fs.readdirSync(postsDir);
-    const existingContentNormalized = existingFiles.map(file => {
-      if (!file.endsWith('.md')) return '';
-      const content = fs.readFileSync(path.join(postsDir, file), 'utf8');
-      return content.replace(/[^\wㄱ-ㅎ가-힣]/g, ''); // 영문, 숫자, 한글만 남김
-    }).join('\n');
+    for (const item of items) {
+      // 이미 작성된 글인지 확인 (중복 방지)
+      const existingFiles = fs.readdirSync(postsDir);
+      const isAlreadyWritten = existingFiles.some(file => 
+        file.includes(item.id) || (item.title && file.toLowerCase().includes(item.title.replace(/\s+/g, '-').toLowerCase()))
+      );
 
-    for (const item of allItems) {
-      const name = item.name || item.title;
-      const agency = item.location || item.agencyName || '';
-      const summary = item.summary || '';
-      
-      const target = item.target || '';
-      
-      if (!name) continue;
-
-      // 1. 중복 체크 (정규화된 텍스트 비교)
-      const pureName = name.replace(/[^\wㄱ-ㅎ가-힣]/g, '');
-      const isAlreadyIn = existingContentNormalized.includes(pureName.substring(0, 12)) || 
-                          existingFiles.some(file => file.replace(/[^\wㄱ-ㅎ가-힣]/g, '').includes(pureName.substring(0, 10)));
-
-      if (isAlreadyIn) {
+      if (isAlreadyWritten) {
+        console.log(`- [건너뜀] 이미 작성된 글입니다: ${item.title}`);
         continue;
       }
 
-      // 2. 용인/경기 관련 필터링 강화 (지원대상 필드 포함)
-      const isTargetArea = name.includes('용인') || agency.includes('용인') || summary.includes('용인') || target.includes('용인') ||
-                           name.includes('경기') || agency.includes('경기') || summary.includes('경기') || target.includes('경기');
-      
-      if (!isTargetArea) {
-        continue;
-      }
-
-      console.log(`- 블로그 글 생성 중: ${name}`);
+      console.log(`- 블로그 글 생성 중: ${item.title}`);
 
       const weatherText = item.weather
         ? `현재 ${item.location || '지역'} 날씨: ${item.weather.desc}, 기온: ${item.weather.temp}°C`
         : '날씨 정보 없음';
 
-      const prompt = `너는 '용인시 생활정보 및 여행가이드' 블로그의 전문 에디터 '루미'야. 우리 블로그의 이름은 '루미의 우리동네 소식통'이야.
-아래 공공서비스 정보와 실시간 날씨 정보를 바탕으로 주민들에게 도움이 되는 블로그 글을 작성해줘.
+      const prompt = `너는 '용인시 생활정보 및 여행가이드' 블로그의 전문 에디터 '루미'야.
+아래 공공서비스 정보를 바탕으로 블로그 글을 작성해줘.
 
 정보: ${JSON.stringify(item)}
 날씨: ${weatherText}
 
 작성 지침:
-1. 톤앤매너: 아주 친절하고 상냥한 이웃집 언니/누나 같은 말투를 사용해줘 (해요체).
-2. 타겟: 용인시 주민 혹은 전국 여행 정보를 찾는 사람들.
-3. 내용 구성: 흥미로운 도입부 -> 서비스/정보 상세 내용 -> 루미가 추천하는 이유 3가지 -> 신청 방법 및 꿀팁.
-4. 생활정보(info) 카테고리 특화: 카테고리가 'info'인 경우에만, 해당 정보 외에도 관련하여 실생활에서 유용한 꿀팁(예: 청소 노하우, 전구 교체법 등)을 추가해서 작성해줘. 지원금(grant)이나 행사(event) 글에는 이런 개별 꿀팁을 넣지 말고 전문적인 정보 제공에만 집중해줘.
-5. 날씨 정보 반영: 제공된 실시간 날씨 정보를 자연스럽게 섞어줘.
-6. 루미 정체성: '루미'라는 이름을 본문에 한 번 이상 언급해줘.
+1. 톤앤매너: 친절하고 상냥한 이웃집 언니 같은 말투 (해요체).
+2. 내용 구성: 흥미로운 도입부 -> 상세 내용 -> 루미의 추천 이유 3가지 -> 팁.
+3. 형식: 마크다운 형식을 사용해줘. HTML 태그는 절대 사용하지 마.
+4. 제목 키워드: 파일명에 사용할 영문 키워드(짧은 단어 2-3개)를 글 마지막에 FILENAME_KEYWORD: [keyword] 형식으로 꼭 출력해줘.
 
-아래 형식으로 출력해줘. 반드시 이 형식만 출력하고 다른 텍스트는 없이:
+출력 형식:
 ---
-title: (친근하고 흥미로운 제목)
-id: ${item.id}
-date: ${today}
-summary: (한 줄 요약)
+title: [제목]
+date: ${new Date().toISOString()}
+summary: [한줄요약]
 category: ${item.category || 'info'}
-image: new_01.png (반드시 이 이미지명을 그대로 사용할 것)
-tags: [태그1, 태그2, 태그3]
+image: new_01.png
+link: ${item.link}
+tags: [태그1, 태그2]
 ---
 
-(본문: 800자 이상)
+(본문 800자 이상)
 
-글 맨 마지막에는 아래와 같이 실제 서비스로 연결되는 링크를 마크다운 형식으로 반드시 포함해줘:
-👉 [공식 홈페이지에서 자세히 보기 및 신청하기](${item.link})
-
-마지막 줄에 FILENAME: ${today}-${item.id} 형식으로 파일명도 출력해줘.`;
+FILENAME_KEYWORD: [영문-키워드]`;
 
       const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
       const response = await fetch(geminiUrl, {
@@ -113,40 +73,47 @@ tags: [태그1, 태그2, 태그3]
         })
       });
 
-      const result = await response.json();
-      if (!result.candidates) {
-        console.error(`- ${item.name} 생성 오류:`, JSON.stringify(result));
+      const data = await response.json();
+      const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      if (!aiResponse) {
+        console.error('AI 응답 생성 실패');
         continue;
       }
 
-      let aiResponse = result.candidates[0].content.parts[0].text;
-      const fileNameMatch = aiResponse.match(/FILENAME:\s*(.+)$/m);
-      let fileName = fileNameMatch ? fileNameMatch[1].trim() : `${today}-${item.id}.md`;
-      if (!fileName.endsWith('.md')) fileName += '.md';
+      // 키워드 추출 및 정규화
+      const keywordMatch = aiResponse.match(/FILENAME_KEYWORD:\s*([a-zA-Z0-9-]+)/);
+      const keyword = keywordMatch ? keywordMatch[1].toLowerCase() : 'news';
+      const cleanContent = aiResponse.replace(/FILENAME_KEYWORD:\s*.+$/, '').trim();
 
-      const content = aiResponse.replace(/FILENAME:\s*.+$/m, '').trim();
-      const fullPath = path.join(postsDir, fileName);
-
-      // 파일이 이미 존재하면 덮어쓰지 않음 (사용자 수정본 보호)
-      if (fs.existsSync(fullPath)) {
-        console.log(`  - [건너뜀] 이미 존재하는 파일입니다: ${fileName}`);
-        continue;
+      // 🆕 자동 번호 부여 로직
+      const currentFiles = fs.readdirSync(postsDir);
+      const todayFiles = currentFiles.filter(f => f.startsWith(today));
+      
+      let nextNum = 1;
+      if (todayFiles.length > 0) {
+        const numbers = todayFiles.map(f => {
+          const m = f.match(new RegExp(`${today}-(\\d+)`));
+          return m ? parseInt(m[1]) : 0;
+        });
+        nextNum = Math.max(...numbers) + 1;
       }
+      const nextNumStr = String(nextNum).padStart(2, '0');
+      const fileName = `${today}-${nextNumStr}-${keyword}.md`;
 
-      fs.writeFileSync(fullPath, content, 'utf8');
+      fs.writeFileSync(path.join(postsDir, fileName), cleanContent, 'utf8');
+      console.log(`  - 생성 완료: ${fileName}`);
       generatedCount++;
 
+      // API 할당량 제한 방지를 위한 대기
       await new Promise(resolve => setTimeout(resolve, 3000));
     }
 
-    if (generatedCount > 0) {
-      console.log(`총 ${generatedCount}개의 새로운 블로그 포스팅이 생성되었습니다!`);
-    } else {
-      console.log('새로 생성할 포스팅이 없습니다.');
-    }
+    console.log(`\n총 ${generatedCount}개의 블로그 포스트를 생성했습니다.`);
+
   } catch (error) {
-    console.error('글 생성 중 오류 발생:', error);
+    console.error('블로그 생성 중 오류 발생:', error);
   }
 }
 
-generateBlogPost();
+generateBlogPosts();
