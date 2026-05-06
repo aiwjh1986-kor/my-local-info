@@ -765,7 +765,7 @@ export default function DashboardClient({
                   "생활정보": "생활정보",
                   "도서정보": "도서정보"
                 };
-                const match = c.category === catMap[activeTab] ||
+                const match = c.category === catMap[activeTab] || c.category === korCatMap[activeTab] ||
                   (activeTab === "지역행사" && (c.category === "행사" || c.category === "지역행사"));
                 return match;
               }).sort((a, b) => {
