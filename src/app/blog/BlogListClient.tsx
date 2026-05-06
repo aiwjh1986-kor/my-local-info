@@ -25,9 +25,23 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
     return "bg-gray-100 text-gray-600 border-gray-200";
   };
 
+  const sortedAllPosts = [...allPosts].sort((a, b) => {
+    const aEnded = (a.title || "").includes("[종료]");
+    const bEnded = (b.title || "").includes("[종료]");
+    
+    // [종료]가 있으면 뒤로(1), 없으면 앞으로(-1)
+    if (aEnded && !bEnded) return 1;
+    if (!aEnded && bEnded) return -1;
+    
+    // 둘 다 같은 상태면 날짜 최신순 정렬
+    const dateA = new Date((a.date || "").toString().replace(/\./g, '-')).getTime();
+    const dateB = new Date((b.date || "").toString().replace(/\./g, '-')).getTime();
+    return dateB - dateA;
+  });
+
   const filteredPosts = activeCat === "전체" 
-    ? allPosts 
-    : allPosts.filter(p => {
+    ? sortedAllPosts 
+    : sortedAllPosts.filter(p => {
         const catMap: any = { "지원금": "grant", "지역행사": "event", "생활정보": "info", "도서정보": "book" };
         const target = catMap[activeCat] || activeCat;
         return p.category === target || 

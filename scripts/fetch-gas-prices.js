@@ -44,11 +44,14 @@ async function fetchGasPrices() {
       }
     });
 
-    // 블로그 포스트 내용 생성 (HTML 태그 제거, 마크다운만 사용)
+    const title = `[용인시] ${displayDate} 구별 주유소 최저가 TOP 5 정보 (휘발유)`;
+    const summary = `오늘 우리 동네에서 기름값이 가장 저렴한 곳은 어디일까요? 수지, 기흥, 처인구별 최저가 정보를 루미가 전해드립니다!`;
+
+    // 블로그 포스트 내용 생성
     let content = `---
-title: "[용인시] ${displayDate} 구별 주유소 최저가 TOP 5 정보 (휘발유)"
+title: "${title}"
 date: ${today.toISOString()}
-summary: "오늘 우리 동네에서 기름값이 가장 저렴한 곳은 어디일까요? 수지, 기흥, 처인구별 최저가 정보를 루미가 전해드립니다!"
+summary: "${summary}"
 category: 생활정보
 image: info-gas.png
 tags: [용인시, 최저가주유소, 기름값정보, 수지구, 기흥구, 처인구]
@@ -90,7 +93,7 @@ tags: [용인시, 최저가주유소, 기름값정보, 수지구, 기흥구, 처
 *본 정보는 오피넷(Opinet) 실시간 API 데이터를 바탕으로 작성되었습니다.*
 `;
 
-    // 🆕 자동 번호 부여 로직
+    // 1. 블로그 포스트 저장
     const postsDir = path.join(__dirname, '../src/content/posts');
     const existingFiles = fs.readdirSync(postsDir);
     const todayFiles = existingFiles.filter(f => f.startsWith(dateStr));
@@ -104,11 +107,42 @@ tags: [용인시, 최저가주유소, 기름값정보, 수지구, 기흥구, 처
       nextNum = Math.max(...numbers) + 1;
     }
     const nextNumStr = String(nextNum).padStart(2, '0');
-
-    const fileName = `${dateStr}-${nextNumStr}-gas-prices.md`;
+    const slug = `${dateStr}-${nextNumStr}-gas-prices`;
+    const fileName = `${slug}.md`;
     fs.writeFileSync(path.join(postsDir, fileName), content, 'utf8');
     
     console.log(`기름값 블로그 포스트 생성 완료: ${fileName}`);
+
+    // 2. featured-cards.json 업데이트 (맨 앞으로 보내기)
+    const featuredPath = path.join(__dirname, '../public/data/featured-cards.json');
+    if (fs.existsSync(featuredPath)) {
+      let featuredCards = JSON.parse(fs.readFileSync(featuredPath, 'utf8'));
+      
+      // 기존 주유소 카드 제거 (중복 방지)
+      featuredCards = featuredCards.filter(card => !card.slug.includes('gas-prices'));
+      
+      // 새 주유소 카드 생성
+      const newCard = {
+        category: "생활정보",
+        title: title,
+        summary: summary,
+        date: dateStr,
+        region: "용인시",
+        image: "info-gas.png",
+        slug: slug
+      };
+      
+      // 맨 앞에 추가
+      featuredCards.unshift(newCard);
+      
+      // 최대 개수 제한 (예: 10개)
+      if (featuredCards.length > 10) {
+        featuredCards = featuredCards.slice(0, 10);
+      }
+      
+      fs.writeFileSync(featuredPath, JSON.stringify(featuredCards, null, 2), 'utf8');
+      console.log(`메인 화면(featured-cards)에 주유소 정보가 가장 먼저 노출되도록 업데이트했습니다.`);
+    }
 
   } catch (error) {
     console.error('오류 발생:', error);

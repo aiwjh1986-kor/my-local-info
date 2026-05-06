@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useRef } from "react";
+import InfiniteCarousel from "@/components/InfiniteCarousel";
+import { Card } from "@/components/Card";
 import CoupangDynamicBanner from "@/components/CoupangDynamicBanner";
 import data from "../../public/data/local-info.json";
 import lifeTips from "../../public/data/life-tips.json";
-import { useRef } from "react";
 
 // 폰트 및 캐시 관련 상수
 const V_NUM = "12";
@@ -82,95 +84,62 @@ export default function DashboardClient({
     }
   }, [searchParams]);
 
-  // ✨ 생활 팁 자동 슬라이더 로직 (무한 루프) - 전용 lifeTipRef 사용
+  // URL 파라미터에서 탭 정보를 읽어와 설정
   useEffect(() => {
-    if (activeTab === "홈" && lifeTipRef.current && !isTipPaused) {
-      const interval = setInterval(() => {
-        if (lifeTipRef.current) {
-          const { scrollLeft, scrollWidth } = lifeTipRef.current;
-          const oneSetWidth = scrollWidth / 3;
-
-          if (scrollLeft >= oneSetWidth * 2) {
-            lifeTipRef.current.scrollTo({ left: scrollLeft - oneSetWidth, behavior: "auto" });
-          }
-
-          lifeTipRef.current.scrollBy({ left: 300, behavior: "smooth" });
-        }
-      }, 4000);
-
-      return () => clearInterval(interval);
+    const tab = searchParams.get("tab");
+    if (tab) {
+      setActiveTab(tab);
+      // 부드럽게 배너 하단으로 스크롤 (원하는 경우)
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [activeTab, isTipPaused]);
+  }, [searchParams]);
+
+  // ✨ 기존의 복잡한 자동 슬라이더 로직들은 CSS 애니메이션 방식으로 대체되어 제거되었습니다.
 
   const featuredCards = initialFeaturedCards;
   const blogPosts = initialBlogPosts;
 
   // 중복 제거 및 데이터 통합 (제목 기준)
   const getCombinedData = () => {
-    // 1. 모든 블로그 포스트를 기본으로 시작
-    const combined = [...initialBlogPosts].map(post => ({
-      ...post,
-      is_popular: post.is_popular ?? false
-    }));
+    // 1. 모든 데이터를 하나로 통합
+    const combined = [...initialBlogPosts, ...initialFeaturedCards];
 
-    // 2. 추천 카드(Featured) 중 블로그에 없는 항목만 추가로 병합
-    initialFeaturedCards.forEach(fCard => {
-      const isAlreadyIn = combined.find(c => c.slug === fCard.slug || (c.id && fCard.id && c.id === fCard.id));
-      if (!isAlreadyIn) {
-        combined.push(fCard);
-      } else {
-        // 이미 있다면 추천 카드의 정보를 우선하여 덮어쓰기 (이미지 등)
-        const idx = combined.findIndex(c => c.slug === fCard.slug || (c.id && fCard.id && c.id === fCard.id));
-        combined[idx] = { ...combined[idx], ...fCard };
-      }
-    });
+    // 2. 중복 제거 (slug 또는 id 기준)
+    const unique = Array.from(new Map(combined.map(item => [item.slug || item.id, item])).values());
 
-    const todayStr = "2026-05-05";
+    const todayStr = new Date().toISOString().split('T')[0];
 
-    return combined.sort((a, b) => {
+    // 3. 무조건 날짜 최신순(내림차순)으로만 정렬
+    return unique.sort((a, b) => {
       const dateAStr = (a.date || "").toString().replace(/\./g, '-');
       const dateBStr = (b.date || "").toString().replace(/\./g, '-');
 
-      // 1순위: 오늘 날짜인 글을 무조건 위로
-      const isAToday = dateAStr === todayStr;
-      const isBToday = dateBStr === todayStr;
-
-      if (isAToday && !isBToday) return -1;
-      if (!isAToday && isBToday) return 1;
-
-      // 2순위: 그 외에는 날짜 내림차순 (최신순)
       const dateA = new Date(dateAStr).getTime();
       const dateB = new Date(dateBStr).getTime();
-      
-      // 날짜가 같으면 파일명이나 제목 등으로 정렬할 수 있지만, 일단 날짜순
+
       return dateB - dateA;
     });
   };
 
   const allCards = getCombinedData();
-  // 🆕 최근 5일 이내 게시글 필터링 (최신 정보)
-  const TODAY_STR = "2026-05-05";
-  const todayObj = new Date(TODAY_STR);
-  const fiveDaysAgo = new Date(todayObj);
-  fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
-  
-  const latestCardsRaw = allCards.filter(c => {
-    const postDate = new Date(c.date);
-    // 오늘 날짜보다 이후인 글(미래 글)도 최신 정보로 포함
-    return postDate >= fiveDaysAgo;
-  });
-  // 데이터가 너무 적으면 상위 8개를 기본으로 보여줌
-  const latestCards = latestCardsRaw.length >= 4 ? latestCardsRaw : allCards.slice(0, 8);
-  const grantCards = allCards.filter(c => c.category === "지원금" || c.category === "grant");
-  const eventCards = allCards.filter(c => c.category === "지역행사" || c.category === "event");
-  const infoCards = allCards.filter(c => c.category === "생활정보" || c.category === "info");
-  const bookCards = allCards.filter(c => c.category === "도서정보" || c.category === "book");
+  // 🆕 최신 정보: [종료] 태그가 붙지 않은 글들 중 상위 12개만 노출
+  const latestCards = allCards
+    .filter(c => !c.title.includes("[종료]"))
+    .slice(0, 12);
+  const grantCards = allCards.filter(c => (c.category === "지원금" || c.category === "grant") && !c.title.includes("[종료]"));
+  const eventCards = allCards.filter(c => (c.category === "지역행사" || c.category === "event") && !c.title.includes("[종료]"));
+  const infoCards = allCards.filter(c => (c.category === "생활정보" || c.category === "info") && !c.title.includes("[종료]"));
+  const bookCards = allCards.filter(c => (c.category === "도서정보" || c.category === "book") && !c.title.includes("[종료]"));
   const popularCards = allCards.filter((c) => c.is_popular).slice(0, 3);
 
   // ⏰ 마감임박 카드 필터링 (7일 이내 마감되는 글)
-  const TODAY_TIME = new Date("2026-05-05").getTime();
+  // ⏰ 마감임박 카드 필터링 (이미 종료된 글 제외!)
+  const TODAY_TIME = new Date().setHours(0, 0, 0, 0);
   const impendingCards = allCards.filter(p => {
     if (!p.deadline) return false;
+    // 제목에 [종료]가 있으면 마감임박에서 제외
+    if (p.title.includes("[종료]")) return false;
+
     const deadlineTime = new Date(p.deadline).getTime();
     const diffDays = (deadlineTime - TODAY_TIME) / (1000 * 60 * 60 * 24);
     return diffDays >= 0 && diffDays <= 7;
@@ -186,7 +155,7 @@ export default function DashboardClient({
       "도서정보": ["book", "도서정보", "도서 소식", "도서"]
     };
 
-    const postsToFilter = allCards;
+    const postsToFilter = allCards.filter(post => !post.title.includes("[종료]"));
     if (activeBlogCat === "전체") return postsToFilter;
 
     // 2중 안전장치: 버튼 이름이 '행사'여도 '지역행사' 정보를 찾아오게 함
@@ -407,66 +376,7 @@ export default function DashboardClient({
     window.location.reload(); // 즉시 새로고침하여 상태 반영
   };
 
-  const Card = ({ card, onClick }: { card: FeaturedCard; onClick: () => void }) => (
-    <div
-      onClick={onClick}
-      className="bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden shadow-sm border border-white/20 cursor-pointer hover:shadow-md transition-all group active:scale-[0.98]"
-    >
-      <div className="relative aspect-video overflow-hidden bg-gray-50 flex items-center justify-center">
-        <img
-          src={card.image?.startsWith("http") ? card.image : (IMG_BASE + (card.image || "thumb-youth.png") + "?v=" + V_NUM)}
-          alt={card.title}
-          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute top-3 left-3 flex gap-1.5 items-center">
-          {renderTags(card.category)}
-          {(() => {
-            // 실시간 마감 임박 계산 (7일 전)
-            const TODAY = "2026-05-04";
-            const todayDate = new Date(TODAY);
-            const targetDate = card.endDate || card.deadline;
-            let autoUrgent = false;
-
-            if (targetDate) {
-              const dDate = new Date(targetDate);
-              const diffTime = dDate.getTime() - todayDate.getTime();
-              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-              if (diffDays >= 0 && diffDays <= 7) autoUrgent = true;
-            }
-
-            if (card.is_urgent || autoUrgent) {
-              return (
-                <span className="bg-red-500/90 text-white text-[10px] px-2.5 py-1 rounded-lg font-black animate-pulse shadow-lg shadow-red-200 border border-red-400/50 backdrop-blur-sm">
-                  마감임박
-                </span>
-              );
-            }
-            return null;
-          })()}
-        </div>
-        {/* 관리자 수정 버튼 */}
-        {isAdmin && card.slug && (
-          <button
-            onClick={(e) => startImageEdit(e, card)}
-            className="absolute top-3 right-3 w-8 h-8 bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-blue-600 transition-all z-20 shadow-lg"
-            title="이미지 수정"
-          >
-            📸
-          </button>
-        )}
-      </div>
-      <div className="p-4">
-        <h3 className="font-bold text-gray-900 text-sm leading-tight mb-2 group-hover:text-blue-600 transition-colors line-clamp-2 whitespace-pre-line">
-          {card.title}
-        </h3>
-        <p className="text-gray-500 text-xs line-clamp-2 mb-3">{card.summary}</p>
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-50">
-          <span className="text-[10px] text-gray-400">{card.date}</span>
-          <span className="text-blue-500 text-[10px] font-bold">🔍</span>
-        </div>
-      </div>
-    </div>
-  );
+  // 🆕 기존 내부 Card 컴포넌트는 /src/components/Card.tsx로 분리되었습니다.
 
   const Section = ({
     title,
@@ -474,7 +384,6 @@ export default function DashboardClient({
     cards,
     onCardClick,
     onMoreClick,
-    iconSize = "normal",
     isCarousel = false
   }: {
     title: string;
@@ -482,58 +391,8 @@ export default function DashboardClient({
     cards: FeaturedCard[];
     onCardClick: (card: FeaturedCard) => void;
     onMoreClick: () => void;
-    iconSize?: "normal" | "large";
     isCarousel?: boolean;
   }) => {
-    const sectionScrollRef = useRef<HTMLDivElement>(null);
-    const [isPaused, setIsPaused] = useState(false);
-    const [isDragging, setIsDragging] = useState(false);
-    const [startX, setStartX] = useState(0);
-    const [startScrollLeft, setStartScrollLeft] = useState(0);
-
-    // 공통 무한 루프 체크 함수
-    const checkInfiniteScroll = (el: HTMLDivElement) => {
-      const { scrollLeft, scrollWidth } = el;
-      const oneSetWidth = scrollWidth / 3;
-      if (scrollLeft >= oneSetWidth * 2) {
-        el.scrollTo({ left: scrollLeft - oneSetWidth, behavior: "auto" });
-      } else if (scrollLeft <= 5) {
-        el.scrollTo({ left: scrollLeft + oneSetWidth, behavior: "auto" });
-      }
-    };
-
-    // 섹션별 자동 슬라이더 (무한 루프 Carousel)
-    useEffect(() => {
-      if (isCarousel && sectionScrollRef.current && !isPaused && !isDragging) {
-        const interval = setInterval(() => {
-          if (sectionScrollRef.current) {
-            checkInfiniteScroll(sectionScrollRef.current);
-            sectionScrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
-          }
-        }, 4500 + Math.random() * 1000);
-
-        return () => clearInterval(interval);
-      }
-    }, [isCarousel, cards, isPaused, isDragging]);
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-      if (!isCarousel || !sectionScrollRef.current) return;
-      setIsDragging(true);
-      setStartX(e.pageX - sectionScrollRef.current.offsetLeft);
-      setStartScrollLeft(sectionScrollRef.current.scrollLeft);
-    };
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-      if (!isDragging || !sectionScrollRef.current) return;
-      e.preventDefault();
-      const x = e.pageX - sectionScrollRef.current.offsetLeft;
-      const walk = (x - startX) * 1.5; // 속도를 1.5배로 적절히 조절
-      sectionScrollRef.current.scrollLeft = startScrollLeft - walk;
-      checkInfiniteScroll(sectionScrollRef.current);
-    };
-
-    const handleMouseUp = () => setIsDragging(false);
-
     return (
       <section className="mb-16">
         <div className="flex items-center justify-between mb-8 px-2">
@@ -556,27 +415,29 @@ export default function DashboardClient({
         </div>
 
         {isCarousel ? (
-          <div
-            ref={sectionScrollRef}
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => { setIsPaused(false); handleMouseUp(); }}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            className={`flex gap-6 overflow-x-auto pb-10 hide-scrollbar snap-x ${isDragging ? "cursor-grabbing" : "cursor-grab"} ${isDragging ? "" : "scroll-smooth"}`}
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', userSelect: isDragging ? 'none' : 'auto' }}
-          >
-            {/* 무한 루프를 위해 카드 목록을 3번 렌더링 (여유 공간 확보) */}
-            {[...cards, ...cards, ...cards].map((card, idx) => (
-              <div key={idx} className="min-w-[280px] md:min-w-[340px] snap-start">
-                <Card card={card} onClick={() => onCardClick(card)} />
+          <InfiniteCarousel
+            items={cards}
+            renderItem={(card, idx, dragging) => (
+              <div className="min-w-[280px] md:min-w-[320px] max-w-[320px]">
+                <Card
+                  card={card}
+                  onClick={() => !dragging && onCardClick(card)}
+                  isAdmin={isAdmin}
+                  onImageEdit={startImageEdit}
+                />
               </div>
-            ))}
-          </div>
+            )}
+          />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {cards.map((card, idx) => (
-              <Card key={idx} card={card} onClick={() => onCardClick(card)} />
+              <Card
+                key={idx}
+                card={card}
+                onClick={() => onCardClick(card)}
+                isAdmin={isAdmin}
+                onImageEdit={startImageEdit}
+              />
             ))}
           </div>
         )}
@@ -734,7 +595,7 @@ export default function DashboardClient({
                     <p className="text-xs text-gray-400 font-bold mt-1">삶이 편리해지는 작은 비결들을 모았어요.</p>
                   </div>
                 </div>
-                <button 
+                <button
                   onClick={() => router.push("/tips")}
                   className="bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 rounded-full shadow-lg hover:scale-105 transition-all font-black text-gray-800 text-sm flex items-center gap-2 group"
                 >
@@ -743,41 +604,16 @@ export default function DashboardClient({
                 </button>
               </div>
 
-              <div
-                ref={lifeTipRef}
-                onMouseEnter={() => setIsTipPaused(true)}
-                onMouseLeave={() => { setIsTipPaused(false); setIsTipDragging(false); }}
-                onMouseDown={(e) => {
-                  if (!lifeTipRef.current) return;
-                  setIsTipDragging(true);
-                  setTipStartX(e.pageX - lifeTipRef.current.offsetLeft);
-                  setTipScrollLeft(lifeTipRef.current.scrollLeft);
-                }}
-                onMouseMove={(e) => {
-                  if (!isTipDragging || !lifeTipRef.current) return;
-                  e.preventDefault();
-                  const x = e.pageX - lifeTipRef.current.offsetLeft;
-                  const walk = (x - tipStartX) * 1.5;
-                  lifeTipRef.current.scrollLeft = tipScrollLeft - walk;
-                  const { scrollLeft, scrollWidth } = lifeTipRef.current;
-                  const oneSetWidth = scrollWidth / 3;
-                  if (scrollLeft >= oneSetWidth * 2) lifeTipRef.current.scrollTo({ left: scrollLeft - oneSetWidth, behavior: "auto" });
-                  else if (scrollLeft <= 5) lifeTipRef.current.scrollTo({ left: scrollLeft + oneSetWidth, behavior: "auto" });
-                }}
-                onMouseUp={() => setIsTipDragging(false)}
-                className={`flex gap-6 overflow-x-auto pb-8 hide-scrollbar snap-x ${isTipDragging ? "cursor-grabbing" : "cursor-grab"} ${isTipDragging ? "" : "scroll-smooth"}`}
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', userSelect: isTipDragging ? 'none' : 'auto' }}
-              >
-                {[...lifeTips, ...lifeTips, ...lifeTips].map((tip, idx) => (
+              <InfiniteCarousel
+                items={lifeTips}
+                renderItem={(tip, idx, dragging) => (
                   <div
-                    key={`${tip.id}-${idx}`}
                     onClick={() => {
-                      if (!isTipDragging && tip.slug) {
+                      if (!dragging && tip.slug) {
                         router.push(`/tips/${tip.slug}`);
                       }
                     }}
-                    className={`min-w-[300px] md:min-w-[380px] bg-white rounded-[32px] p-6 shadow-sm border border-gray-100 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-2 transition-all group overflow-hidden relative snap-start cursor-pointer`}
-                    style={{ userSelect: isTipDragging ? 'none' : 'auto' }}
+                    className="min-w-[300px] md:min-w-[340px] max-w-[340px] bg-white rounded-[32px] p-6 shadow-sm border border-gray-100 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-2 transition-all group overflow-hidden relative cursor-pointer h-full"
                   >
                     <div className="absolute top-0 right-0 p-4 flex gap-2">
                       {isAdmin && (
@@ -814,7 +650,7 @@ export default function DashboardClient({
                       {tip.description}
                     </p>
 
-                    <div className="pt-6 border-t border-gray-50">
+                    <div className="pt-6 border-t border-gray-50 mt-auto">
                       <div className="text-[10px] text-gray-400 font-black mb-3 ml-1 uppercase tracking-widest">루미의 추천 아이템</div>
                       <a
                         href={tip.productLink}
@@ -827,8 +663,8 @@ export default function DashboardClient({
                       </a>
                     </div>
                   </div>
-                ))}
-              </div>
+                )}
+              />
             </div>
 
             {/* ⏰ 마감임박 전용 섹션 (신설) */}
@@ -878,7 +714,6 @@ export default function DashboardClient({
             <Section
               title="지혜가 쌓이는 도서 추천"
               icon={IMG_BASE + "icon-book.png?v=" + V_NUM}
-              iconSize="large"
               cards={bookCards}
               isCarousel={true}
               onCardClick={setSelectedCard}
@@ -906,8 +741,8 @@ export default function DashboardClient({
                     key={cat}
                     onClick={() => setActiveBlogCat(cat)}
                     className={`px-5 py-2.5 rounded-2xl text-[13px] font-black whitespace-nowrap transition-all shadow-sm ${activeBlogCat === cat
-                        ? "bg-blue-600 text-white shadow-blue-100"
-                        : "bg-white text-gray-500 hover:bg-gray-50 border border-gray-50"
+                      ? "bg-blue-600 text-white shadow-blue-100"
+                      : "bg-white text-gray-500 hover:bg-gray-50 border border-gray-50"
                       }`}
                   >
                     {cat}
@@ -931,9 +766,16 @@ export default function DashboardClient({
                   "도서정보": "도서정보"
                 };
                 const match = c.category === catMap[activeTab] ||
-                  c.category === korCatMap[activeTab] ||
                   (activeTab === "지역행사" && (c.category === "행사" || c.category === "지역행사"));
                 return match;
+              }).sort((a, b) => {
+                const aEnded = a.title.includes("[종료]");
+                const bEnded = b.title.includes("[종료]");
+                if (aEnded && !bEnded) return 1;
+                if (!aEnded && bEnded) return -1;
+                const dateA = new Date((a.date || "").toString().replace(/\./g, '-')).getTime();
+                const dateB = new Date((b.date || "").toString().replace(/\./g, '-')).getTime();
+                return dateB - dateA;
               })).map((card, idx) => (
                 <Card
                   key={idx}
@@ -1119,76 +961,76 @@ export default function DashboardClient({
 
         <nav className="flex flex-col gap-3 lg:gap-6 overflow-y-auto no-scrollbar">
           <MenuLink
-            onClick={() => { 
-              setActiveTab("홈"); 
-              setIsMenuOpen(false); 
+            onClick={() => {
+              setActiveTab("홈");
+              setIsMenuOpen(false);
               window.history.pushState({}, '', '/');
-              window.scrollTo({ top: 0, behavior: "smooth" }); 
+              window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             icon={IMG_BASE + "icon-home.png?v=" + V_NUM}
             label="홈"
             active={activeTab === "홈"}
           />
           <MenuLink
-            onClick={() => { 
-              setActiveTab("지원금"); 
-              setIsMenuOpen(false); 
+            onClick={() => {
+              setActiveTab("지원금");
+              setIsMenuOpen(false);
               window.history.pushState({}, '', '/?tab=지원금');
-              window.scrollTo({ top: 0, behavior: "smooth" }); 
+              window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             icon={IMG_BASE + "icon-grant.png?v=" + V_NUM}
             label="지원금"
             active={activeTab === "지원금"}
           />
           <MenuLink
-            onClick={() => { 
-              setActiveTab("지역행사"); 
-              setIsMenuOpen(false); 
+            onClick={() => {
+              setActiveTab("지역행사");
+              setIsMenuOpen(false);
               window.history.pushState({}, '', '/?tab=지역행사');
-              window.scrollTo({ top: 0, behavior: "smooth" }); 
+              window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             icon={IMG_BASE + "icon-event.png?v=" + V_NUM}
             label="지역행사"
             active={activeTab === "지역행사"}
           />
           <MenuLink
-            onClick={() => { 
-              setActiveTab("생활정보"); 
-              setIsMenuOpen(false); 
+            onClick={() => {
+              setActiveTab("생활정보");
+              setIsMenuOpen(false);
               window.history.pushState({}, '', '/?tab=생활정보');
-              window.scrollTo({ top: 0, behavior: "smooth" }); 
+              window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             icon={IMG_BASE + "icon-info.png?v=" + V_NUM}
             label="생활정보"
             active={activeTab === "생활정보"}
           />
           <MenuLink
-            onClick={() => { 
-              setActiveTab("블로그"); 
-              setActiveBlogCat("도서정보"); 
-              setIsMenuOpen(false); 
+            onClick={() => {
+              setActiveTab("블로그");
+              setActiveBlogCat("도서정보");
+              setIsMenuOpen(false);
               window.history.pushState({}, '', '/?tab=블로그');
-              window.scrollTo({ top: 0, behavior: "smooth" }); 
+              window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             icon={IMG_BASE + "icon-book.png?v=" + V_NUM}
             label="도서정보"
             active={activeTab === "블로그" && activeBlogCat === "도서정보"}
           />
           <MenuLink
-            onClick={() => { 
-              setActiveTab("블로그"); 
-              setActiveBlogCat("전체"); 
-              setIsMenuOpen(false); 
+            onClick={() => {
+              setActiveTab("블로그");
+              setActiveBlogCat("전체");
+              setIsMenuOpen(false);
               window.history.pushState({}, '', '/?tab=블로그');
-              window.scrollTo({ top: 0, behavior: "smooth" }); 
+              window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             icon={IMG_BASE + "icon-blog.png?v=" + V_NUM}
             label="블로그"
             active={activeTab === "블로그" && activeBlogCat === "전체"}
           />
           <MenuLink
-            onClick={() => { 
-              setIsMenuOpen(false); 
+            onClick={() => {
+              setIsMenuOpen(false);
               router.push("/tips");
             }}
             icon={IMG_BASE + "icon-ggul.png?v=" + V_NUM}

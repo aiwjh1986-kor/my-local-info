@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "fetch-data": "node scripts/fetch-public-data.js && node scripts/fetch-gas-prices.js && node scripts/generate-blog-post.js"
+    "fetch-data": "node scripts/fetch-public-data.js && node scripts/fetch-gas-prices.js && node scripts/generate-blog-post.js && node scripts/auto-archive.js"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.19",
