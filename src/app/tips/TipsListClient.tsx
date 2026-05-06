@@ -14,8 +14,8 @@ export default function TipsListClient({ allTips }: { allTips: TipData[] }) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredTips = allTips.filter(tip => {
-    return tip.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-           tip.summary.toLowerCase().includes(searchQuery.toLowerCase());
+    return tip.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tip.summary.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   const getImageUrl = (path: string) => {
@@ -30,7 +30,7 @@ export default function TipsListClient({ allTips }: { allTips: TipData[] }) {
   return (
     <div className="min-h-screen font-sans text-gray-900 pb-20 relative overflow-x-hidden">
       {/* 🖼️ 배경 */}
-      <div 
+      <div
         className="fixed inset-0 z-[-1] opacity-40 pointer-events-none"
         style={{
           backgroundImage: `url(${getImageUrl("background1.png")})`,
@@ -41,7 +41,7 @@ export default function TipsListClient({ allTips }: { allTips: TipData[] }) {
       />
 
       {/* 🏮 메뉴 버튼 (상단 바 없이 단독으로 플로팅) */}
-      <button 
+      <button
         onClick={() => setIsMenuOpen(true)}
         className="fixed top-6 left-5 z-[60] bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 lg:px-8 lg:py-4 rounded-full shadow-xl hover:scale-110 transition-all flex items-center justify-center group"
       >
@@ -49,9 +49,8 @@ export default function TipsListClient({ allTips }: { allTips: TipData[] }) {
       </button>
 
       {/* 2. 사이드바 드로어 */}
-      <aside className={`fixed left-0 top-0 bottom-0 w-[300px] lg:w-[420px] bg-white/95 backdrop-blur-2xl border-r border-gray-100 z-[110] flex flex-col p-8 lg:p-12 shadow-2xl transition-transform duration-500 ${
-        isMenuOpen ? "translate-x-0" : "-translate-x-full"
-      }`}>
+      <aside className={`fixed left-0 top-0 bottom-0 w-[300px] lg:w-[420px] bg-white/95 backdrop-blur-2xl border-r border-gray-100 z-[110] flex flex-col p-8 lg:p-12 shadow-2xl transition-transform duration-500 ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}>
         <div className="flex items-center justify-between mb-8 lg:mb-16">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 lg:w-14 h-14">
@@ -61,7 +60,7 @@ export default function TipsListClient({ allTips }: { allTips: TipData[] }) {
           </div>
           <button onClick={() => setIsMenuOpen(false)} className="text-4xl lg:text-5xl text-gray-300 hover:text-gray-800">×</button>
         </div>
-        
+
         <nav className="flex flex-col gap-3 lg:gap-6 overflow-y-auto no-scrollbar">
           <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-home.png?v=" + V_NUM} label="홈" />
           <MenuLink onClick={() => router.push("/?tab=지원금")} icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금" />
@@ -135,15 +134,15 @@ export default function TipsListClient({ allTips }: { allTips: TipData[] }) {
         {filteredTips.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredTips.map((tip) => (
-              <Link 
-                key={tip.slug} 
+              <Link
+                key={tip.slug}
                 href={`/tips/${tip.slug}`}
                 className="group bg-white rounded-[40px] shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border border-white hover:-translate-y-2 flex flex-col"
               >
                 {/* ... (기존 카드 내용 동일) */}
                 <div className="relative aspect-video overflow-hidden bg-gray-50">
-                  <img 
-                    src={getImageUrl(tip.image)} 
+                  <img
+                    src={getImageUrl(tip.image)}
                     alt={tip.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
@@ -178,7 +177,7 @@ export default function TipsListClient({ allTips }: { allTips: TipData[] }) {
             <div className="text-6xl mb-6">🏜️</div>
             <h3 className="text-2xl lg:text-4xl font-black text-gray-900 mb-4">앗! 찾는 꿀팁이 없어요</h3>
             <p className="text-gray-500 font-bold mb-10">다른 검색어로 찾아보시겠어요? 아니면 루미에게 제안해 주세요!</p>
-            <button 
+            <button
               onClick={() => setSearchQuery("")}
               className="bg-yellow-400 text-gray-900 px-10 py-4 rounded-full font-black shadow-xl hover:scale-105 transition-all"
             >
@@ -229,11 +228,10 @@ export default function TipsListClient({ allTips }: { allTips: TipData[] }) {
 
 function MenuLink({ onClick, icon, label, active = false }: any) {
   return (
-    <div 
+    <div
       onClick={onClick}
-      className={`flex items-center px-4 lg:px-6 py-2 lg:py-4 rounded-[16px] lg:rounded-[24px] transition-all font-black cursor-pointer group ${
-        active ? "bg-yellow-400 text-gray-900 shadow-lg scale-[1.02]" : "text-gray-500 hover:bg-gray-50"
-      }`}
+      className={`flex items-center px-4 lg:px-6 py-2 lg:py-4 rounded-[16px] lg:rounded-[24px] transition-all font-black cursor-pointer group ${active ? "bg-yellow-400 text-gray-900 shadow-lg scale-[1.02]" : "text-gray-500 hover:bg-gray-50"
+        }`}
     >
       <div className="flex items-center gap-3 lg:gap-6">
         <div className="w-8 h-8 lg:w-12 h-12 flex items-center justify-center p-1 transform group-hover:scale-110 transition-transform">
@@ -247,7 +245,7 @@ function MenuLink({ onClick, icon, label, active = false }: any) {
 
 function QuickLink({ icon, label, onClick }: any) {
   return (
-    <button 
+    <button
       onClick={onClick}
       className="flex items-center gap-2.5 px-6 py-2.5 rounded-full hover:bg-gray-50 transition-all group"
     >
