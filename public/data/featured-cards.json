@@ -6,28 +6,8 @@
     "date": "2026-05-05",
     "region": "용인시",
     "image": "event/05.png",
-    "slug": "2026-05-05-03",
+    "slug": "2026-05-05-brunch-concert",
     "link": "https://www.yicf.or.kr/main/show/view.do?show_type=all&viewType=img&SHOW_IDX=16475"
-  },
-  {
-    "category": "어린이공연",
-    "title": "🎭 [종이아빠] 아이와 함께 상상의 세계로! 페이퍼아트 뮤지컬 관람 안내",
-    "summary": "상상력이 가득한 종이 나라로의 초대! 용인어린이상상의숲에서 열리는 특별한 뮤지컬 ✨",
-    "date": "2026-05-05",
-    "region": "용인시",
-    "image": "event/04.png",
-    "slug": "2026-05-05-02",
-    "link": "https://www.yicf.or.kr/main/show/view.do?show_type=all&viewType=img&SHOW_IDX=16497"
-  },
-  {
-    "category": "정보",
-    "title": "🏠 [문화머뭄] 우리 동네 문화 아지트가 된다면? 사업 설명회 신청 안내",
-    "summary": "용인시의 카페, 공방, 서점이 지역 문화 거점이 되는 특별한 기회! 지금 신청하세요 🎁",
-    "date": "2026-05-05",
-    "region": "용인시",
-    "image": "event/03.png",
-    "slug": "2026-05-05-01",
-    "link": "https://www.yicf.or.kr/main/show/view.do?show_type=all&viewType=img&SHOW_IDX=16693"
   },
   {
     "category": "지역행사",
