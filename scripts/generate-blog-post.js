@@ -125,7 +125,15 @@ tags: [태그1, 태그2, 태그3]
       if (!fileName.endsWith('.md')) fileName += '.md';
 
       const content = aiResponse.replace(/FILENAME:\s*.+$/m, '').trim();
-      fs.writeFileSync(path.join(postsDir, fileName), content, 'utf8');
+      const fullPath = path.join(postsDir, fileName);
+
+      // 파일이 이미 존재하면 덮어쓰지 않음 (사용자 수정본 보호)
+      if (fs.existsSync(fullPath)) {
+        console.log(`  - [건너뜀] 이미 존재하는 파일입니다: ${fileName}`);
+        continue;
+      }
+
+      fs.writeFileSync(fullPath, content, 'utf8');
       generatedCount++;
 
       await new Promise(resolve => setTimeout(resolve, 3000));

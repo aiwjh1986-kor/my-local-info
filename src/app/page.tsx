@@ -73,13 +73,28 @@ export default function Page() {
     }))
   };
 
+  // gas-prices.json 읽어오기
+  const gasPath = path.join(process.cwd(), 'public/data/gas-prices.json');
+  let gasPrices = null;
+  try {
+    if (fs.existsSync(gasPath)) {
+      const fileContent = fs.readFileSync(gasPath, 'utf8');
+      gasPrices = JSON.parse(fileContent);
+    }
+  } catch (err) {
+    console.error("Failed to read gas-prices.json:", err);
+  }
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
       />
-      <DashboardClient initialBlogPosts={blogPosts} initialFeaturedCards={featuredCards} />
+      <DashboardClient 
+        initialBlogPosts={blogPosts} 
+        initialFeaturedCards={featuredCards} 
+      />
     </Suspense>
   );
 }
