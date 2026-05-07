@@ -24,7 +24,15 @@ async function autoArchive() {
     const deadlineMatch = frontmatter.match(/deadline:\s*([\d-]+)/);
     const endDateMatch = frontmatter.match(/endDate:\s*([\d-]+)/);
     
-    const targetDateStr = deadlineMatch ? deadlineMatch[1] : (endDateMatch ? endDateMatch[1] : null);
+    let targetDateStr = deadlineMatch ? deadlineMatch[1] : (endDateMatch ? endDateMatch[1] : null);
+
+    // 주유소 정보글인 경우 당일이 지나면 종료처리하기 위해 date를 마감일로 간주
+    if (file.includes('gas-prices') && !targetDateStr) {
+      const dateMatch = frontmatter.match(/date:\s*([\d-]+)/);
+      if (dateMatch) {
+        targetDateStr = dateMatch[1];
+      }
+    }
 
     if (targetDateStr) {
       const targetDate = new Date(targetDateStr);
@@ -61,11 +69,16 @@ async function autoArchive() {
       // featured-cards에는 deadline이 없을 수 있으므로 post 파일을 찾아봄
       let targetDeadline = card.deadline;
       if (!targetDeadline && card.slug) {
-        const postPath = path.join(postsDir, `${card.slug}.md`);
-        if (fs.existsSync(postPath)) {
-          const postContent = fs.readFileSync(postPath, 'utf8');
-          const m = postContent.match(/deadline:\s*([\d-]+)/) || postContent.match(/endDate:\s*([\d-]+)/);
-          if (m) targetDeadline = m[1];
+        // 주유소 카드인 경우 date를 기준으로 만료 체크
+        if (card.slug.includes('gas-prices')) {
+          targetDeadline = card.date;
+        } else {
+          const postPath = path.join(postsDir, `${card.slug}.md`);
+          if (fs.existsSync(postPath)) {
+            const postContent = fs.readFileSync(postPath, 'utf8');
+            const m = postContent.match(/deadline:\s*([\d-]+)/) || postContent.match(/endDate:\s*([\d-]+)/);
+            if (m) targetDeadline = m[1];
+          }
         }
       }
 

@@ -47,17 +47,8 @@ async function fetchGasPrices() {
     const title = `[용인시] ${displayDate} 구별 주유소 최저가 TOP 5 정보 (휘발유)`;
     const summary = `오늘 우리 동네에서 기름값이 가장 저렴한 곳은 어디일까요? 수지, 기흥, 처인구별 최저가 정보를 루미가 전해드립니다!`;
 
-    // 블로그 포스트 내용 생성
-    let content = `---
-title: "${title}"
-date: ${today.toISOString()}
-summary: "${summary}"
-category: 생활정보
-image: info-gas.png
-tags: [용인시, 최저가주유소, 기름값정보, 수지구, 기흥구, 처인구]
----
-
-안녕하세요, 용인시의 알뜰한 소식통 루미입니다! 😊
+    // 블로그 포스트 내용(본문) 생성
+    let bodyContent = `안녕하세요, 용인시의 알뜰한 소식통 루미입니다! 😊
 
 매일매일 변하는 기름값 때문에 고민 많으시죠? 오늘은 **${displayDate}** 기준, 용인시 각 구별 휘발유 최저가 주유소 TOP 5를 정리했습니다! 
 
@@ -68,19 +59,19 @@ tags: [용인시, 최저가주유소, 기름값정보, 수지구, 기흥구, 처
 `;
 
     for (const [name, list] of Object.entries(districts)) {
-      content += `### 📍 ${name} 최저가 주유소\n\n`;
+      bodyContent += `### 📍 ${name} 최저가 주유소\n\n`;
       if (list.length > 0) {
         list.slice(0, 5).forEach((oil, idx) => {
-          content += `${idx + 1}. **${oil.OS_NM}**: **${oil.PRICE.toLocaleString()}원**\n`;
-          content += `   - 주소: ${oil.VAN_ADR}\n`;
+          bodyContent += `${idx + 1}. **${oil.OS_NM}**: **${oil.PRICE.toLocaleString()}원**\n`;
+          bodyContent += `   - 주소: ${oil.VAN_ADR}\n`;
         });
       } else {
-        content += `* 해당 지역의 오늘 데이터가 아직 업데이트되지 않았습니다.\n`;
+        bodyContent += `* 해당 지역의 오늘 데이터가 아직 업데이트되지 않았습니다.\n`;
       }
-      content += `\n`;
+      bodyContent += `\n`;
     }
 
-    content += `---
+    bodyContent += `---
 
 ### 💡 루미의 알뜰 주유 꿀팁!
 1. **지역화폐 활용**: '용인와이페이' 가맹점인 주유소를 이용하면 추가 혜택을 받을 수 있어요!
@@ -92,6 +83,18 @@ tags: [용인시, 최저가주유소, 기름값정보, 수지구, 기흥구, 처
 ---
 *본 정보는 오피넷(Opinet) 실시간 API 데이터를 바탕으로 작성되었습니다.*
 `;
+
+    // 블로그 포스트 전체 내용 조립
+    let content = `---
+title: "${title}"
+date: ${today.toISOString()}
+summary: "${summary}"
+category: 생활정보
+image: info-gas.png
+tags: [용인시, 최저가주유소, 기름값정보, 수지구, 기흥구, 처인구]
+---
+
+${bodyContent}`;
 
     // 1. 블로그 포스트 저장
     const postsDir = path.join(__dirname, '../src/content/posts');
@@ -126,6 +129,7 @@ tags: [용인시, 최저가주유소, 기름값정보, 수지구, 기흥구, 처
         category: "생활정보",
         title: title,
         summary: summary,
+        content: bodyContent,
         date: dateStr,
         region: "용인시",
         image: "info-gas.png",
