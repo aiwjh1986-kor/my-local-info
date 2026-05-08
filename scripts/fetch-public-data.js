@@ -19,15 +19,24 @@ async function fetchPublicData() {
     try {
       const weatherUrl = `https://wttr.in/${encodeURIComponent(location)}?format=j1`;
       const res = await fetch(weatherUrl);
-      const weatherData = await res.json();
-      const current = weatherData.current_condition[0];
-      return {
-        temp: current.temp_C,
-        desc: current.lang_ko ? current.lang_ko[0].value : current.weatherDesc[0].value,
-        humidity: current.humidity
-      };
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      
+      const text = await res.text();
+      try {
+        const weatherData = JSON.parse(text);
+        const current = weatherData.current_condition[0];
+        return {
+          temp: current.temp_C,
+          desc: current.lang_ko ? current.lang_ko[0].value : current.weatherDesc[0].value,
+          humidity: current.humidity
+        };
+      } catch (parseErr) {
+        // wttr.in이 가끔 JSON이 아닌 텍스트(오류 메시지 등)를 보낼 때가 있음
+        console.warn('날씨 데이터 파싱 실패 (JSON이 아님):', text.substring(0, 50));
+        return null;
+      }
     } catch (err) {
-      console.error('날씨 정보를 가져오는 중 오류 (텍스트 응답일 수 있음):', err);
+      console.error('날씨 정보를 가져오는 중 오류 발생:', err.message);
       return null;
     }
   }
