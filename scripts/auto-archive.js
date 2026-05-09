@@ -26,8 +26,10 @@ async function autoArchive() {
     
     let targetDateStr = deadlineMatch ? deadlineMatch[1] : (endDateMatch ? endDateMatch[1] : null);
 
-    // 주유소 및 지방선거 정보글인 경우 당일이 지나면 종료처리하기 위해 date를 마감일로 간주
-    if ((file.includes('gas-prices') || file.includes('election-news')) && !targetDateStr) {
+    // 주유소 및 지방선거 정보글 처리
+    if (file.includes('election-news')) {
+      targetDateStr = '2026-06-03'; // 선거일까지 종료되지 않음
+    } else if (file.includes('gas-prices') && !targetDateStr) {
       const dateMatch = frontmatter.match(/date:\s*([\d-]+)/);
       if (dateMatch) {
         targetDateStr = dateMatch[1];
@@ -69,8 +71,9 @@ async function autoArchive() {
       // featured-cards에는 deadline이 없을 수 있으므로 post 파일을 찾아봄
       let targetDeadline = card.deadline;
       if (!targetDeadline && card.slug) {
-        // 주유소 및 선거뉴스 카드인 경우 date를 기준으로 만료 체크
-        if (card.slug.includes('gas-prices') || card.slug.includes('election-news')) {
+        if (card.slug.includes('election-news')) {
+          targetDeadline = '2026-06-03';
+        } else if (card.slug.includes('gas-prices')) {
           targetDeadline = card.date;
         } else {
           const postPath = path.join(postsDir, `${card.slug}.md`);

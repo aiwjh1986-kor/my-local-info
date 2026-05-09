@@ -14,55 +14,90 @@ async function generateBlogPosts() {
 
   try {
     const localInfo = JSON.parse(fs.readFileSync(localInfoPath, 'utf8'));
-    const items = localInfo.items || [];
-    const today = new Date().toISOString().split('T')[0];
+    // events와 benefits 합치기
+    const allItems = [...(localInfo.events || []), ...(localInfo.benefits || [])];
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+
+    // 날짜 기반 필터링: 종료된 행사는 제외
+    const activeItems = allItems.filter(item => {
+      const endDate = item.endDate || item.date;
+      if (endDate && endDate !== '상시' && endDate !== '2099-12-31') {
+        const d = new Date(endDate);
+        // 날짜만 비교하기 위해 시간을 0으로 설정
+        d.setHours(23, 59, 59, 999); 
+        if (d < now) return false;
+      }
+      return true;
+    });
+
+    // 이미 작성된 글 제목 리스트 가져오기 (매 루프마다 갱신하지 않고 초기에 한 번)
+    const existingFiles = fs.readdirSync(postsDir);
+    const postTitles = existingFiles.map(file => {
+      if (!file.endsWith('.md')) return '';
+      const content = fs.readFileSync(path.join(postsDir, file), 'utf8');
+      const titleMatch = content.match(/title:\s*"(.*)"/) || content.match(/title:\s*(.*)/);
+      if (!titleMatch) return '';
+      // 제목에서 특수문자 및 [용인] 등 말머리 제거 후 비교용 문자열 생성
+      return titleMatch[1].replace(/\[.*?\]/g, '').replace(/[^\wㄱ-ㅎ가-힣]/g, '').trim();
+    }).filter(t => t !== '');
 
     let generatedCount = 0;
+    const MAX_POSTS_PER_RUN = 3; 
 
-    for (const item of items) {
-      // 이미 작성된 글인지 확인 (중복 방지)
-      const existingFiles = fs.readdirSync(postsDir);
-      const isAlreadyWritten = existingFiles.some(file => 
-        file.includes(item.id) || (item.title && file.toLowerCase().includes(item.title.replace(/\s+/g, '-').toLowerCase()))
-      );
+    for (const item of activeItems) {
+      if (generatedCount >= MAX_POSTS_PER_RUN) break;
+
+      const itemNameRaw = item.name || item.title || '';
+      // 비교용 이름 생성 (말머리 제거 및 특수문자 제거)
+      const itemNameClean = itemNameRaw.replace(/\[.*?\]/g, '').replace(/[^\wㄱ-ㅎ가-힣]/g, '').trim();
+      if (!itemNameClean) continue;
+
+      // 이미 작성된 글인지 확인
+      const isAlreadyWritten = existingFiles.some(file => item.id && file.includes(item.id)) || 
+                               postTitles.some(pt => {
+                                 // 매우 짧은 제목은 완전 일치만 확인
+                                 if (pt.length < 5 || itemNameClean.length < 5) return pt === itemNameClean;
+                                 
+                                 // 제목의 전체 텍스트가 서로를 포함하는지 확인
+                                 return pt.includes(itemNameClean) || itemNameClean.includes(pt);
+                               });
 
       if (isAlreadyWritten) {
-        console.log(`- [건너뜀] 이미 작성된 글입니다: ${item.title}`);
+        // console.log(`  - 이미 작성된 포스트 스킵: ${itemNameRaw}`);
         continue;
       }
 
-      console.log(`- 블로그 글 생성 중: ${item.title}`);
+      console.log(`- 새로운 포스트 생성 중: ${itemNameRaw}`);
 
       const weatherText = item.weather
-        ? `현재 ${item.location || '지역'} 날씨: ${item.weather.desc}, 기온: ${item.weather.temp}°C`
+        ? `현재 용인 날씨: ${item.weather.desc}, 기온: ${item.weather.temp}°C`
         : '날씨 정보 없음';
 
       const prompt = `너는 '용인시 생활정보 및 여행가이드' 블로그의 전문 에디터 '루미'야.
-아래 공공서비스 정보를 바탕으로 블로그 글을 작성해줘.
+아래 정보를 바탕으로 블로그 글을 작성해줘.
 
 정보: ${JSON.stringify(item)}
 날씨: ${weatherText}
 
 작성 지침:
-1. 톤앤매너: 친절하고 상냥한 이웃집 언니 같은 말투 (해요체).
+1. 톤앤매너: 친절하고 상냥한 말투 (해요체).
 2. 내용 구성: 흥미로운 도입부 -> 상세 내용 -> 루미의 추천 이유 3가지 -> 팁.
-3. 형식: 마크다운 형식을 사용해줘. HTML 태그는 절대 사용하지 마.
-4. 제목 키워드: 파일명에 사용할 영문 키워드(짧은 단어 2-3개)를 글 마지막에 FILENAME_KEYWORD: [keyword] 형식으로 꼭 출력해줘.
+3. 형식: 마크다운 형식을 사용. 다른 설명 없이 마크다운 내용만 출력해.
+4. 파일명 키워드: 글 마지막에 FILENAME_KEYWORD: [keyword] 형식으로 영문 키워드 1개를 꼭 포함해줘.
 
 출력 형식:
 ---
-title: [제목]
+title: "[용인] ${item.name || item.title}"
 date: ${new Date().toISOString()}
-summary: [한줄요약]
-category: ${item.category || 'info'}
+summary: "${item.summary || '용인시 최신 소식을 전해드립니다.'}"
+category: ${item.category === 'event' || item.category === '지역행사' ? '지역행사' : '생활정보'}
 image: new_01.png
-link: ${item.link}
-tags: [태그1, 태그2]
+link: "${item.link || ''}"
+tags: [용인시, 실생활정보, 루미가이드]
 ---
 
-(본문 800자 이상)
-
-FILENAME_KEYWORD: [영문-키워드]`;
+(본문 내용)`;
 
       const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
       const response = await fetch(geminiUrl, {
@@ -81,23 +116,16 @@ FILENAME_KEYWORD: [영문-키워드]`;
         continue;
       }
 
-      // 키워드 추출 및 정규화
       const keywordMatch = aiResponse.match(/FILENAME_KEYWORD:\s*([a-zA-Z0-9-]+)/);
-      const keyword = keywordMatch ? keywordMatch[1].toLowerCase() : 'news';
-      const cleanContent = aiResponse.replace(/FILENAME_KEYWORD:\s*.+$/, '').trim();
+      const keyword = keywordMatch ? keywordMatch[1].toLowerCase() : 'info';
+      let cleanContent = aiResponse.replace(/FILENAME_KEYWORD:\s*.+$/, '').trim();
+      if (cleanContent.startsWith('```markdown')) {
+        cleanContent = cleanContent.replace(/^```markdown\n/, '').replace(/\n```$/, '');
+      }
 
-      // 🆕 자동 번호 부여 로직
       const currentFiles = fs.readdirSync(postsDir);
       const todayFiles = currentFiles.filter(f => f.startsWith(today));
-      
-      let nextNum = 1;
-      if (todayFiles.length > 0) {
-        const numbers = todayFiles.map(f => {
-          const m = f.match(new RegExp(`${today}-(\\d+)`));
-          return m ? parseInt(m[1]) : 0;
-        });
-        nextNum = Math.max(...numbers) + 1;
-      }
+      let nextNum = todayFiles.length + 1;
       const nextNumStr = String(nextNum).padStart(2, '0');
       const fileName = `${today}-${nextNumStr}-${keyword}.md`;
 
@@ -105,8 +133,7 @@ FILENAME_KEYWORD: [영문-키워드]`;
       console.log(`  - 생성 완료: ${fileName}`);
       generatedCount++;
 
-      // API 할당량 제한 방지를 위한 대기
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise(resolve => setTimeout(resolve, 2000));
     }
 
     console.log(`\n총 ${generatedCount}개의 블로그 포스트를 생성했습니다.`);
