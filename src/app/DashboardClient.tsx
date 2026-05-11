@@ -424,6 +424,7 @@ export default function DashboardClient({
                   onClick={() => !dragging && onCardClick(card)}
                   isAdmin={isAdmin}
                   onImageEdit={startImageEdit}
+                  href={card.slug ? `/blog/${card.slug}` : undefined}
                 />
               </div>
             )}
@@ -437,6 +438,7 @@ export default function DashboardClient({
                 onClick={() => onCardClick(card)}
                 isAdmin={isAdmin}
                 onImageEdit={startImageEdit}
+                href={card.slug ? `/blog/${card.slug}` : undefined}
               />
             ))}
           </div>
@@ -788,6 +790,7 @@ export default function DashboardClient({
                       setSelectedCard(card);
                     }
                   }}
+                  href={(activeTab === "블로그" || activeTab === "홈") && card.slug ? `/blog/${card.slug}` : undefined}
                 />
               ))}
             </div>

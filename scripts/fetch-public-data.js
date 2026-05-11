@@ -160,7 +160,8 @@ ${JSON.stringify(item)}`;
     }
 
     if (addedCount > 0) {
-      localData.lastUpdate = new Date().toISOString().split('T')[0];
+      const dateStr = new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Seoul' }).format(new Date());
+      localData.lastUpdate = dateStr;
       fs.writeFileSync(dataFilePath, JSON.stringify(localData, null, 2), 'utf8');
       console.log(`총 ${addedCount}개의 새로운 데이터를 추가했습니다!`);
     } else {

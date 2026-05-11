@@ -64,6 +64,50 @@
         "desc": "Overcast",
         "humidity": "89"
       }
+    },
+    {
+      "id": "e2026-12",
+      "name": "2026 바퀴 달린 그림책 - 어린 작가 초대전",
+      "category": "event",
+      "startDate": "2026-05-13",
+      "endDate": "2026-05-17",
+      "location": "용인포은아트갤러리",
+      "target": "어린이, 가족 및 관심 있는 시민 누구나",
+      "summary": "어린이 작가들의 순수한 상상력이 담긴 특별한 그림책 전시회! 무료 관람이니 아이와 함께 방문해 보세요.",
+      "link": "https://www.yicf.or.kr"
+    },
+    {
+      "id": "e2026-13",
+      "name": "용인필하모닉오케스트라 기획공연 <마스터피스Ⅷ - 운명>",
+      "category": "event",
+      "startDate": "2026-05-15",
+      "endDate": "2026-05-15",
+      "location": "용인포은아트홀",
+      "target": "초등학생 이상 용인 시민",
+      "summary": "베토벤의 '운명' 교향곡을 실황으로! 용인필하모닉이 선사하는 가슴 벅찬 클래식의 감동을 느껴보세요.",
+      "link": "https://www.yicf.or.kr"
+    },
+    {
+      "id": "e2026-14",
+      "name": "함께 킥오프: 우리들의 축구 도시 용인 (특별전시)",
+      "category": "event",
+      "startDate": "2026-03-20",
+      "endDate": "2026-12-06",
+      "location": "용인시박물관",
+      "target": "축구를 사랑하는 누구나",
+      "summary": "용인시의 축구 역사를 한눈에! 박물관에서 즐기는 박진감 넘치는 축구 이야기와 다양한 전시물을 만나보세요.",
+      "link": "https://www.yongin.go.kr"
+    },
+    {
+      "id": "e2026-15",
+      "name": "용인시 도서관 '히든북스 소문내기' SNS 인증 이벤트",
+      "category": "event",
+      "startDate": "2026-05-02",
+      "endDate": "2026-05-31",
+      "location": "용인시 공공도서관 18개소",
+      "target": "용인시 도서관 이용자 누구나",
+      "summary": "도서관에서 숨겨진 꿀잼 책(히든북스) 빌리고 SNS 인증하면 선물이 팡팡! 독서의 즐거움을 함께 나눠요.",
+      "link": "https://lib.yongin.go.kr"
     }
   ],
   "benefits": [

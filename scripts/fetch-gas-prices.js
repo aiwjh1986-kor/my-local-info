@@ -10,9 +10,11 @@ async function fetchGasPrices() {
     return;
   }
 
-  const today = new Date();
-  const dateStr = today.toISOString().split('T')[0];
-  const displayDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
+  // 항상 한국 시간(KST) 기준 날짜 생성
+  const now = new Date();
+  const dateStr = new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Seoul' }).format(now);
+  const kstDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+  const displayDate = `${kstDate.getFullYear()}년 ${kstDate.getMonth() + 1}월 ${kstDate.getDate()}일`;
 
   try {
     console.log('용인시 전체 주유소 가격 정보 가져오는 중...');
@@ -87,7 +89,7 @@ async function fetchGasPrices() {
     // 블로그 포스트 전체 내용 조립
     let content = `---
 title: "${title}"
-date: ${today.toISOString()}
+date: ${kstDate.toISOString()}
 summary: "${summary}"
 category: 생활정보
 image: info-gas.png

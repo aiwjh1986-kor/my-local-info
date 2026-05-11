@@ -17,7 +17,8 @@ async function generateBlogPosts() {
     // events와 benefits 합치기
     const allItems = [...(localInfo.events || []), ...(localInfo.benefits || [])];
     const now = new Date();
-    const today = now.toISOString().split('T')[0];
+    const today = new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Seoul' }).format(now);
+    const kstDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
 
     // 날짜 기반 필터링: 종료된 행사는 제외
     const activeItems = allItems.filter(item => {
@@ -89,7 +90,7 @@ async function generateBlogPosts() {
 출력 형식:
 ---
 title: "[용인] ${item.name || item.title}"
-date: ${new Date().toISOString()}
+date: ${kstDate.toISOString()}
 summary: "${item.summary || '용인시 최신 소식을 전해드립니다.'}"
 category: ${item.category === 'event' || item.category === '지역행사' ? '지역행사' : '생활정보'}
 image: new_01.png

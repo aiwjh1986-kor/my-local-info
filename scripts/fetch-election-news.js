@@ -41,9 +41,10 @@ async function fetchElectionNews() {
       return;
     }
 
-    const today = new Date();
-    const dateStr = today.toISOString().split('T')[0];
-    const displayDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
+    const now = new Date();
+    const dateStr = new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Seoul' }).format(now);
+    const kstDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+    const displayDate = `${kstDate.getFullYear()}년 ${kstDate.getMonth() + 1}월 ${kstDate.getDate()}일`;
 
     console.log(`용인 지방선거 뉴스 ${items.length}건 발견. AI 요약 생성 중...`);
 
@@ -66,7 +67,7 @@ ${newsListStr}
 출력 형식 예시:
 ---
 title: "[용인시] ${displayDate} 용인 지방선거 최신 동향 요약 📰"
-date: ${today.toISOString()}
+date: ${kstDate.toISOString()}
 summary: "용인시 지방선거 관련 오늘의 주요 뉴스들을 루미가 알기 쉽게 요약해 드립니다!"
 category: 생활정보
 image: icon-info.png
