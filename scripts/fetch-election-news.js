@@ -70,7 +70,7 @@ title: "[용인시] ${displayDate} 용인 지방선거 최신 동향 요약 📰
 date: ${kstDate.toISOString()}
 summary: "용인시 지방선거 관련 오늘의 주요 뉴스들을 루미가 알기 쉽게 요약해 드립니다!"
 category: 생활정보
-image: icon-info.png
+image: event/지방선거.png
 tags: [용인시, 지방선거, 용인뉴스, 선거동향]
 ---
 
@@ -141,7 +141,7 @@ tags: [용인시, 지방선거, 용인뉴스, 선거동향]
         content: bodyContent,
         date: dateStr,
         region: "용인시",
-        image: "icon-info.png",
+        image: "event/지방선거.png",
         slug: slug
       };
       

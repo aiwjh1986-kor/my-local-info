@@ -17,34 +17,70 @@ async function fetchGasPrices() {
   const displayDate = `${kstDate.getFullYear()}년 ${kstDate.getMonth() + 1}월 ${kstDate.getDate()}일`;
 
   try {
-    console.log('용인시 전체 주유소 가격 정보 가져오는 중...');
+    console.log('용인시 구별 주유소 가격 정보 가져오는 중 (좌표 기반)...');
+
     
-    const url = `http://www.opinet.co.kr/api/lowTop10.do?out=json&code=${OPINET_API_KEY}&area=0220&prodcd=B027`;
-    const response = await fetch(url);
-    const data = await response.json();
+    // 각 구별 중심 좌표 (오피넷 KATEC 좌표계)
+    const districtPoints = [
+      { name: '수지구', x: 318841, y: 524163 }, // 수지구청 인근
+      { name: '기흥구', x: 322332, y: 517079 }, // 기흥역 인근
+      { name: '처인구', x: 330149, y: 513973 }  // 처인구청 인근
+    ];
 
-    if (!data.RESULT || !data.RESULT.OIL || data.RESULT.OIL.length === 0) {
-      console.log('가져온 주유소 정보가 없습니다.');
-      return;
-    }
-
-    const oils = data.RESULT.OIL;
     const districts = {
       '수지구': [],
       '기흥구': [],
       '처인구': []
     };
 
-    oils.forEach(oil => {
-      let district = '기타';
-      if (oil.VAN_ADR.includes('수지구')) district = '수지구';
-      else if (oil.VAN_ADR.includes('기흥구')) district = '기흥구';
-      else if (oil.VAN_ADR.includes('처인구')) district = '처인구';
+    // 각 좌표 주변 5km 이내의 모든 주유소 수집
+    for (const point of districtPoints) {
+      console.log(`${point.name} 주변 데이터 수집 중...`);
+      const url = `http://www.opinet.co.kr/api/aroundAll.do?out=json&code=${OPINET_API_KEY}&x=${point.x}&y=${point.y}&radius=5000&prodcd=B027`;
+      const response = await fetch(url);
+      const data = await response.json();
       
-      if (districts[district]) {
-        districts[district].push(oil);
+      if (data.RESULT && data.RESULT.OIL) {
+        // 상위 10개에 대해서만 주소 확인 (API 호출 제한 고려)
+        const topCandidates = data.RESULT.OIL.slice(0, 10);
+        
+        for (const candidate of topCandidates) {
+          // 이미 찾은 주유소면 건너뜀
+          if (Object.values(districts).flat().find(d => d.UNI_ID === candidate.UNI_ID)) continue;
+
+          console.log(`  - 주유소 상세 정보 확인 중: ${candidate.OS_NM}`);
+          const detailUrl = `http://www.opinet.co.kr/api/detailById.do?out=json&code=${OPINET_API_KEY}&id=${candidate.UNI_ID}`;
+          const detailRes = await fetch(detailUrl);
+          const detailData = await detailRes.json();
+          
+          if (detailData.RESULT && detailData.RESULT.OIL && detailData.RESULT.OIL[0]) {
+            const oil = detailData.RESULT.OIL[0];
+            const address = oil.VAN_ADR || oil.NEW_ADR || '';
+            
+            let district = '';
+            if (address.includes('수지구')) district = '수지구';
+            else if (address.includes('기흥구')) district = '기흥구';
+            else if (address.includes('처인구')) district = '처인구';
+            
+            if (district && districts[district]) {
+              districts[district].push({
+                OS_NM: oil.OS_NM,
+                PRICE: candidate.PRICE, // aroundAll의 가격 사용
+                VAN_ADR: address,
+                UNI_ID: oil.UNI_ID
+              });
+            }
+          }
+        }
       }
-    });
+    }
+
+
+    // 각 구별로 가격순 정렬
+    for (const name in districts) {
+      districts[name].sort((a, b) => a.PRICE - b.PRICE);
+    }
+
 
     const title = `[용인시] ${displayDate} 구별 주유소 최저가 TOP 5 정보 (휘발유)`;
     const summary = `오늘 우리 동네에서 기름값이 가장 저렴한 곳은 어디일까요? 수지, 기흥, 처인구별 최저가 정보를 루미가 전해드립니다!`;
@@ -61,6 +97,7 @@ async function fetchGasPrices() {
 `;
 
     for (const [name, list] of Object.entries(districts)) {
+
       bodyContent += `### 📍 ${name} 최저가 주유소\n\n`;
       if (list.length > 0) {
         list.slice(0, 5).forEach((oil, idx) => {
