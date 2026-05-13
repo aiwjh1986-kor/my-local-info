@@ -134,9 +134,14 @@ tags: [용인시, 지방선거, 용인뉴스, 선거동향]
         bodyContent = fmMatch[2].trim();
       }
 
+      const electionDate = new Date('2026-06-03');
+      const diffTime = electionDate - kstDate;
+      const dDay = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const dDayStr = dDay > 0 ? `(D-${dDay})` : dDay === 0 ? "(D-Day)" : "(종료)";
+
       const newCard = {
         category: "생활정보",
-        title: `[용인시] ${displayDate} 용인 지방선거 최신 동향 요약 📰`,
+        title: `[용인시] ${dDayStr} ${displayDate} 용인 지방선거 최신 동향 요약 📰`,
         summary: "용인시 지방선거 관련 오늘의 주요 뉴스들을 루미가 알기 쉽게 요약해 드립니다!",
         content: bodyContent,
         date: dateStr,
