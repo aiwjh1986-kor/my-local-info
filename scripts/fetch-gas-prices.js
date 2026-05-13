@@ -22,7 +22,9 @@ async function fetchGasPrices() {
     
     // 각 구별 중심 좌표 (오피넷 KATEC 좌표계)
     const districtPoints = [
-      { name: '수지구', x: 318841, y: 524163 }, // 수지구청 인근
+      { name: '수지구1', x: 318841, y: 524163 }, // 수지구청 인근
+      { name: '수지구2', x: 319600, y: 521800 }, // 상현동 인근
+      { name: '수지구3', x: 317500, y: 525500 }, // 동천/신봉 인근
       { name: '기흥구', x: 322332, y: 517079 }, // 기흥역 인근
       { name: '처인구', x: 330149, y: 513973 }  // 처인구청 인근
     ];
@@ -38,11 +40,15 @@ async function fetchGasPrices() {
       console.log(`${point.name} 주변 데이터 수집 중...`);
       const url = `http://www.opinet.co.kr/api/aroundAll.do?out=json&code=${OPINET_API_KEY}&x=${point.x}&y=${point.y}&radius=5000&prodcd=B027`;
       const response = await fetch(url);
+      if (!response.ok) {
+        console.error(`API 호출 실패 (${point.name}): ${response.status}`);
+        continue;
+      }
       const data = await response.json();
       
       if (data.RESULT && data.RESULT.OIL) {
-        // 상위 10개에 대해서만 주소 확인 (API 호출 제한 고려)
-        const topCandidates = data.RESULT.OIL.slice(0, 10);
+        // 상위 15개에 대해서만 주소 확인 (검색 범위 확대)
+        const topCandidates = data.RESULT.OIL.slice(0, 15);
         
         for (const candidate of topCandidates) {
           // 이미 찾은 주유소면 건너뜀
@@ -58,9 +64,17 @@ async function fetchGasPrices() {
             const address = oil.VAN_ADR || oil.NEW_ADR || '';
             
             let district = '';
+            // 구 이름이 직접 포함된 경우 우선
             if (address.includes('수지구')) district = '수지구';
             else if (address.includes('기흥구')) district = '기흥구';
             else if (address.includes('처인구')) district = '처인구';
+            
+            // 구 이름이 없고 동 이름만 있는 경우 보정
+            if (!district) {
+              if (/풍덕천|죽전|동천|상현|성복|신봉|고기/.test(address)) district = '수지구';
+              else if (/신갈|구갈|상갈|하갈|보정|마북|언남|청덕|영덕|기흥|서농|구성/.test(address)) district = '기흥구';
+              else if (/역북|삼가|남동|유방|고림|마평|운학|호동|해곡|포곡|모현|남사|이동|원삼|백암|양지/.test(address)) district = '처인구';
+            }
             
             if (district && districts[district]) {
               districts[district].push({
