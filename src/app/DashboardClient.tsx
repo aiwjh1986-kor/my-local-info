@@ -540,8 +540,8 @@ export default function DashboardClient({
           </div>
 
           {/* [하단] 5대 핵심 메뉴 - 반응형 최적화 (잘림 방지) */}
-          <div className="relative z-10 hidden lg:flex items-center justify-center mt-12 lg:mt-24 w-full px-10">
-            <div className="flex flex-nowrap items-center justify-center gap-3 xl:gap-8 bg-white/60 lg:bg-gray-100/60 backdrop-blur-md px-4 xl:px-12 py-4 xl:py-6 rounded-full border border-white/50 shadow-xl min-w-fit">
+          <div className="relative z-10 hidden lg:flex items-center justify-center mt-12 lg:mt-24 w-full px-4">
+            <div className="flex flex-nowrap items-center justify-center gap-2 xl:gap-5 bg-white/60 lg:bg-gray-100/60 backdrop-blur-md px-4 xl:px-8 py-4 xl:py-6 rounded-full border border-white/50 shadow-xl min-w-fit overflow-x-auto no-scrollbar">
               {[
                 { id: "홈", label: "홈", img: "icon-home.png" },
                 { id: "지원금", label: "지원금 혜택", img: "icon-grant.png" },
@@ -555,21 +555,20 @@ export default function DashboardClient({
                   onClick={() => {
                     if (item.id === "홈") {
                       setActiveTab("홈");
-                      window.history.pushState({}, '', '/'); // 주소창 초기화
+                      window.history.pushState({}, '', '/');
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     } else {
                       setActiveTab(item.id as any);
-                      window.history.pushState({}, '', `/?tab=${item.id}`); // 주소창에 탭 정보 기록
+                      window.history.pushState({}, '', `/?tab=${item.id}`);
                     }
                   }}
-                  className={`flex items-center gap-2 xl:gap-4 px-3 xl:px-8 py-2 xl:py-4 rounded-2xl xl:rounded-full transition-all group hover:bg-white hover:shadow-lg ${activeTab === item.id ? "bg-white shadow-md scale-105" : "hover:scale-105"
+                  className={`flex items-center gap-2 xl:gap-3 px-3 xl:px-6 py-2 xl:py-4 rounded-2xl xl:rounded-full transition-all group hover:bg-white hover:shadow-lg ${activeTab === item.id ? "bg-white shadow-md scale-105" : "hover:scale-105"
                     }`}
                 >
-                  <div className="w-10 h-10 xl:w-16 xl:h-16 flex-shrink-0">
+                  <div className="w-10 h-10 xl:w-14 xl:h-14 flex-shrink-0">
                     <img src={IMG_BASE + item.img + "?v=" + V_NUM} alt={item.label} className="w-full h-full object-contain" />
                   </div>
-                  {/* 🖥️ 1280px(xl) 이상에서만 글자 노출, 그 미만은 아이콘만! */}
-                  <span className={`hidden xl:block text-sm xl:text-xl 2xl:text-2xl font-black whitespace-nowrap transition-colors ${activeTab === item.id ? "text-gray-900" : "text-gray-600 group-hover:text-gray-900"
+                  <span className={`hidden xl:block text-sm xl:text-lg 2xl:text-xl font-black whitespace-nowrap transition-colors ${activeTab === item.id ? "text-gray-900" : "text-gray-600 group-hover:text-gray-900"
                     }`}>
                     {item.label}
                   </span>
