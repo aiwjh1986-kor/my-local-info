@@ -130,6 +130,7 @@ export default function DashboardClient({
   const eventCards = allCards.filter(c => (c.category === "지역행사" || c.category === "event") && !c.title.includes("[종료]"));
   const infoCards = allCards.filter(c => (c.category === "생활정보" || c.category === "info") && !c.title.includes("[종료]"));
   const bookCards = allCards.filter(c => (c.category === "도서정보" || c.category === "book") && !c.title.includes("[종료]"));
+  const worldCards = allCards.filter(c => (c.category === "세계 경제" || c.category === "world") && !c.title.includes("[종료]"));
   const popularCards = allCards.filter((c) => c.is_popular).slice(0, 3);
 
   // ⏰ 마감임박 카드 필터링 (7일 이내 마감되는 글)
@@ -152,7 +153,8 @@ export default function DashboardClient({
       "행사": ["event", "행사", "지역행사", "지역 행사"],
       "지역행사": ["event", "행사", "지역행사", "지역 행사"],
       "생활정보": ["info", "생활정보", "life"],
-      "도서정보": ["book", "도서정보", "도서 소식", "도서"]
+      "도서정보": ["book", "도서정보", "도서 소식", "도서"],
+      "세계 경제": ["world", "세계 경제", "economy"]
     };
 
     const postsToFilter = allCards.filter(post => !post.title.includes("[종료]"));
@@ -192,6 +194,10 @@ export default function DashboardClient({
       label = "도서정보";
       bgColor = "bg-purple-100";
       textColor = "text-purple-600";
+    } else if (cat === "world" || cat === "세계 경제") {
+      label = "세계 경제";
+      bgColor = "bg-red-100";
+      textColor = "text-red-600";
     }
 
     return (
@@ -498,12 +504,24 @@ export default function DashboardClient({
                   더 똑똑한 용인 생활을 즐겨보세요.
                 </p>
                 {/* 모바일에서는 버튼 숨김 */}
-                <button
-                  onClick={() => router.push("/blog")}
-                  className="hidden lg:inline-flex items-center gap-4 px-8 py-4 lg:px-16 lg:py-7 bg-accent text-white rounded-full text-lg lg:text-3xl font-black shadow-2xl shadow-accent/30 hover:scale-105 transition-all"
-                >
-                  블로그 바로가기 <span>→</span>
-                </button>
+                <div className="flex flex-col gap-4 mt-6">
+                  <button
+                    onClick={() => router.push("/blog")}
+                    className="hidden lg:inline-flex items-center gap-4 px-8 py-4 lg:px-16 lg:py-7 bg-accent text-white rounded-full text-lg lg:text-3xl font-black shadow-2xl shadow-accent/30 hover:scale-105 transition-all w-fit"
+                  >
+                    블로그 바로가기 <span>→</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActiveTab("세계 경제");
+                      window.history.pushState({}, '', '/?tab=세계 경제');
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="hidden lg:inline-flex items-center gap-4 px-8 py-4 lg:px-12 lg:py-5 bg-white text-red-600 rounded-full text-lg lg:text-2xl font-black shadow-xl hover:scale-105 transition-all w-fit border-2 border-red-100"
+                  >
+                    세계 경제 소식 <span>→</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -529,7 +547,8 @@ export default function DashboardClient({
                 { id: "지원금", label: "지원금 혜택", img: "icon-grant.png" },
                 { id: "지역행사", label: "지역행사", img: "icon-event.png" },
                 { id: "생활정보", label: "생활 정보", img: "icon-info.png" },
-                { id: "도서정보", label: "도서 소식", img: "icon-book.png" }
+                { id: "도서정보", label: "도서 소식", img: "icon-book.png" },
+                { id: "세계 경제", label: "세계 경제", img: "icon-world.png" }
               ].map((item) => (
                 <button
                   key={item.id}
@@ -725,6 +744,18 @@ export default function DashboardClient({
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
             />
+            
+            <Section
+              title="글로벌 트렌드: 세계 경제"
+              icon={IMG_BASE + "icon-world.png?v=" + V_NUM}
+              cards={worldCards}
+              isCarousel={true}
+              onCardClick={setSelectedCard}
+              onMoreClick={() => {
+                setActiveTab("세계 경제");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            />
           </>
         )}
 
@@ -738,7 +769,7 @@ export default function DashboardClient({
             {/* 블로그 탭인 경우 상단 카테고리 필터 */}
             {activeTab === "블로그" && (
               <div className="flex gap-2 overflow-x-auto pb-6 no-scrollbar">
-                {["전체", "지원금", "지역행사", "생활정보", "도서정보"].map((cat) => (
+                {["전체", "지원금", "지역행사", "생활정보", "도서정보", "세계 경제"].map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setActiveBlogCat(cat)}
@@ -759,13 +790,15 @@ export default function DashboardClient({
                   "지원금": "grant",
                   "지역행사": "event",
                   "생활정보": "info",
-                  "도서정보": "book"
+                  "도서정보": "book",
+                  "세계 경제": "world"
                 };
                 const korCatMap: Record<string, string> = {
                   "지원금": "지원금",
                   "지역행사": "지역행사",
                   "생활정보": "생활정보",
-                  "도서정보": "도서정보"
+                  "도서정보": "도서정보",
+                  "세계 경제": "세계 경제"
                 };
                 const match = c.category === catMap[activeTab] || c.category === korCatMap[activeTab] ||
                   (activeTab === "지역행사" && (c.category === "행사" || c.category === "지역행사"));
