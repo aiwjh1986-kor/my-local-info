@@ -1,88 +1,80 @@
-import Link from 'next/link';
+import { Metadata } from "next";
+import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "루미 가이드 소개",
+  description: "용인시 지역 생활 정보의 중심, 루미 가이드를 소개합니다.",
+};
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-orange-50 font-sans text-gray-900">
-      {/* 상단 헤더 */}
-      <header className="bg-white shadow-sm border-b border-orange-100">
-        <div className="max-w-5xl mx-auto px-4 py-6 md:py-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="text-center md:text-left">
-            <Link href="/">
-              <h1 className="text-2xl md:text-3xl font-extrabold text-orange-600 font-[family-name:var(--font-baloo-2)]">
-                용인시 생활정보 및 여행가이드 🏠
-              </h1>
-            </Link>
-            <p className="mt-1 text-gray-600 text-sm font-medium">
-              용인시의 알찬 정보와 전국 여행 소식을 전합니다.
-            </p>
-          </div>
-          <nav className="flex gap-6 font-bold text-gray-600">
-            <Link href="/" className="hover:text-orange-600 transition-colors">홈</Link>
-            <Link href="/blog" className="hover:text-orange-600 transition-colors">블로그</Link>
-            <Link href="/about" className="text-orange-600 underline decoration-2 underline-offset-8">소개</Link>
-          </nav>
+    <div className="max-w-4xl mx-auto px-6 py-24">
+      {/* Hero Section */}
+      <div className="text-center mb-20">
+        <div className="inline-block px-4 py-1.5 bg-blue-100 text-blue-600 text-xs font-black rounded-full mb-6 uppercase tracking-widest">
+          Since 2024
         </div>
-      </header>
+        <h1 className="text-5xl lg:text-7xl font-black text-gray-900 mb-8 tracking-tighter leading-tight">
+          용인 생활의 즐거운 동반자,<br />
+          <span className="text-blue-600">루미 가이드</span>입니다.
+        </h1>
+        <p className="text-xl text-gray-500 font-bold max-w-2xl mx-auto leading-relaxed">
+          복잡한 공공데이터와 파편화된 지역 정보를 누구나 이해하기 쉬운 
+          스토리로 풀어내어 용인 시민의 삶을 더 풍요롭게 만듭니다.
+        </p>
+      </div>
 
-      <main className="max-w-3xl mx-auto px-4 py-16">
-        <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-orange-100">
-          <div className="bg-orange-500 p-10 text-white text-center">
-            <span className="text-5xl mb-4 block">🏮</span>
-            <h2 className="text-3xl font-black font-[family-name:var(--font-baloo-2)]">안녕하세요! 루미의 우리동네 소식통입니다.</h2>
+      {/* Philosophy Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
+        {[
+          { title: "정확한 정보", desc: "공공데이터와 공식 문서를 바탕으로 검증된 사실만 전달합니다.", icon: "✅" },
+          { title: "현지인 관점", desc: "용인 거주 에디터가 직접 체험하고 느낀 실전 팁을 공유합니다.", icon: "🏡" },
+          { title: "빠른 소식", desc: "지원금, 축제 등 시기를 놓치면 안 되는 정보를 가장 빠르게 전합니다.", icon: "🚀" }
+        ].map((item, idx) => (
+          <div key={idx} className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-sm">
+            <div className="text-3xl mb-6">{item.icon}</div>
+            <h3 className="text-lg font-black text-gray-900 mb-3">{item.title}</h3>
+            <p className="text-gray-500 text-sm font-medium leading-relaxed">{item.desc}</p>
           </div>
-          
-          <div className="p-10 space-y-12">
-            <section>
-              <h3 className="text-xl font-bold text-orange-600 mb-4 flex items-center gap-2">
-                🎯 운영 목적
-              </h3>
-              <p className="text-gray-600 leading-relaxed font-medium">
-                용인시 주민분들과 전국 여행자분들이 꼭 필요한 <strong>생활정보, 문화행사, 정부 지원금, 전국 여행 및 행사</strong> 소식을 놓치지 않도록 돕기 위해 시작되었습니다. 실시간 <strong>날씨 정보</strong>까지 포함하여 더욱 유용한 정보를 매일 전달해 드립니다.
-              </p>
-            </section>
+        ))}
+      </div>
 
-            <section>
-              <h3 className="text-xl font-bold text-orange-600 mb-4 flex items-center gap-2">
-                📊 데이터 출처 및 신뢰성
-              </h3>
-              <p className="text-gray-600 leading-relaxed mb-4">
-                본 블로그의 모든 정보는 <strong>대한민국 공공데이터포털(data.go.kr)</strong>의 공식 API를 통해 수집된 공신력 있는 데이터를 바탕으로 합니다.
+      {/* Detailed Content */}
+      <div className="bg-gray-50 rounded-[48px] p-10 lg:p-16 border border-gray-100">
+        <div className="prose prose-blue max-w-none">
+          <h2 className="text-3xl font-black text-gray-900 mb-8">루미 가이드가 특별한 이유</h2>
+          <div className="space-y-10 text-gray-600 font-medium leading-relaxed">
+            <p>
+              인터넷에는 수많은 정보가 넘쳐나지만, 정작 "우리 동네"에 딱 맞는 실무적인 정보를 찾기란 쉽지 않습니다. 
+              <strong>루미 가이드</strong>는 이러한 불편함에서 시작되었습니다.
+            </p>
+            
+            <div>
+              <h4 className="text-xl font-black text-gray-900 mb-4">📍 로컬에 집중합니다</h4>
+              <p>
+                우리는 전국 단위의 정보를 단순 복사하지 않습니다. "용인시청 주차는 주말에 무료인가?", 
+                "고기동 카페 거리는 몇 시에 가야 안 막히는가?"와 같은 아주 구체적이고 
+                실질적인 로컬 지식을 담는 데 집중합니다.
               </p>
-              <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 text-sm text-gray-500">
-                <ul className="list-disc ml-5 space-y-2">
-                  <li>성남시/경기도 문화 행사 및 축제 정보</li>
-                  <li>정부24 중앙부처 및 지자체 수혜 서비스</li>
-                  <li>공공기관 주요 공지사항 및 소식</li>
-                </ul>
-              </div>
-            </section>
+            </div>
 
-            <section>
-              <h3 className="text-xl font-bold text-orange-600 mb-4 flex items-center gap-2">
-                🤖 콘텐츠 생성 방식
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                방대한 공공데이터를 더 이해하기 쉽고 읽기 편한 블로그 글로 변환하기 위해 <strong>Google Gemini AI</strong> 기술을 활용하고 있습니다. AI는 수집된 원문 데이터를 바탕으로 핵심 내용을 요약하고 풍부한 설명을 덧붙이는 역할을 수행하며, 최종적인 신뢰성을 위해 본문에 항상 원문 링크를 제공하고 있습니다.
+            <div>
+              <h4 className="text-xl font-black text-gray-900 mb-4">🔍 데이터의 인간화</h4>
+              <p>
+                딱딱한 행정 용어로 가득한 지원금 공고문을 이웃집 언니가 들려주는 이야기처럼 
+                쉽게 풀어냅니다. 누락되기 쉬운 혜택을 찾아내어 시민 여러분께 배달해 드리는 것이 
+                루미 가이드의 핵심 미션입니다.
               </p>
-            </section>
-
-            <div className="pt-10 border-t border-gray-100 text-center">
-              <Link 
-                href="/blog"
-                className="inline-block px-10 py-4 bg-orange-500 text-white font-bold rounded-2xl hover:bg-orange-600 transition-all shadow-lg hover:shadow-orange-200"
-              >
-                최신 소식 보러가기
-              </Link>
             </div>
           </div>
         </div>
-      </main>
 
-      <footer className="bg-gray-100 border-t border-gray-200 mt-20">
-        <div className="max-w-5xl mx-auto px-4 py-10 text-center text-xs text-gray-400">
-          © {new Date().getFullYear()} 용인시 생활정보 및 여행가이드 | 소개 페이지
+        <div className="mt-16 pt-10 border-t border-gray-200">
+          <Link href="/blog" className="inline-flex items-center gap-3 px-10 py-5 bg-blue-600 text-white text-xl font-black rounded-full shadow-2xl shadow-blue-200 hover:scale-105 transition-all">
+            루미의 최신 소식 보기 <span>→</span>
+          </Link>
         </div>
-      </footer>
+      </div>
     </div>
   );
 }

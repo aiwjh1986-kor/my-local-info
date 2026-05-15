@@ -76,6 +76,8 @@ export const metadata: Metadata = {
   },
 };
 
+import Footer from "@/components/Footer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -157,9 +159,12 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col font-pretendard">
         <CustomCursor />
-        {children}
+        <main className="flex-grow">
+          {children}
+        </main>
+        <Footer />
         <BGMPlayer />
       </body>
     </html>
