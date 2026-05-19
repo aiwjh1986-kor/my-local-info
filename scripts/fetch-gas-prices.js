@@ -10,6 +10,12 @@ async function fetchGasPrices() {
     return;
   }
 
+  // 항상 한국 시간(KST) 기준 날짜 생성
+  const now = new Date();
+  const dateStr = new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Seoul' }).format(now);
+  const kstDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+  const displayDate = `${kstDate.getFullYear()}년 ${kstDate.getMonth() + 1}월 ${kstDate.getDate()}일`;
+
   try {
     console.log('용인시 구별 주유소 가격 정보 가져오는 중 (좌표 기반)...');
     const districtPoints = [
