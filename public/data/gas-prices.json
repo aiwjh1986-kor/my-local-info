@@ -1,75 +1,18 @@
 {
-  "lastUpdate": "2026. 5. 6. PM 6:42:31",
-  "all": [
-    {
-      "name": "미키주유소",
-      "brand": "RTO",
-      "price": 1975,
-      "address": "경기 용인시 기흥구 보정동 614-4",
-      "district": "기흥구"
-    },
-    {
-      "name": "청정에너지주유소",
-      "brand": "SOL",
-      "price": 1975,
-      "address": "경기 용인시 기흥구 보정동 408-3",
-      "district": "기흥구"
-    },
-    {
-      "name": "동백자연에너지",
-      "brand": "SKE",
-      "price": 1975,
-      "address": "경기 용인시 기흥구 동백동 370-2",
-      "district": "기흥구"
-    },
-    {
-      "name": "청정에너지 동백점",
-      "brand": "SOL",
-      "price": 1975,
-      "address": "경기 용인시 기흥구 동백동 4-13",
-      "district": "기흥구"
-    },
-    {
+  "success": true,
+  "timestamp": "2026-05-19T15:55:40.868Z",
+  "data": {
+    "suji": {
       "name": "언남에너지유한책임회사",
-      "brand": "SOL",
-      "price": 1975,
-      "address": "경기 용인시 기흥구 언남동 221-1",
-      "district": "기흥구"
+      "price": 1975
     },
-    {
-      "name": "(주)위굴리 고진역주유소",
-      "brand": "SOL",
-      "price": 1978,
-      "address": "경기 용인시 처인구 유방동 529-16",
-      "district": "처인구"
+    "giheung": {
+      "name": "동백호수주유소",
+      "price": 1973
     },
-    {
-      "name": "에너지 플러스허브 죽전",
-      "brand": "GSC",
-      "price": 1979,
-      "address": "경기 용인시 수지구 죽전동 876-2",
-      "district": "수지구"
-    },
-    {
+    "cheoin": {
       "name": "(주)디오티디 용인드래곤주유소",
-      "brand": "HDO",
-      "price": 1983,
-      "address": "경기 용인시 처인구 남동 186-5",
-      "district": "처인구"
-    },
-    {
-      "name": "주식회사 시헌 STAY 365",
-      "brand": "SKE",
-      "price": 1984,
-      "address": "경기 용인시 처인구 남사읍 완장리 147-1",
-      "district": "처인구"
-    },
-    {
-      "name": "용인대주유소",
-      "brand": "HDO",
-      "price": 1984,
-      "address": "경기 용인시 처인구 이동면 서리 633-2",
-      "district": "처인구"
+      "price": 1983
     }
-  ]
+  }
 }

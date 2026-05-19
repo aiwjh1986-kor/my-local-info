@@ -20,8 +20,9 @@ export default function GasPriceWidget() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // API 호출 시 trailingSlash 설정 고려하여 '/' 추가
-    fetch('/api/gas-prices/')
+    // Static Export 환경에서 API Route 불가하므로 정적 json을 읽어옵니다.
+    // (서버에서 cron 등으로 갱신)
+    fetch('/data/gas-prices.json')
       .then(res => {
         if (!res.ok) throw new Error('데이터를 불러오지 못했습니다.');
         return res.json();
