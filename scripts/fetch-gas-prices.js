@@ -39,10 +39,23 @@ async function fetchGasPrices() {
       if (data.RESULT && data.RESULT.OIL && data.RESULT.OIL.length > 0) {
         // 첫 번째가 최저가
         const cheapest = data.RESULT.OIL[0];
+        
+        // 브랜드 코드 한글 변환 매핑
+        const brandMap = {
+          'SKE': 'SK에너지',
+          'GSC': 'GS칼텍스',
+          'HDO': '현대오일뱅크',
+          'SOL': 'S-OIL',
+          'RTE': '자가상표',
+          'FTX': '알뜰주유소',
+          'NHO': '농협알뜰'
+        };
+        const brandName = brandMap[cheapest.POLL_DIV_CD] || '일반주유소';
+
         results[point.id] = {
           name: cheapest.OS_NM,
           price: cheapest.PRICE,
-          brand: cheapest.POLL_DIV_CO
+          brand: brandName
         };
       }
     }

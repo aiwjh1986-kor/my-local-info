@@ -1,18 +1,21 @@
 {
   "success": true,
-  "timestamp": "2026-05-19T16:02:54.577Z",
+  "timestamp": "2026-05-19T16:07:25.674Z",
   "data": {
     "suji": {
       "name": "언남에너지유한책임회사",
-      "price": 1975
+      "price": 1975,
+      "brand": "S-OIL"
     },
     "giheung": {
       "name": "동백호수주유소",
-      "price": 1973
+      "price": 1973,
+      "brand": "S-OIL"
     },
     "cheoin": {
       "name": "(주)디오티디 용인드래곤주유소",
-      "price": 1983
+      "price": 1983,
+      "brand": "현대오일뱅크"
     }
   }
 }
