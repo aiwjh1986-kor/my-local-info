@@ -48,6 +48,16 @@ export default function DashboardClient({
   const [activeBlogCat, setActiveBlogCat] = useState("전체");
   const [selectedCard, setSelectedCard] = useState<FeaturedCard | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [visitorCount, setVisitorCount] = useState(1248);
+
+  useEffect(() => {
+    fetch('/api/visitor')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.count) setVisitorCount(data.count);
+      })
+      .catch(console.error);
+  }, []);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingCard, setEditingCard] = useState<FeaturedCard | null>(null);
@@ -1232,7 +1242,7 @@ export default function DashboardClient({
             <div className="flex items-center gap-3 px-8 bg-red-500/5 py-4 rounded-full border border-red-500/10">
               <span className="text-xl">📊</span>
               <span className="text-xs lg:text-base font-black text-red-600 uppercase tracking-widest">Google Analytics Live</span>
-              <span className="text-xs lg:text-base font-black text-gray-400 ml-2">1,248+ Views</span>
+              <span className="text-xs lg:text-base font-black text-gray-400 ml-2">{visitorCount.toLocaleString()} Views</span>
             </div>
           </div>
 

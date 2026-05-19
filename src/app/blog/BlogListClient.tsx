@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CoupangDynamicBanner from "@/components/CoupangDynamicBanner";
 
 // 캐시 방지 버전
@@ -13,6 +13,16 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
   const router = useRouter();
   const [activeCat, setActiveCat] = useState("전체");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [visitorCount, setVisitorCount] = useState(1248);
+
+  useEffect(() => {
+    fetch('/api/visitor')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.count) setVisitorCount(data.count);
+      })
+      .catch(console.error);
+  }, []);
 
   const categories = ["전체", "지원금", "지역행사", "생활정보", "도서정보"];
   
@@ -267,7 +277,7 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
           <div className="flex items-center gap-4 lg:gap-10 bg-white/80 p-6 lg:p-8 rounded-[40px] border border-white shadow-2xl">
             <div className="flex items-center gap-3 px-6 bg-blue-500/5 py-3 rounded-full border border-blue-500/10">
               <span className="text-lg">👥</span>
-              <span className="text-[10px] lg:text-sm font-black text-blue-600 uppercase tracking-widest">Welcome Visitor</span>
+              <span className="text-[10px] lg:text-sm font-black text-blue-600 uppercase tracking-widest">총 방문자: {visitorCount.toLocaleString()}명</span>
             </div>
             <div className="flex items-center gap-3 px-6 bg-green-500/5 py-3 rounded-full border border-green-500/10">
               <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
