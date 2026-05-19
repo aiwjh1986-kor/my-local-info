@@ -8,6 +8,7 @@ import { useRef } from "react";
 import InfiniteCarousel from "@/components/InfiniteCarousel";
 import { Card } from "@/components/Card";
 import CoupangDynamicBanner from "@/components/CoupangDynamicBanner";
+import GasPriceWidget from "@/components/GasPriceWidget";
 import data from "../../public/data/local-info.json";
 import lifeTips from "../../public/data/life-tips.json";
 
@@ -600,6 +601,9 @@ export default function DashboardClient({
 
         {activeTab === "홈" && (
           <>
+            {/* 실시간 주유소 위젯 (고정 최상단) */}
+            <GasPriceWidget />
+
             {/* 섹션들 */}
             <Section
               title="최신 정보"
