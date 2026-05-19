@@ -4,6 +4,7 @@ date: 2026-05-17T11:00:00.000Z
 summary: 이번 주말 어디 갈까 고민이신가요? 활짝 핀 봄꽃과 다양한 체험 프로그램이 가득한 용인 농촌테마파크로 떠나보세요!
 category: 행사
 image: event/16.png
+link: "https://www.yongin.go.kr/tour/index.do"
 tags:
   - 용인시
   - 주말나들이

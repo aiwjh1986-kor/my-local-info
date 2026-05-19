@@ -4,6 +4,7 @@ date: 2026-05-19T10:00:00.000Z
 summary: 용인시의 축구 역사를 한눈에 볼 수 있는 특별전시가 용인시박물관에서 열립니다. 가족과 함께 박진감 넘치는 축구 이야기를 만나보세요!
 category: 지역행사
 image: event/17.png
+link: "https://museum.yongin.go.kr"
 tags:
   - 용인시
   - 용인여행

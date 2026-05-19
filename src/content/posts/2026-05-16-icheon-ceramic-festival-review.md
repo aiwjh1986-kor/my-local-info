@@ -4,6 +4,7 @@ date: 2026-05-16T13:50:00.000Z
 summary: "이천 도자기 축제에서 만난 아름다운 청자와 귀여운 소품들, 그리고 특별한 물레 체험까지! 생생한 축제 현장 후기를 전해드립니다."
 category: 지역행사
 image: 이천 도자기/KakaoTalk_20260505_183218972.png
+link: "https://www.ceramic.or.kr"
 tags:
   - 이천도자기축제
   - 이천여행
