@@ -35,6 +35,26 @@ interface FeaturedCard {
   endDate?: string | null;
 }
 
+// 🗳️ 제9회 지방선거(2026년 6월 3일) 실시간 D-Day 계산기
+function getElectionDDay() {
+  const target = new Date("2026-06-03T00:00:00+09:00");
+  const today = new Date();
+  
+  // 오늘 날짜와 선거일의 시각 차이를 '밀리초' 단위로 계산해요
+  const difference = target.getTime() - today.getTime();
+  
+  // 밀리초를 하루 단위(1000초 * 60분 * 60초 * 24시간)로 나누어 소수점 아래는 올림해요
+  const daysLeft = Math.ceil(difference / (1000 * 60 * 60 * 24));
+
+  if (daysLeft > 0) {
+    return `D-${daysLeft}`;
+  } else if (daysLeft === 0) {
+    return "D-Day";
+  } else {
+    return `D+${Math.abs(daysLeft)}`;
+  }
+}
+
 export default function DashboardClient({
   initialBlogPosts,
   initialFeaturedCards
@@ -49,6 +69,7 @@ export default function DashboardClient({
   const [activeBlogCat, setActiveBlogCat] = useState("전체");
   const [selectedCard, setSelectedCard] = useState<FeaturedCard | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [visitorCount, setVisitorCount] = useState(1248);
 
   useEffect(() => {
@@ -477,16 +498,8 @@ export default function DashboardClient({
 
   return (
     <div className="min-h-screen font-[family-name:var(--font-pretendard)] pb-24 relative">
-      {/* 🖼️ 메인 배경 이미지 */}
-      <div
-        className="fixed inset-0 z-[-1] opacity-50 pointer-events-none"
-        style={{
-          backgroundImage: `url(${IMG_BASE}background1.png?v=${V_NUM})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed'
-        }}
-      />
+      {/* 🖼️ 초고급 파스텔 오로라 그라데이션 배경 (토끼 이미지 영구 제거) */}
+      <div className="fixed inset-0 z-[-1] bg-gradient-to-tr from-[#f3f4ff] via-[#fdfbf7] to-[#fff6f0] pointer-events-none" />
       {/* 플로팅 배경 요소 (배경 이미지와 조화롭게 어우러짐) */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
         <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-purple-200/20 blur-[100px] rounded-full" />
@@ -501,79 +514,243 @@ export default function DashboardClient({
         <span className="text-xl lg:text-2xl font-extrabold text-gray-800 font-[family-name:var(--font-baloo-2)] tracking-wider group-hover:text-blue-600 transition-colors">MENU</span>
       </button>
 
+      {/* 🚀 우측 상단 카테고리/섹션 바로가기 드롭다운 */}
+      <div className="fixed top-6 right-5 z-[60] flex flex-col items-end">
+        <button
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          className="bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 lg:px-8 lg:py-4 rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2.5 group cursor-pointer"
+        >
+          <span className="text-sm lg:text-base font-black text-gray-800 tracking-wider group-hover:text-blue-600 transition-colors">이동하기</span>
+          <span className={`text-xs lg:text-sm text-gray-500 transition-transform duration-300 ${isDropdownOpen ? "rotate-180 text-blue-600" : ""}`}>▼</span>
+        </button>
+
+        {/* 드롭다운 메뉴 아이템 리스트 */}
+        {isDropdownOpen && (
+          <div className="mt-3.5 bg-white/95 backdrop-blur-xl border border-gray-100/80 rounded-[28px] p-4 lg:p-5 shadow-2xl w-56 lg:w-64 flex flex-col gap-1.5 animate-in fade-in slide-in-from-top-3 duration-250 z-[70] origin-top-right">
+            <div className="text-[10px] text-gray-400 font-black px-3.5 pb-2 border-b border-gray-50 uppercase tracking-widest">실시간 바로가기</div>
+            {[
+              { id: "홈", label: "🏠 메인 홈" },
+              { id: "지원금", label: "💰 지원금 혜택" },
+              { id: "지역행사", label: "🎉 지역 축제/행사" },
+              { id: "생활정보", label: "⚙️ 생활 정보" },
+              { id: "도서정보", label: "📚 사서 추천 도서" },
+              { id: "세계 경제", label: "📊 세계 경제 트렌드" },
+              { id: "지방선거", label: "🗳️ 지방선거 D-Day" }
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  if (item.id === "지방선거" || item.id === "세계 경제" || item.id === "도서정보" || item.id === "지원금") {
+                    setActiveTab(item.id as any);
+                    window.history.pushState({}, '', `/?tab=${item.id}`);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  } else if (item.id === "홈") {
+                    setActiveTab("홈");
+                    window.history.pushState({}, '', '/');
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  } else {
+                    setActiveTab("홈");
+                    window.history.pushState({}, '', '/');
+                    setTimeout(() => {
+                      const el = document.getElementById('gas-widget-section');
+                      if (el) el.scrollIntoView({ behavior: "smooth" });
+                    }, 100);
+                  }
+                }}
+                className={`w-full text-left px-4 py-3 rounded-2xl text-xs lg:text-sm font-black transition-all flex items-center justify-between hover:bg-blue-50/50 hover:text-blue-600 hover:translate-x-1 ${activeTab === item.id ? "bg-blue-50 text-blue-600" : "text-gray-700"}`}
+              >
+                <span>{item.label}</span>
+                {activeTab === item.id && <span className="text-[10px] text-blue-500">●</span>}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
       <main className="relative z-10 max-w-[1600px] mx-auto px-5 lg:px-10 pt-24 lg:pt-8 transition-all duration-500">
 
-        {/* 🏮 초대형 와이드 개편 배너 (모바일 초슬림 최적화) */}
-        <div className="mb-12 relative overflow-hidden bg-[#E9EBF3] rounded-[40px] lg:rounded-[60px] p-6 lg:p-20 shadow-2xl border border-white group min-h-[280px] lg:min-h-[600px] flex flex-col justify-center lg:justify-between transition-all duration-500">
+        {/* 🍱 초감각 벤토 그리드(Bento Grid) 탑 대시보드 (파스텔 글래스모피즘 스킨) */}
+        <div className="mb-12 w-full bg-white/40 backdrop-blur-xl border border-white/70 shadow-2xl shadow-gray-200/30 rounded-[32px] lg:rounded-[48px] p-6 lg:p-10 relative overflow-hidden transition-all duration-500">
+          
+          {/* 우주적인 부드러운 오로라 광원 조명 효과 */}
+          <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-blue-300/20 blur-[100px] rounded-full pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-purple-300/20 blur-[100px] rounded-full pointer-events-none" />
 
-          {/* 배경 장식 요소 (고급스러움 추가) */}
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-white/20 to-transparent pointer-events-none" />
-
-          <div className="relative z-10 flex flex-col lg:flex-row h-full">
-
-            <div className="flex-1 flex flex-col justify-start text-center lg:text-left mb-6 lg:mb-0">
-              <div className="animate-in fade-in slide-in-from-top duration-1000">
-                <div className="hidden lg:flex items-center gap-2 mb-4 lg:mb-8 justify-center lg:justify-start">
-                  <span className="px-3 py-1 bg-blue-600 text-white text-[8px] lg:text-sm font-black rounded-full animate-pulse uppercase tracking-widest">Premium Guide</span>
-                  <span className="text-[8px] lg:text-sm font-black text-blue-400 uppercase tracking-widest opacity-60">2024 New Update</span>
+          <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
+            
+            {/* 1. [메인 인트로 카드] (가로 2, 세로 2) */}
+            <div className="md:col-span-2 md:row-span-2 bg-gradient-to-br from-[#EBF1FF]/90 via-[#F3F6FF]/60 to-white/95 border border-white/95 text-gray-900 rounded-[28px] lg:rounded-[36px] p-8 lg:p-12 flex flex-col justify-between min-h-[340px] lg:min-h-[440px] shadow-sm hover:shadow-xl hover:scale-[1.01] transition-all">
+              <div>
+                <div className="flex items-center gap-2 mb-6">
+                  <span className="px-3.5 py-1.5 bg-blue-600 text-white text-xs font-black rounded-full uppercase tracking-widest">LUMI GUIDE</span>
+                  <span className="text-xs font-black text-blue-600 uppercase tracking-widest opacity-60">Smart Portal</span>
                 </div>
-                <h2 className="text-3xl md:text-5xl lg:text-8xl font-black text-[#111111] mb-2 lg:mb-10 leading-tight tracking-tighter font-handwriting mt-10 lg:mt-0">
-                  용인 생활의 모든 것,<br className="hidden lg:block" />
-                  <span className="text-blue-600">루미 가이드</span>와 함께!
-                </h2>
-                <p className="hidden lg:block text-sm md:text-xl lg:text-3xl text-gray-500 font-bold leading-relaxed max-w-2xl opacity-80 mb-6 lg:mb-10">
-                  혜택, 행사, 정보까지 한 번에 확인하고<br className="hidden lg:block" />
-                  더 똑똑한 용인 생활을 즐겨보세요.
+                <h1 className="text-3xl lg:text-5xl font-black text-gray-900 leading-tight tracking-tighter mb-5">
+                  용인 생활을 더<br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">스마트하고 알차게!</span>
+                </h1>
+                <p className="text-sm lg:text-lg text-gray-500 font-bold leading-relaxed max-w-md">
+                  실시간 혜택 소식부터 숨겨진 생활 비결까지,<br />
+                  가장 똑똑하고 신뢰할 수 있는 정보를 제공합니다.
                 </p>
-                {/* 모바일에서는 버튼 숨김 */}
-                <div className="flex flex-col gap-4 mt-6">
-                  <button
-                    onClick={() => router.push("/blog")}
-                    className="hidden lg:inline-flex items-center gap-4 px-8 py-4 lg:px-16 lg:py-7 bg-accent text-white rounded-full text-lg lg:text-3xl font-black shadow-2xl shadow-accent/30 hover:scale-105 transition-all w-fit"
-                  >
-                    블로그 바로가기 <span>→</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setActiveTab("세계 경제");
-                      window.history.pushState({}, '', '/?tab=세계 경제');
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                    }}
-                    className="hidden lg:inline-flex items-center gap-4 px-8 py-4 lg:px-12 lg:py-5 bg-white text-red-600 rounded-full text-lg lg:text-2xl font-black shadow-xl hover:scale-105 transition-all w-fit border-2 border-red-100"
-                  >
-                    세계 경제 소식 <span>→</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setActiveTab("지방선거");
-                      window.history.pushState({}, '', '/?tab=지방선거');
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                    }}
-                    className="hidden lg:inline-flex items-center gap-4 px-8 py-4 lg:px-12 lg:py-5 bg-white text-teal-600 rounded-full text-lg lg:text-2xl font-black shadow-xl hover:scale-105 transition-all w-fit border-2 border-teal-100"
-                  >
-                    지방선거 소식 <span>→</span>
-                  </button>
-                </div>
+              </div>
+              <div className="flex flex-wrap gap-3 mt-8">
+                <button
+                  onClick={() => router.push("/blog")}
+                  className="px-6 py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-sm font-black shadow-xl shadow-blue-500/20 hover:scale-105 transition-all flex items-center gap-2"
+                >
+                  블로그 소식 <span>→</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setActiveTab("세계 경제");
+                    window.history.pushState({}, '', '/?tab=세계 경제');
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  className="px-6 py-3.5 bg-white hover:bg-gray-50 text-gray-700 rounded-full text-sm font-black border border-gray-200 shadow-sm hover:scale-105 transition-all flex items-center gap-2"
+                >
+                  세계 경제 <span>📊</span>
+                </button>
               </div>
             </div>
 
-            {/* [우측] 초대형 캐릭터 영역 (모바일에서는 텍스트 가독성을 위해 숨김) */}
-            <div className="relative flex-1 hidden lg:flex items-center justify-center lg:justify-end">
-              <div className="relative w-full max-w-[650px] lg:scale-125 lg:translate-x-10 transform-gpu transition-transform duration-1000">
-                <img
-                  src={IMG_BASE + "rabbit-hero-ultra.png?v=" + V_NUM}
-                  alt="Lumi Rabbit"
-                  className="w-full h-auto object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.15)] animate-in zoom-in duration-1000"
-                />
-                {/* 캐릭터 주변 장식 */}
-                <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-white/30 rounded-full blur-3xl" />
+            {/* 2. [지방선거 D-Day 카드] (가로 1, 세로 2) */}
+            <div 
+              onClick={() => {
+                setActiveTab("지방선거");
+                window.history.pushState({}, '', '/?tab=지방선거');
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="bg-gradient-to-br from-[#FFF0F5]/90 via-[#FFF5F8]/60 to-white/95 border border-white/95 text-gray-900 rounded-[28px] lg:rounded-[36px] p-6 lg:p-8 flex flex-col justify-between min-h-[220px] lg:min-h-[440px] shadow-sm cursor-pointer hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all"
+            >
+              <div>
+                <span className="bg-pink-100 text-pink-600 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-wider">
+                  Election D-Day
+                </span>
+                <div className="mt-8 flex items-baseline gap-1">
+                  <span className="text-4xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-rose-600 tracking-tighter">
+                    {getElectionDDay()}
+                  </span>
+                </div>
+                <h3 className="text-lg lg:text-xl font-black text-gray-800 mt-4 leading-tight">
+                  제9회 지방선거<br />실시간 동향 요약
+                </h3>
+              </div>
+              <div className="pt-6 border-t border-pink-100 text-xs font-black text-pink-600 flex items-center justify-between mt-8">
+                <span>전용 뉴스룸 바로가기</span>
+                <span>➔</span>
               </div>
             </div>
+
+            {/* 3. [오늘의 주유소 간편 카드] (가로 1, 세로 1) */}
+            <div 
+              onClick={() => {
+                const element = document.getElementById('gas-widget-section');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                  window.scrollTo({ top: 400, behavior: 'smooth' });
+                }
+              }}
+              className="bg-gradient-to-br from-[#E6F8F9]/90 to-white/95 border border-white/90 text-gray-900 rounded-[28px] lg:rounded-[36px] p-6 shadow-sm cursor-pointer hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all flex flex-col justify-between min-h-[200px]"
+            >
+              <div>
+                <span className="bg-cyan-50 text-cyan-600 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-wider">
+                  Live 유가
+                </span>
+                <h3 className="text-base lg:text-lg font-black text-gray-800 mt-4 leading-tight">
+                  ⛽ 오늘의 최저가 주유소
+                </h3>
+                <p className="text-xs text-gray-500 font-bold mt-1.5 leading-relaxed">
+                  용인 수지/기흥/처인구에서 가장 저렴한 주유소를 확인하세요!
+                </p>
+              </div>
+              <div className="text-xs font-black text-cyan-600 flex items-center justify-between">
+                <span>실시간 가격표 확인</span>
+                <span>➔</span>
+              </div>
+            </div>
+
+            {/* 4. [실생활 꿀팁 카드] (가로 1, 세로 1) */}
+            <div 
+              onClick={() => router.push("/tips")}
+              className="bg-gradient-to-br from-[#EAF8F2]/90 to-white/95 border border-white/90 text-gray-900 rounded-[28px] lg:rounded-[36px] p-6 shadow-sm cursor-pointer hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all flex flex-col justify-between min-h-[200px]"
+            >
+              <div>
+                <span className="bg-emerald-50 text-emerald-600 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-wider">
+                  Life Tips
+                </span>
+                <h3 className="text-base lg:text-lg font-black text-gray-800 mt-4 leading-tight">
+                  💡 삶을 편리하게 만드는 비결
+                </h3>
+                <p className="text-xs text-gray-500 font-bold mt-1.5 leading-relaxed">
+                  요긴하게 써먹는 살림 꿀팁과 추천 아이템 모음집.
+                </p>
+              </div>
+              <div className="text-xs font-black text-emerald-600 flex items-center justify-between">
+                <span>꿀팁 피드 바로가기</span>
+                <span>➔</span>
+              </div>
+            </div>
+
+            {/* 5. [사서 추천 도서 카드] (가로 1, 세로 1) */}
+            <div 
+              onClick={() => {
+                setActiveTab("도서정보");
+                window.history.pushState({}, '', '/?tab=도서정보');
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="bg-gradient-to-br from-[#FDF3E7]/90 to-white/95 border border-white/90 text-gray-900 rounded-[28px] lg:rounded-[36px] p-6 shadow-sm cursor-pointer hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all flex flex-col justify-between min-h-[200px]"
+            >
+              <div>
+                <span className="bg-amber-50 text-amber-600 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-wider">
+                  Book Club
+                </span>
+                <h3 className="text-base lg:text-lg font-black text-gray-800 mt-4 leading-tight">
+                  📚 용인시 사서 추천 도서
+                </h3>
+                <p className="text-xs text-gray-500 font-bold mt-1.5 leading-relaxed">
+                  이번 달 사서들이 엄선한 추천 도서 정보를 만나보세요.
+                </p>
+              </div>
+              <div className="text-xs font-black text-amber-600 flex items-center justify-between">
+                <span>추천 도서 보기</span>
+                <span>➔</span>
+              </div>
+            </div>
+
+            {/* 6. [세계 경제 브리핑 카드] (가로 1, 세로 1) */}
+            <div 
+              onClick={() => {
+                setActiveTab("세계 경제");
+                window.history.pushState({}, '', '/?tab=세계 경제');
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="bg-gradient-to-br from-[#F5EFFE]/90 to-white/95 border border-white/90 text-gray-900 rounded-[28px] lg:rounded-[36px] p-6 shadow-sm cursor-pointer hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all flex flex-col justify-between min-h-[200px]"
+            >
+              <div>
+                <span className="bg-purple-50 text-purple-600 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-wider">
+                  Economy
+                </span>
+                <h3 className="text-base lg:text-lg font-black text-gray-800 mt-4 leading-tight">
+                  📊 글로벌 경제 트렌드 요약
+                </h3>
+                <p className="text-xs text-gray-500 font-bold mt-1.5 leading-relaxed">
+                  주요 반도체, 환율, 인플레이션 등 핵심 경제 동향 브리핑.
+                </p>
+              </div>
+              <div className="text-xs font-black text-purple-600 flex items-center justify-between">
+                <span>글로벌 브리핑 보기</span>
+                <span>➔</span>
+              </div>
+            </div>
+
           </div>
 
           {/* [하단] 5대 핵심 메뉴 - 반응형 최적화 (잘림 방지) */}
-          <div className="relative z-10 hidden lg:flex items-center justify-center mt-12 lg:mt-24 w-full px-4">
-            <div className="flex flex-nowrap items-center justify-center gap-2 xl:gap-5 bg-white/60 lg:bg-gray-100/60 backdrop-blur-md px-4 xl:px-8 py-4 xl:py-6 rounded-full border border-white/50 shadow-xl min-w-fit overflow-x-auto no-scrollbar">
+          <div className="relative z-10 hidden lg:flex items-center justify-center mt-12 w-full px-4">
+            <div className="flex flex-nowrap items-center justify-center gap-2 xl:gap-5 bg-white/60 backdrop-blur-md px-4 xl:px-8 py-4 xl:py-6 rounded-full border border-white/50 shadow-xl min-w-fit overflow-x-auto no-scrollbar">
               {[
                 { id: "홈", label: "홈", img: "icon-home.png" },
                 { id: "지원금", label: "지원금 혜택", img: "icon-grant.png" },
@@ -608,6 +785,7 @@ export default function DashboardClient({
               ))}
             </div>
           </div>
+
         </div>
 
         {/* 🛍️ [긴급 복구] 쿠팡 파트너스 광고 배너 (최상단 노출) */}
