@@ -2,7 +2,7 @@
 title: "[용인시] 마음의 양식을 쌓는 시간, 이번 주말 용인시 도서관 사서 추천 도서 \U0001F4DA"
 date: 2026-05-17T14:00:00.000Z
 summary: '바쁜 일상 속, 책 한 권의 여유를 가져보는 건 어떨까요? 용인시 도서관에서 추천하는 5월의 도서를 소개합니다.'
-category: 문화
+category: book
 image: book/05.png
 link: "https://lib.yongin.go.kr"
 tags:

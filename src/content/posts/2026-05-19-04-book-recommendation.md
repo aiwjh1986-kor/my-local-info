@@ -2,7 +2,7 @@
 title: "[용인시] 마음의 양식을 채우는 시간! 5월 추천 도서 📚"
 date: 2026-05-19T11:00:00.000Z
 summary: '바쁜 일상 속, 커피 한 잔과 함께 읽기 좋은 5월의 추천 도서 두 권을 소개합니다.'
-category: 생활정보
+category: book
 image: book/06.png
 link: "https://lib.yongin.go.kr"
 tags:
