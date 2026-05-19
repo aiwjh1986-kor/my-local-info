@@ -2,7 +2,7 @@
 title: '[용인] [용인시] 제9회 지방선거 최신 동향! 이상일 vs 현근택 맞대결 구도 확정'
 date: 2026-05-09T02:41:21.506Z
 summary: 용인시장 선거 대진표 완성! 이상일 시장의 재선 도전과 현근택 후보의 정책 행보 소식을 전해드립니다.
-category: 생활정보
+category: 지방선거
 image: event/지방선거.png
 link: 'https://www.yongin.go.kr'
 tags:
