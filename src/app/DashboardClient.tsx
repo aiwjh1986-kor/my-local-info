@@ -51,7 +51,7 @@ export default function DashboardClient({
   const [visitorCount, setVisitorCount] = useState(1248);
 
   useEffect(() => {
-    fetch('/api/visitor')
+    fetch('/api/visitor/')
       .then(res => {
         if (!res.ok) throw new Error('API Response not ok');
         const contentType = res.headers.get('content-type');
@@ -1230,32 +1230,6 @@ export default function DashboardClient({
         </div>
       )}
 
-      <footer className="mt-40 bg-white/50 backdrop-blur-xl border-t border-gray-100 py-24 px-10">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12">
-          <div className="flex flex-col items-center lg:items-start gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 lg:w-20 h-20">
-                <img src={IMG_BASE + "icon-menu-rabbit.png?v=" + V_NUM} className="w-full h-full object-contain" alt="Lumi" />
-              </div>
-              <span className="text-2xl lg:text-4xl font-black text-gray-800 tracking-tighter font-handwriting">LUMI GUIDE</span>
-            </div>
-            <p className="text-gray-400 text-sm lg:text-xl font-bold whitespace-nowrap">용인시의 모든 정보가 모이는 곳</p>
-          </div>
-
-          {/* 📊 방문자 상태 표시 */}
-          <div className="flex items-center justify-center bg-white/80 p-6 lg:p-8 rounded-[40px] border border-white shadow-2xl">
-            <div className="flex items-center gap-3 px-8 bg-red-500/5 py-4 rounded-full border border-red-500/10">
-              <span className="text-xl">📊</span>
-              <span className="text-xs lg:text-base font-black text-red-600 uppercase tracking-widest">Google Analytics Live</span>
-              <span className="text-xs lg:text-base font-black text-gray-400 ml-2">{visitorCount.toLocaleString()} Views</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center lg:items-end gap-3 text-gray-400 text-xs lg:text-xl font-bold">
-            <p>© {new Date().getFullYear()} LUMI GUIDE. All Rights Reserved.</p>
-          </div>
-        </div>
-      </footer>
 
     </div>
   );

@@ -16,7 +16,7 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
   const [visitorCount, setVisitorCount] = useState(1248);
 
   useEffect(() => {
-    fetch('/api/visitor')
+    fetch('/api/visitor/')
       .then(res => {
         if (!res.ok) throw new Error('API Response not ok');
         const contentType = res.headers.get('content-type');
