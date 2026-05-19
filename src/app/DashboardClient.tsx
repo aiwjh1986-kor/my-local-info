@@ -138,15 +138,16 @@ export default function DashboardClient({
   };
 
   const allCards = getCombinedData();
-  // 🆕 최신 정보: [종료] 태그가 붙지 않은 글들 중 상위 12개만 노출
+  // 🆕 최신 정보: [종료] 태그가 붙지 않고 지방선거 카테고리가 아닌 글들 중 상위 12개만 노출
   const latestCards = allCards
-    .filter(c => !c.title.includes("[종료]"))
+    .filter(c => !c.title.includes("[종료]") && c.category !== "지방선거" && c.category !== "election")
     .slice(0, 12);
   const grantCards = allCards.filter(c => (c.category === "지원금" || c.category === "grant") && !c.title.includes("[종료]"));
   const eventCards = allCards.filter(c => (c.category === "지역행사" || c.category === "event") && !c.title.includes("[종료]"));
   const infoCards = allCards.filter(c => (c.category === "생활정보" || c.category === "info") && !c.title.includes("[종료]"));
   const bookCards = allCards.filter(c => (c.category === "도서정보" || c.category === "book") && !c.title.includes("[종료]"));
   const worldCards = allCards.filter(c => (c.category === "세계 경제" || c.category === "world") && !c.title.includes("[종료]"));
+  const electionCards = allCards.filter(c => (c.category === "지방선거" || c.category === "election") && !c.title.includes("[종료]"));
   const popularCards = allCards.filter((c) => c.is_popular).slice(0, 3);
 
   // ⏰ 마감임박 카드 필터링 (7일 이내 마감되는 글)
@@ -170,7 +171,8 @@ export default function DashboardClient({
       "지역행사": ["event", "행사", "지역행사", "지역 행사"],
       "생활정보": ["info", "생활정보", "life"],
       "도서정보": ["book", "도서정보", "도서 소식", "도서"],
-      "세계 경제": ["world", "세계 경제", "economy"]
+      "세계 경제": ["world", "세계 경제", "economy"],
+      "지방선거": ["election", "지방선거"]
     };
 
     const postsToFilter = allCards.filter(post => !post.title.includes("[종료]"));
@@ -214,6 +216,10 @@ export default function DashboardClient({
       label = "세계 경제";
       bgColor = "bg-red-100";
       textColor = "text-red-600";
+    } else if (cat === "election" || cat === "지방선거") {
+      label = "지방선거";
+      bgColor = "bg-teal-100";
+      textColor = "text-teal-600";
     }
 
     return (
@@ -537,6 +543,16 @@ export default function DashboardClient({
                   >
                     세계 경제 소식 <span>→</span>
                   </button>
+                  <button
+                    onClick={() => {
+                      setActiveTab("지방선거");
+                      window.history.pushState({}, '', '/?tab=지방선거');
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="hidden lg:inline-flex items-center gap-4 px-8 py-4 lg:px-12 lg:py-5 bg-white text-teal-600 rounded-full text-lg lg:text-2xl font-black shadow-xl hover:scale-105 transition-all w-fit border-2 border-teal-100"
+                  >
+                    지방선거 소식 <span>→</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -809,14 +825,16 @@ export default function DashboardClient({
                   "지역행사": "event",
                   "생활정보": "info",
                   "도서정보": "book",
-                  "세계 경제": "world"
+                  "세계 경제": "world",
+                  "지방선거": "election"
                 };
                 const korCatMap: Record<string, string> = {
                   "지원금": "지원금",
                   "지역행사": "지역행사",
                   "생활정보": "생활정보",
                   "도서정보": "도서정보",
-                  "세계 경제": "세계 경제"
+                  "세계 경제": "세계 경제",
+                  "지방선거": "지방선거"
                 };
                 const match = c.category === catMap[activeTab] || c.category === korCatMap[activeTab] ||
                   (activeTab === "지역행사" && (c.category === "행사" || c.category === "지역행사"));

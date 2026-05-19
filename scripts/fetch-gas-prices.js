@@ -50,6 +50,45 @@ async function fetchGasPrices() {
     const targetPath = path.join(__dirname, '../public/data/gas-prices.json');
     fs.writeFileSync(targetPath, JSON.stringify(jsonContent, null, 2), 'utf8');
     console.log('성공적으로 gas-prices.json 파일을 생성했습니다.');
+
+    // --- 하이브리드: 검색 노출(SEO)을 위한 1일 1포스트 자동 생성 및 과거 글 삭제 --- //
+    const title = `[용인시] ${displayDate} 구별 주유소 최저가 정보 (휘발유)`;
+    const summary = `오늘 우리 동네에서 기름값이 가장 저렴한 곳은 어디일까요? 수지, 기흥, 처인구별 실시간 최저가 정보를 전해드립니다!`;
+
+    let bodyContent = `안녕하세요, 용인시의 알뜰한 소식통입니다! 😊\n\n매일매일 변하는 기름값 때문에 고민 많으시죠? 오늘은 **${displayDate}** 기준, 용인시 각 구별 휘발유 최저가 주유소 정보를 알려드립니다!\n\n현재 메인 화면에서 실시간 주유소 전광판 위젯을 통해 가장 빠른 최저가 정보를 확인하실 수 있습니다. ⛽✨\n\n---\n\n`;
+
+    for (const [name, list] of Object.entries(results)) {
+      bodyContent += `### 📍 ${name === 'suji' ? '수지구' : name === 'giheung' ? '기흥구' : '처인구'} 최저가 주유소\n\n`;
+      if (list) {
+        bodyContent += `1. **${list.name}**: **${list.price.toLocaleString()}원** (${list.brand})\n`;
+      } else {
+        bodyContent += `* 오늘 데이터가 아직 업데이트되지 않았습니다.\n`;
+      }
+      bodyContent += `\n`;
+    }
+
+    bodyContent += `---\n\n### 💡 알뜰 주유 꿀팁!\n1. **지역화폐 활용**: '용인와이페이' 가맹점인 주유소를 이용하면 추가 혜택을 받을 수 있어요!\n2. **오전 주유**: 기온이 낮은 오전에 주유하면 조금 더 이득이라는 점!\n\n오늘도 알뜰하고 행복한 하루 되세요! ❤️🐰\n\n---\n*본 정보는 오피넷(Opinet) 실시간 API 데이터를 바탕으로 작성되었습니다.*\n`;
+
+    let content = `---\ntitle: "${title}"\ndate: ${kstDate.toISOString()}\nsummary: "${summary}"\ncategory: 생활정보\nimage: info-gas.png\ntags: [용인시, 최저가주유소, 기름값정보, 실시간위젯]\n---\n\n${bodyContent}`;
+
+    const postsDir = path.join(__dirname, '../src/content/posts');
+    const existingFiles = fs.readdirSync(postsDir);
+    
+    // 오늘 날짜로 생성할 파일명
+    const slug = `${dateStr}-01-gas-prices`;
+    const fileName = `${slug}.md`;
+
+    // 1. 과거 주유소 글 싹 다 지우기 (Auto Cleanup)
+    const oldGasFiles = existingFiles.filter(f => f.includes('gas-prices') && f !== fileName);
+    for (const oldFile of oldGasFiles) {
+      fs.unlinkSync(path.join(postsDir, oldFile));
+      console.log(`과거 주유소 포스트 삭제됨: ${oldFile}`);
+    }
+
+    // 2. 오늘의 새 글 저장
+    fs.writeFileSync(path.join(postsDir, fileName), content, 'utf8');
+    console.log(`기름값 SEO용 블로그 포스트 생성 완료: ${fileName}`);
+
   } catch (error) {
     console.error('오류 발생:', error);
   }
