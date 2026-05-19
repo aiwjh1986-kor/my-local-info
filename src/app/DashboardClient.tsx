@@ -52,9 +52,14 @@ export default function DashboardClient({
 
   useEffect(() => {
     fetch('/api/visitor')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('API Response not ok');
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) return res.json();
+        throw new Error('Not a JSON response');
+      })
       .then(data => {
-        if (data.success && data.count) setVisitorCount(data.count);
+        if (data && data.success && data.count) setVisitorCount(data.count);
       })
       .catch(console.error);
   }, []);
