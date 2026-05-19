@@ -6,6 +6,7 @@ summary: >-
   드립니다.
 category: 지원금
 image: coin/03.png
+link: "https://www.bokjiro.go.kr"
 tags:
   - 용인시
   - 용인청년
