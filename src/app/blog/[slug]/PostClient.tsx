@@ -37,16 +37,7 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
 
   return (
     <div className="dashboard-container min-h-screen relative">
-      {/* 🖼️ 상세페이지 배경 이미지 */}
-      <div 
-        className="fixed inset-0 z-[-1] opacity-30 pointer-events-none"
-        style={{
-          backgroundImage: `url(${IMG_BASE}background1.png?v=${V_NUM})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed'
-        }}
-      />
+
       {/* 1. 메뉴 버튼 및 상단 퀵 내비게이션 */}
       <div className="fixed top-6 left-0 right-0 z-[60] px-6 flex items-center justify-between pointer-events-none">
         <button 

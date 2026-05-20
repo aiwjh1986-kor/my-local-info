@@ -55,6 +55,12 @@ function getElectionDDay() {
   }
 }
 
+interface GasResponse {
+  suji: { name: string; price: number; brand: string; } | null;
+  giheung: { name: string; price: number; brand: string; } | null;
+  cheoin: { name: string; price: number; brand: string; } | null;
+}
+
 export default function DashboardClient({
   initialBlogPosts,
   initialFeaturedCards
@@ -71,6 +77,19 @@ export default function DashboardClient({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [visitorCount, setVisitorCount] = useState(1248);
+  const [gasPrices, setGasPrices] = useState<GasResponse | null>(null);
+
+  // 실시간 주유 가격 로드
+  useEffect(() => {
+    fetch('/data/gas-prices.json')
+      .then(res => res.json())
+      .then(json => {
+        if (json.success) {
+          setGasPrices(json.data);
+        }
+      })
+      .catch(console.error);
+  }, []);
 
   useEffect(() => {
     fetch('/api/visitor/')
@@ -85,6 +104,7 @@ export default function DashboardClient({
       })
       .catch(console.error);
   }, []);
+
   const [isAdmin, setIsAdmin] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingCard, setEditingCard] = useState<FeaturedCard | null>(null);
@@ -111,24 +131,16 @@ export default function DashboardClient({
     }
   }, []);
 
-  // URL 파라미터에서 탭 정보를 읽어와 설정
+  // URL 파라미터에서 탭 정보를 읽어와 설정 (파라미터가 없으면 '홈'으로 복귀하는 Fallback 추가)
   useEffect(() => {
     const tab = searchParams.get("tab");
     if (tab) {
       setActiveTab(tab);
-      // 부드럽게 배너 하단으로 스크롤 (원하는 경우)
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      setActiveTab("홈");
     }
-  }, [searchParams]);
-
-  // URL 파라미터에서 탭 정보를 읽어와 설정
-  useEffect(() => {
-    const tab = searchParams.get("tab");
-    if (tab) {
-      setActiveTab(tab);
-      // 부드럽게 배너 하단으로 스크롤 (원하는 경우)
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    // 부드럽게 화면 최상단으로 스크롤
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [searchParams]);
 
   // ✨ 기존의 복잡한 자동 슬라이더 로직들은 CSS 애니메이션 방식으로 대체되어 제거되었습니다.
@@ -429,394 +441,389 @@ export default function DashboardClient({
 
   const Section = ({
     title,
-    icon,
     cards,
     onCardClick,
-    onMoreClick,
-    isCarousel = false
+    onMoreClick
   }: {
     title: string;
-    icon: string;
     cards: FeaturedCard[];
     onCardClick: (card: FeaturedCard) => void;
     onMoreClick: () => void;
-    isCarousel?: boolean;
   }) => {
     return (
       <section className="mb-16">
-        <div className="flex items-center justify-between mb-8 px-2">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-white rounded-2xl shadow-lg flex items-center justify-center border border-white/50 shadow-gray-200/50 overflow-hidden">
-              <img src={icon} alt={title} className="w-full h-full object-cover" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-black text-gray-900 tracking-tight">{title}</h2>
-              <p className="text-[10px] text-blue-500 font-black uppercase tracking-widest mt-1">Live Updates</p>
-            </div>
-          </div>
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl font-[family-name:var(--font-noto-serif-kr)] text-white tracking-tight">{title}</h2>
           <button
             onClick={onMoreClick}
-            className="px-6 py-2 bg-white/80 backdrop-blur-md rounded-full text-xs font-black text-gray-500 hover:bg-blue-600 hover:text-white transition-all border border-gray-100 shadow-sm flex items-center gap-2 group"
+            className="text-sm font-medium text-gray-400 hover:text-white transition-colors flex items-center gap-2 group"
           >
-            <span>전체보기</span>
-            <span className="group-hover:translate-x-1 transition-transform">→</span>
+            전체 보기 <span className="group-hover:translate-x-1 transition-transform">→</span>
           </button>
         </div>
 
-        {isCarousel ? (
-          <InfiniteCarousel
-            items={cards}
-            renderItem={(card, idx, dragging) => (
-              <div className="min-w-[280px] md:min-w-[320px] max-w-[320px]">
-                <Card
-                  card={card}
-                  onClick={() => !dragging && onCardClick(card)}
-                  isAdmin={isAdmin}
-                  onImageEdit={startImageEdit}
-                  href={card.slug ? `/blog/${card.slug}` : undefined}
-                />
-              </div>
-            )}
-          />
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {cards.map((card, idx) => (
-              <Card
-                key={idx}
-                card={card}
-                onClick={() => onCardClick(card)}
-                isAdmin={isAdmin}
-                onImageEdit={startImageEdit}
-                href={card.slug ? `/blog/${card.slug}` : undefined}
-              />
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          {cards.map((card, idx) => (
+            <Card
+              key={idx}
+              card={card}
+              onClick={() => onCardClick(card)}
+              isAdmin={isAdmin}
+              onImageEdit={startImageEdit}
+              href={card.slug ? `/blog/${card.slug}` : undefined}
+            />
+          ))}
+        </div>
       </section>
     );
   };
 
   return (
-    <div className="min-h-screen font-[family-name:var(--font-pretendard)] pb-24 relative">
-      {/* 🖼️ 초고급 파스텔 오로라 그라데이션 배경 (토끼 이미지 영구 제거) */}
-      <div className="fixed inset-0 z-[-1] bg-gradient-to-tr from-[#f3f4ff] via-[#fdfbf7] to-[#fff6f0] pointer-events-none" />
-      {/* 플로팅 배경 요소 (배경 이미지와 조화롭게 어우러짐) */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
-        <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-purple-200/20 blur-[100px] rounded-full" />
-        <div className="absolute bottom-[-5%] left-[-5%] w-[50%] h-[50%] bg-blue-200/20 blur-[120px] rounded-full" />
-      </div>
+    <div className="font-[family-name:var(--font-pretendard)] pb-24 relative bg-[#F8F9FA]">
 
-      {/* 🏮 메뉴 버튼 (상단 바 없이 단독으로 플로팅) */}
-      <button
-        onClick={() => setIsMenuOpen(true)}
-        className="fixed top-6 left-5 z-[60] bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 lg:px-8 lg:py-4 rounded-full shadow-xl hover:scale-110 transition-all flex items-center justify-center group"
-      >
-        <span className="text-xl lg:text-2xl font-extrabold text-gray-800 font-[family-name:var(--font-baloo-2)] tracking-wider group-hover:text-blue-600 transition-colors">MENU</span>
-      </button>
+      <main className="relative z-10 max-w-[1400px] mx-auto px-6 pt-10 transition-all duration-500">
 
-      {/* 🚀 우측 상단 카테고리/섹션 바로가기 드롭다운 */}
-      <div className="fixed top-6 right-5 z-[60] flex flex-col items-end">
-        <button
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 lg:px-8 lg:py-4 rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2.5 group cursor-pointer"
-        >
-          <span className="text-sm lg:text-base font-black text-gray-800 tracking-wider group-hover:text-blue-600 transition-colors">이동하기</span>
-          <span className={`text-xs lg:text-sm text-gray-500 transition-transform duration-300 ${isDropdownOpen ? "rotate-180 text-blue-600" : ""}`}>▼</span>
-        </button>
+        {activeTab === "홈" && (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12">
+            {/* 메인 Hero 카드 (좌측 60%) */}
+            <div className="lg:col-span-8 bg-gray-900 rounded-[32px] relative overflow-hidden min-h-[440px] flex items-center shadow-[0_8px_30px_rgba(0,0,0,0.025)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.05)] transition-all duration-500 group">
+              {/* 배경 이미지 오버레이 */}
+              <div 
+                className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-luminosity group-hover:scale-[1.01] transition-transform duration-700"
+                style={{ backgroundImage: `url(${IMG_BASE}background1.png?v=${V_NUM})` }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/90 to-transparent" />
+              
+              <div className="relative z-10 w-full grid grid-cols-1 lg:grid-cols-12 gap-6 p-8 lg:p-12 items-center">
+                {/* 좌측 텍스트 영역 */}
+                <div className="lg:col-span-7 flex flex-col justify-center">
+                  <h1 className="text-4xl lg:text-[46px] font-bold text-white leading-tight mb-4 tracking-tight">
+                    Live.<br />
+                    Learn.<br />
+                    Yongin Guide.
+                  </h1>
+                  <p className="text-gray-300 text-[12px] lg:text-[13px] font-medium mb-6 max-w-sm leading-relaxed">
+                    용인시의 실시간 혜택 소식부터 숨겨진 생활 비결까지, 가장 똑똑하고 신뢰할 수 있는 정보를 제공합니다.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setActiveTab("지역행사");
+                      window.history.pushState({}, '', '/?tab=지역행사');
+                      window.scrollTo({ top: 500, behavior: "smooth" });
+                    }}
+                    className="self-start px-5 py-2.5 bg-[#FF6B6B] hover:bg-[#FF5252] text-white rounded-full text-xs font-bold hover:-translate-y-0.5 active:translate-y-0 shadow-md hover:shadow-lg transition-all flex items-center gap-2"
+                  >
+                    여행지 둘러보기 <span className="text-[14px]">→</span>
+                  </button>
+                </div>
 
-        {/* 드롭다운 메뉴 아이템 리스트 */}
-        {isDropdownOpen && (
-          <div className="mt-3.5 bg-white/95 backdrop-blur-xl border border-gray-100/80 rounded-[28px] p-4 lg:p-5 shadow-2xl w-56 lg:w-64 flex flex-col gap-1.5 animate-in fade-in slide-in-from-top-3 duration-250 z-[70] origin-top-right">
-            <div className="text-[10px] text-gray-400 font-black px-3.5 pb-2 border-b border-gray-50 uppercase tracking-widest">실시간 바로가기</div>
-            {[
-              { id: "홈", label: "🏠 메인 홈" },
-              { id: "지원금", label: "💰 지원금 혜택" },
-              { id: "지역행사", label: "🎉 지역 축제/행사" },
-              { id: "생활정보", label: "⚙️ 생활 정보" },
-              { id: "도서정보", label: "📚 사서 추천 도서" },
-              { id: "세계 경제", label: "📊 세계 경제 트렌드" },
-              { id: "지방선거", label: "🗳️ 지방선거 D-Day" }
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setIsDropdownOpen(false);
-                  if (item.id === "지방선거" || item.id === "세계 경제" || item.id === "도서정보" || item.id === "지원금") {
-                    setActiveTab(item.id as any);
-                    window.history.pushState({}, '', `/?tab=${item.id}`);
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  } else if (item.id === "홈") {
-                    setActiveTab("홈");
-                    window.history.pushState({}, '', '/');
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  } else {
-                    setActiveTab("홈");
-                    window.history.pushState({}, '', '/');
-                    setTimeout(() => {
-                      const el = document.getElementById('gas-widget-section');
-                      if (el) el.scrollIntoView({ behavior: "smooth" });
-                    }, 100);
-                  }
-                }}
-                className={`w-full text-left px-4 py-3 rounded-2xl text-xs lg:text-sm font-black transition-all flex items-center justify-between hover:bg-blue-50/50 hover:text-blue-600 hover:translate-x-1 ${activeTab === item.id ? "bg-blue-50 text-blue-600" : "text-gray-700"}`}
-              >
-                <span>{item.label}</span>
-                {activeTab === item.id && <span className="text-[10px] text-blue-500">●</span>}
-              </button>
-            ))}
+                {/* 우측 주유 정보 (데스크탑 전용, 박스 없이 배너에 직접 표시) */}
+                <div className="hidden lg:flex lg:col-span-5 flex-col justify-center pl-4">
+                  <div className="flex items-center gap-2 mb-5">
+                    <span className="text-lg">⛽</span>
+                    <span className="text-[15px] font-black text-white tracking-tight">오늘의 최저가 주유소</span>
+                    <span className="bg-green-400/90 text-white text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider animate-pulse">Live</span>
+                  </div>
+
+                  {gasPrices ? (
+                    <div className="space-y-5">
+                      {[
+                        { district: "수지구", data: gasPrices.suji },
+                        { district: "기흥구", data: gasPrices.giheung },
+                        { district: "처인구", data: gasPrices.cheoin }
+                      ].map((item, idx) => (
+                        <div key={idx}>
+                          <span className="text-white/50 text-[11px] font-bold tracking-wider uppercase">{item.district}</span>
+                          <div className="flex items-baseline gap-2 mt-0.5">
+                            <span className="text-white/80 text-[14px] font-semibold truncate max-w-[160px]">{item.data?.name || "정보없음"}</span>
+                            <span className="text-[#FFD166] text-[22px] font-black tracking-tight">{item.data?.price?.toLocaleString() || "-"}</span>
+                            <span className="text-white/40 text-[12px] font-bold">원/ℓ</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-white/40 text-sm font-bold">주유가 조회 중...</div>
+                  )}
+
+                  <span className="text-[9px] text-white/25 mt-5 font-bold select-none">* 오피넷(Opinet) 실시간 데이터 기준</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 우측 bento 컬럼 (우측 40%) */}
+            <div className="lg:col-span-4 flex flex-col gap-5">
+              {/* 인기 여행지 카드 (5위까지) */}
+              <div className="bg-white rounded-[24px] border border-gray-100 p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.04)] transition-all duration-300 flex flex-col justify-between flex-grow">
+                <div className="flex items-center justify-between mb-5">
+                  <h3 className="text-gray-900 font-bold text-[14px]">인기 여행지</h3>
+                  <button 
+                    onClick={() => {
+                      setActiveTab("지역행사");
+                      window.history.pushState({}, '', '/?tab=지역행사');
+                    }}
+                    className="text-gray-400 text-[11px] font-bold hover:text-blue-600 transition-colors"
+                  >
+                    더보기 →
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {[
+                    { rank: "01", name: "에버랜드", desc: "장미축제와 짜릿한 어트랙션", img: "everland_roses_thumb.png" },
+                    { rank: "02", name: "한국민속촌", desc: "조선시대로 떠나는 시간여행", img: "gksrkd_01.png" },
+                    { rank: "03", name: "농촌테마파크", desc: "가족과 함께 힐링하는 농촌체험", img: "thumb-temple.png" },
+                    { rank: "04", name: "용인자연휴양림", desc: "숲속에서 즐기는 힐링 캠핑", img: "thumb-rose.png" },
+                    { rank: "05", name: "경기도박물관", desc: "경기도 역사와 문화 탐방", img: "library_booktalk_thumb.png" }
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-3.5 group/item cursor-pointer" onClick={() => router.push('/?tab=지역행사')}>
+                      <span className="text-[15px] font-black text-gray-300 group-hover/item:text-blue-500 transition-colors">{item.rank}</span>
+                      <div className="w-9 h-9 rounded-full overflow-hidden border border-gray-100/60 bg-gray-50 flex-shrink-0">
+                        <img src={IMG_BASE + item.img} alt={item.name} className="w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-500" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[12.5px] font-bold text-gray-800 leading-tight group-hover/item:text-blue-600 transition-colors">{item.name}</span>
+                        <span className="text-[10px] text-gray-400 font-semibold mt-0.5">{item.desc}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         )}
-      </div>
 
-      <main className="relative z-10 max-w-[1600px] mx-auto px-5 lg:px-10 pt-24 lg:pt-8 transition-all duration-500">
-
-        {/* 🍱 초감각 벤토 그리드(Bento Grid) 탑 대시보드 (파스텔 글래스모피즘 스킨) */}
-        <div className="mb-12 w-full bg-white/40 backdrop-blur-xl border border-white/70 shadow-2xl shadow-gray-200/30 rounded-[32px] lg:rounded-[48px] p-6 lg:p-10 relative overflow-hidden transition-all duration-500">
-          
-          {/* 우주적인 부드러운 오로라 광원 조명 효과 */}
-          <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-blue-300/20 blur-[100px] rounded-full pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-purple-300/20 blur-[100px] rounded-full pointer-events-none" />
-
-          <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
-            
-            {/* 1. [메인 인트로 카드] (가로 2, 세로 2) */}
-            <div className="md:col-span-2 md:row-span-2 bg-gradient-to-br from-[#EBF1FF]/90 via-[#F3F6FF]/60 to-white/95 border border-white/95 text-gray-900 rounded-[28px] lg:rounded-[36px] p-8 lg:p-12 flex flex-col justify-between min-h-[340px] lg:min-h-[440px] shadow-sm hover:shadow-xl hover:scale-[1.01] transition-all">
-              <div>
-                <div className="flex items-center gap-2 mb-6">
-                  <span className="px-3.5 py-1.5 bg-blue-600 text-white text-xs font-black rounded-full uppercase tracking-widest">LUMI GUIDE</span>
-                  <span className="text-xs font-black text-blue-600 uppercase tracking-widest opacity-60">Smart Portal</span>
-                </div>
-                <h1 className="text-3xl lg:text-5xl font-black text-gray-900 leading-tight tracking-tighter mb-5">
-                  용인 생활을 더<br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">스마트하고 알차게!</span>
-                </h1>
-                <p className="text-sm lg:text-lg text-gray-500 font-bold leading-relaxed max-w-md">
-                  실시간 혜택 소식부터 숨겨진 생활 비결까지,<br />
-                  가장 똑똑하고 신뢰할 수 있는 정보를 제공합니다.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-3 mt-8">
-                <button
-                  onClick={() => router.push("/blog")}
-                  className="px-6 py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-sm font-black shadow-xl shadow-blue-500/20 hover:scale-105 transition-all flex items-center gap-2"
-                >
-                  블로그 소식 <span>→</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setActiveTab("세계 경제");
-                    window.history.pushState({}, '', '/?tab=세계 경제');
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
-                  className="px-6 py-3.5 bg-white hover:bg-gray-50 text-gray-700 rounded-full text-sm font-black border border-gray-200 shadow-sm hover:scale-105 transition-all flex items-center gap-2"
-                >
-                  세계 경제 <span>📊</span>
-                </button>
-              </div>
-            </div>
-
-            {/* 2. [지방선거 D-Day 카드] (가로 1, 세로 2) */}
-            <div 
-              onClick={() => {
-                setActiveTab("지방선거");
-                window.history.pushState({}, '', '/?tab=지방선거');
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-              className="bg-gradient-to-br from-[#FFF0F5]/90 via-[#FFF5F8]/60 to-white/95 border border-white/95 text-gray-900 rounded-[28px] lg:rounded-[36px] p-6 lg:p-8 flex flex-col justify-between min-h-[220px] lg:min-h-[440px] shadow-sm cursor-pointer hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all"
-            >
-              <div>
-                <span className="bg-pink-100 text-pink-600 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-wider">
-                  Election D-Day
-                </span>
-                <div className="mt-8 flex items-baseline gap-1">
-                  <span className="text-4xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-rose-600 tracking-tighter">
-                    {getElectionDDay()}
-                  </span>
-                </div>
-                <h3 className="text-lg lg:text-xl font-black text-gray-800 mt-4 leading-tight">
-                  제9회 지방선거<br />실시간 동향 요약
-                </h3>
-              </div>
-              <div className="pt-6 border-t border-pink-100 text-xs font-black text-pink-600 flex items-center justify-between mt-8">
-                <span>전용 뉴스룸 바로가기</span>
-                <span>➔</span>
-              </div>
-            </div>
-
-            {/* 3. [오늘의 주유소 간편 카드] (가로 1, 세로 1) */}
-            <div 
-              onClick={() => {
-                const element = document.getElementById('gas-widget-section');
-                if (element) {
-                  element.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                  window.scrollTo({ top: 400, behavior: 'smooth' });
-                }
-              }}
-              className="bg-gradient-to-br from-[#E6F8F9]/90 to-white/95 border border-white/90 text-gray-900 rounded-[28px] lg:rounded-[36px] p-6 shadow-sm cursor-pointer hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all flex flex-col justify-between min-h-[200px]"
-            >
-              <div>
-                <span className="bg-cyan-50 text-cyan-600 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-wider">
-                  Live 유가
-                </span>
-                <h3 className="text-base lg:text-lg font-black text-gray-800 mt-4 leading-tight">
-                  ⛽ 오늘의 최저가 주유소
-                </h3>
-                <p className="text-xs text-gray-500 font-bold mt-1.5 leading-relaxed">
-                  용인 수지/기흥/처인구에서 가장 저렴한 주유소를 확인하세요!
-                </p>
-              </div>
-              <div className="text-xs font-black text-cyan-600 flex items-center justify-between">
-                <span>실시간 가격표 확인</span>
-                <span>➔</span>
-              </div>
-            </div>
-
-            {/* 4. [실생활 꿀팁 카드] (가로 1, 세로 1) */}
-            <div 
-              onClick={() => router.push("/tips")}
-              className="bg-gradient-to-br from-[#EAF8F2]/90 to-white/95 border border-white/90 text-gray-900 rounded-[28px] lg:rounded-[36px] p-6 shadow-sm cursor-pointer hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all flex flex-col justify-between min-h-[200px]"
-            >
-              <div>
-                <span className="bg-emerald-50 text-emerald-600 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-wider">
-                  Life Tips
-                </span>
-                <h3 className="text-base lg:text-lg font-black text-gray-800 mt-4 leading-tight">
-                  💡 삶을 편리하게 만드는 비결
-                </h3>
-                <p className="text-xs text-gray-500 font-bold mt-1.5 leading-relaxed">
-                  요긴하게 써먹는 살림 꿀팁과 추천 아이템 모음집.
-                </p>
-              </div>
-              <div className="text-xs font-black text-emerald-600 flex items-center justify-between">
-                <span>꿀팁 피드 바로가기</span>
-                <span>➔</span>
-              </div>
-            </div>
-
-            {/* 5. [사서 추천 도서 카드] (가로 1, 세로 1) */}
-            <div 
-              onClick={() => {
-                setActiveTab("도서정보");
-                window.history.pushState({}, '', '/?tab=도서정보');
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-              className="bg-gradient-to-br from-[#FDF3E7]/90 to-white/95 border border-white/90 text-gray-900 rounded-[28px] lg:rounded-[36px] p-6 shadow-sm cursor-pointer hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all flex flex-col justify-between min-h-[200px]"
-            >
-              <div>
-                <span className="bg-amber-50 text-amber-600 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-wider">
-                  Book Club
-                </span>
-                <h3 className="text-base lg:text-lg font-black text-gray-800 mt-4 leading-tight">
-                  📚 용인시 사서 추천 도서
-                </h3>
-                <p className="text-xs text-gray-500 font-bold mt-1.5 leading-relaxed">
-                  이번 달 사서들이 엄선한 추천 도서 정보를 만나보세요.
-                </p>
-              </div>
-              <div className="text-xs font-black text-amber-600 flex items-center justify-between">
-                <span>추천 도서 보기</span>
-                <span>➔</span>
-              </div>
-            </div>
-
-            {/* 6. [세계 경제 브리핑 카드] (가로 1, 세로 1) */}
-            <div 
-              onClick={() => {
-                setActiveTab("세계 경제");
-                window.history.pushState({}, '', '/?tab=세계 경제');
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-              className="bg-gradient-to-br from-[#F5EFFE]/90 to-white/95 border border-white/90 text-gray-900 rounded-[28px] lg:rounded-[36px] p-6 shadow-sm cursor-pointer hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1 transition-all flex flex-col justify-between min-h-[200px]"
-            >
-              <div>
-                <span className="bg-purple-50 text-purple-600 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-wider">
-                  Economy
-                </span>
-                <h3 className="text-base lg:text-lg font-black text-gray-800 mt-4 leading-tight">
-                  📊 글로벌 경제 트렌드 요약
-                </h3>
-                <p className="text-xs text-gray-500 font-bold mt-1.5 leading-relaxed">
-                  주요 반도체, 환율, 인플레이션 등 핵심 경제 동향 브리핑.
-                </p>
-              </div>
-              <div className="text-xs font-black text-purple-600 flex items-center justify-between">
-                <span>글로벌 브리핑 보기</span>
-                <span>➔</span>
-              </div>
-            </div>
-
-          </div>
-
-          {/* [하단] 5대 핵심 메뉴 - 반응형 최적화 (잘림 방지) */}
-          <div className="relative z-10 hidden lg:flex items-center justify-center mt-12 w-full px-4">
-            <div className="flex flex-nowrap items-center justify-center gap-2 xl:gap-5 bg-white/60 backdrop-blur-md px-4 xl:px-8 py-4 xl:py-6 rounded-full border border-white/50 shadow-xl min-w-fit overflow-x-auto no-scrollbar">
-              {[
-                { id: "홈", label: "홈", img: "icon-home.png" },
-                { id: "지원금", label: "지원금 혜택", img: "icon-grant.png" },
-                { id: "지역행사", label: "지역행사", img: "icon-event.png" },
-                { id: "생활정보", label: "생활 정보", img: "icon-info.png" },
-                { id: "도서정보", label: "도서 소식", img: "icon-book.png" },
-                { id: "세계 경제", label: "세계 경제", img: "icon-world.png" }
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    if (item.id === "홈") {
-                      setActiveTab("홈");
-                      window.history.pushState({}, '', '/');
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                    } else {
-                      setActiveTab(item.id as any);
-                      window.history.pushState({}, '', `/?tab=${item.id}`);
-                    }
-                  }}
-                  className={`flex items-center gap-2 xl:gap-3 px-3 xl:px-6 py-2 xl:py-4 rounded-2xl xl:rounded-full transition-all group hover:bg-white hover:shadow-lg ${activeTab === item.id ? "bg-white shadow-md scale-105" : "hover:scale-105"
-                    }`}
-                >
-                  <div className="w-10 h-10 xl:w-14 xl:h-14 flex-shrink-0">
-                    <img src={IMG_BASE + item.img + "?v=" + V_NUM} alt={item.label} className="w-full h-full object-contain" />
-                  </div>
-                  <span className={`hidden xl:block text-sm xl:text-lg 2xl:text-xl font-black whitespace-nowrap transition-colors ${activeTab === item.id ? "text-gray-900" : "text-gray-600 group-hover:text-gray-900"
-                    }`}>
-                    {item.label}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-        </div>
-
-        {/* 🛍️ [긴급 복구] 쿠팡 파트너스 광고 배너 (최상단 노출) */}
-        <div className="mb-12 max-w-7xl mx-auto w-full px-5 lg:px-0 relative z-20">
+        {/* 🛍️ 쿠팡 파트너스 배너 */}
+        <div className="mb-10 max-w-7xl mx-auto w-full relative z-20">
           <CoupangDynamicBanner />
         </div>
 
         {activeTab === "홈" && (
           <>
-            {/* 실시간 주유소 위젯 (고정 최상단) */}
-            <GasPriceWidget />
 
-            {/* 섹션들 */}
-            <Section
-              title="최신 정보"
-              icon={IMG_BASE + "icon-new.png?v=" + V_NUM}
-              cards={latestCards}
-              isCarousel={true}
-              onCardClick={setSelectedCard}
-              onMoreClick={() => {
-                setActiveTab("블로그");
-                setActiveBlogCat("전체");
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-            />
 
-            {/* ✨ 루미의 생활 팁! 전용 섹션 (순서 변경) */}
+            {/* 대망의 대시보드형 벤토 보드 (Endless 스크롤 제거, 한눈에 정보 집약) */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-12">
+              
+              {/* 1. 지원금 혜택 Bento (4칸) */}
+              <div className="md:col-span-4 bg-white rounded-[28px] border border-gray-100 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.015)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between min-h-[360px]">
+                <div>
+                  <div className="flex items-center justify-between mb-5">
+                    <h3 className="text-gray-900 font-bold text-[14px] flex items-center gap-1.5">
+                      <span>💰</span> 지원금 혜택
+                    </h3>
+                    <button
+                      onClick={() => {
+                        setActiveTab("지원금");
+                        window.history.pushState({}, '', '/?tab=지원금');
+                      }}
+                      className="text-gray-400 text-[11px] font-bold hover:text-[#FF6B6B] transition-colors"
+                    >
+                      더보기 →
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {grantCards.slice(0, 3).map((card, idx) => {
+                      const todayDate = new Date();
+                      const targetDate = card.endDate || card.deadline;
+                      let daysLeft = null;
+                      if (targetDate) {
+                        const dDate = new Date(targetDate);
+                        const diffTime = dDate.getTime() - todayDate.getTime();
+                        daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                      }
+
+                      return (
+                        <div 
+                          key={idx} 
+                          onClick={() => setSelectedCard(card)}
+                          className="flex flex-col gap-1.5 p-3 rounded-2xl hover:bg-gray-50 cursor-pointer group transition-colors border border-transparent hover:border-gray-100"
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <span className="text-[12.5px] font-bold text-gray-800 leading-snug group-hover:text-[#FF6B6B] transition-colors line-clamp-1">
+                              {card.title}
+                            </span>
+                            {daysLeft !== null && daysLeft >= 0 && daysLeft <= 7 ? (
+                              <span className="bg-red-50 text-red-500 text-[9px] px-1.5 py-0.5 rounded-full font-bold flex-shrink-0">
+                                D-{daysLeft}
+                              </span>
+                            ) : null}
+                          </div>
+                          <span className="text-[10.5px] text-gray-400 font-semibold line-clamp-1">{card.summary}</span>
+                        </div>
+                      );
+                    })}
+                    {grantCards.length === 0 && (
+                      <p className="text-gray-400 text-xs font-semibold text-center py-10">등록된 지원금 정보가 없습니다.</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-gray-50 flex items-center justify-between text-[11.5px] font-bold text-gray-400">
+                  <span>총 {grantCards.length}개의 혜택 진행 중</span>
+                </div>
+              </div>
+
+              {/* 2. 지역 축제 & 행사 Bento (4칸) */}
+              <div className="md:col-span-4 bg-white rounded-[28px] border border-gray-100 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.015)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between min-h-[360px]">
+                <div>
+                  <div className="flex items-center justify-between mb-5">
+                    <h3 className="text-gray-900 font-bold text-[14px] flex items-center gap-1.5">
+                      <span>📍</span> 지역 축제 & 행사
+                    </h3>
+                    <button
+                      onClick={() => {
+                        setActiveTab("지역행사");
+                        window.history.pushState({}, '', '/?tab=지역행사');
+                      }}
+                      className="text-gray-400 text-[11px] font-bold hover:text-blue-600 transition-colors"
+                    >
+                      더보기 →
+                    </button>
+                  </div>
+
+                  <div className="space-y-3.5">
+                    {eventCards.slice(0, 3).map((card, idx) => (
+                      <div 
+                        key={idx}
+                        onClick={() => setSelectedCard(card)}
+                        className="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-gray-50 cursor-pointer group transition-colors border border-transparent hover:border-gray-100"
+                      >
+                        <div className="w-10 h-10 rounded-xl overflow-hidden bg-gray-50 flex-shrink-0 border border-gray-100/50">
+                          <img 
+                            src={card.image?.startsWith("http") ? card.image : (IMG_BASE + (card.image || "thumb-default.png") + "?v=" + V_NUM)}
+                            alt={card.title} 
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                          />
+                        </div>
+                        <div className="flex flex-col min-w-0 flex-grow">
+                          <span className="text-[12.5px] font-bold text-gray-800 leading-snug group-hover:text-blue-600 transition-colors line-clamp-1">
+                            {card.title}
+                          </span>
+                          <span className="text-[10px] text-gray-400 font-bold mt-0.5">{card.region || "용인시 전체"}</span>
+                        </div>
+                      </div>
+                    ))}
+                    {eventCards.length === 0 && (
+                      <p className="text-gray-400 text-xs font-semibold text-center py-10">등록된 축제/행사 정보가 없습니다.</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-gray-50 flex items-center justify-between text-[11.5px] font-bold text-gray-400">
+                  <span>금주의 행사 일정 바로보기</span>
+                </div>
+              </div>
+
+              {/* 3. 유익한 생활 정보 Bento (4칸) */}
+              <div className="md:col-span-4 bg-white rounded-[28px] border border-gray-100 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.015)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between min-h-[360px]">
+                <div>
+                  <div className="flex items-center justify-between mb-5">
+                    <h3 className="text-gray-900 font-bold text-[14px] flex items-center gap-1.5">
+                      <span>🏠</span> 유익한 생활 정보
+                    </h3>
+                    <button
+                      onClick={() => {
+                        setActiveTab("생활정보");
+                        window.history.pushState({}, '', '/?tab=생활정보');
+                      }}
+                      className="text-gray-400 text-[11px] font-bold hover:text-green-600 transition-colors"
+                    >
+                      더보기 →
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {infoCards.slice(0, 3).map((card, idx) => (
+                      <div 
+                        key={idx}
+                        onClick={() => setSelectedCard(card)}
+                        className="flex flex-col gap-1.5 p-3 rounded-2xl hover:bg-gray-50 cursor-pointer group transition-colors border border-transparent hover:border-gray-100"
+                      >
+                        <span className="text-[12.5px] font-bold text-gray-800 leading-snug group-hover:text-green-600 transition-colors line-clamp-1">
+                          {card.title}
+                        </span>
+                        <span className="text-[10.5px] text-gray-400 font-semibold line-clamp-1">{card.summary}</span>
+                      </div>
+                    ))}
+                    {infoCards.length === 0 && (
+                      <p className="text-gray-400 text-xs font-semibold text-center py-10">등록된 생활 정보가 없습니다.</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-gray-50 flex items-center justify-between text-[11.5px] font-bold text-gray-400">
+                  <span>알면 힘이 되는 리얼 살림꿀팁</span>
+                </div>
+              </div>
+
+            </div>
+
+            {/* 두 번째 줄 벤토 레이아웃 (도서 소식 단독 배치로 12칸 확장) */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12">
+              
+              {/* 도서 소식 추천 Bento (12칸 확장 및 3단 가로 배치) */}
+              <div className="lg:col-span-12 bg-white rounded-[28px] border border-gray-100 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.015)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.04)] transition-all duration-300 flex flex-col justify-between min-h-[220px]">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-gray-900 font-bold text-[14px] flex items-center gap-1.5">
+                      <span>📚</span> 지혜가 쌓이는 도서 소식
+                    </h3>
+                    <button
+                      onClick={() => {
+                        setActiveTab("블로그");
+                        setActiveBlogCat("도서정보");
+                        window.history.pushState({}, '', '/?tab=블로그');
+                      }}
+                      className="text-gray-400 text-[11px] font-bold hover:text-purple-600 transition-colors"
+                    >
+                      더보기 →
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {bookCards.slice(0, 3).map((card, idx) => (
+                      <div 
+                        key={idx}
+                        onClick={() => setSelectedCard(card)}
+                        className="p-4 bg-gray-50/50 hover:bg-gray-50 rounded-2xl cursor-pointer group transition-all border border-gray-100/30 flex gap-3"
+                      >
+                        <div className="w-12 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 shadow-sm">
+                          <img 
+                            src={card.image?.startsWith("http") ? card.image : (IMG_BASE + (card.image || "thumb-default.png") + "?v=" + V_NUM)}
+                            alt={card.title} 
+                            className="w-full h-full object-cover" 
+                          />
+                        </div>
+                        <div className="flex flex-col min-w-0 justify-center">
+                          <h4 className="text-[12px] font-bold text-gray-800 leading-snug group-hover:text-purple-600 transition-colors line-clamp-1">
+                            {card.title}
+                          </h4>
+                          <p className="text-[10px] text-gray-400 font-medium line-clamp-2 mt-1 leading-normal">
+                            {card.summary}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                    {bookCards.length === 0 && (
+                      <p className="text-gray-400 text-xs font-semibold py-8 col-span-3 text-center">등록된 도서 소식이 없습니다.</p>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="text-[10px] text-purple-400/80 font-bold uppercase tracking-wider mt-4">
+                  * 추천도서 및 지식 리포트 모음
+                </div>
+              </div>
+
+            </div>
+
+            {/* ✨ 루미의 생활 팁! 전용 섹션 */}
             <div className="mt-16 mb-10">
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-yellow-400 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-100 overflow-hidden">
+                  <div className="w-12 h-12 bg-yellow-400 rounded-2xl flex items-center justify-center shadow-md overflow-hidden">
                     <img
                       src={IMG_BASE + "icon-ggul.png?v=" + V_NUM}
                       alt="꿀팁 아이콘"
@@ -824,16 +831,18 @@ export default function DashboardClient({
                     />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-black text-gray-900 tracking-tight">루미의 실생활 꿀팁!</h2>
-                    <p className="text-xs text-gray-400 font-bold mt-1">삶이 편리해지는 작은 비결들을 모았어요.</p>
+                    <h2 className="text-[20px] font-bold text-gray-900 font-[family-name:var(--font-noto-serif-kr)] tracking-tight">
+                      추천 콘텐츠
+                    </h2>
+                    <p className="text-[11px] text-gray-400 font-bold mt-1">용인시 생활이 더 편리해지는 소소한 비결들</p>
                   </div>
                 </div>
                 <button
                   onClick={() => router.push("/tips")}
-                  className="bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 rounded-full shadow-lg hover:scale-105 transition-all font-black text-gray-800 text-sm flex items-center gap-2 group"
+                  className="bg-white border border-gray-100 px-5 py-2.5 rounded-full shadow-sm hover:scale-102 transition-all font-bold text-gray-700 text-xs flex items-center gap-1.5"
                 >
                   <span>전체보기</span>
-                  <span className="group-hover:translate-x-1 transition-transform">➔</span>
+                  <span>➔</span>
                 </button>
               </div>
 
@@ -846,9 +855,9 @@ export default function DashboardClient({
                         router.push(`/tips/${tip.slug}`);
                       }
                     }}
-                    className="min-w-[300px] md:min-w-[340px] max-w-[340px] bg-white rounded-[32px] p-6 shadow-sm border border-gray-100 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-2 transition-all group overflow-hidden relative cursor-pointer h-full"
+                    className="min-w-[280px] md:min-w-[320px] max-w-[320px] bg-white rounded-[24px] p-5 shadow-[0_4px_24px_rgba(0,0,0,0.015)] border border-gray-100/60 hover:shadow-[0_16px_40px_rgba(0,0,0,0.05)] hover:-translate-y-1.5 transition-all group overflow-hidden relative cursor-pointer h-full flex flex-col"
                   >
-                    <div className="absolute top-0 right-0 p-4 flex gap-2">
+                    <div className="absolute top-4 right-4 flex gap-2 z-10">
                       {isAdmin && (
                         <button
                           onClick={(e) => {
@@ -858,116 +867,47 @@ export default function DashboardClient({
                             setNewImageUrl(tip.image);
                             setIsEditModalOpen(true);
                           }}
-                          className="bg-black/60 backdrop-blur-md text-white px-3 py-1 rounded-full text-[10px] font-black hover:scale-105 transition-all shadow-lg z-20"
+                          className="bg-black/60 backdrop-blur-md text-white px-2.5 py-1 rounded-full text-[9px] font-bold hover:scale-105 transition-all shadow-md z-20"
                         >
-                          📸 이미지 수정
+                          📸 수정
                         </button>
                       )}
-                      <span className="bg-yellow-50 text-yellow-600 text-[10px] font-black px-3 py-1 rounded-full border border-yellow-100">
+                      <span className="bg-[#FFF9F2] text-[#FF9F1C] text-[9.5px] font-bold px-2.5 py-0.5 rounded-full border border-[#FFE7C8]">
                         {tip.category}
                       </span>
                     </div>
 
-                    <div className="mb-6 rounded-2xl overflow-hidden aspect-video bg-gray-50">
+                    <div className="mb-5 rounded-2xl overflow-hidden aspect-[16/10] bg-gray-50 flex-shrink-0">
                       <img
                         src={getImageUrl(tip.image)}
                         alt={tip.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
                       />
                     </div>
 
-                    <h3 className="text-lg font-black text-gray-900 mb-3 leading-tight group-hover:text-blue-600 transition-colors">
+                    <h3 className="text-[14.5px] font-bold text-gray-800 mb-2.5 leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
                       {tip.title}
                     </h3>
-                    <p className="text-sm text-gray-500 leading-relaxed mb-8 font-medium line-clamp-3 h-[4.5rem]">
+                    <p className="text-xs text-gray-400 leading-relaxed mb-6 font-semibold line-clamp-3 h-[4.5rem]">
                       {tip.description}
                     </p>
 
-                    <div className="pt-6 border-t border-gray-50 mt-auto">
-                      <div className="text-[10px] text-gray-400 font-black mb-3 ml-1 uppercase tracking-widest">루미의 추천 아이템</div>
+                    <div className="pt-5 border-t border-gray-100/60 mt-auto">
+                      <div className="text-[9.5px] text-gray-400 font-bold mb-2 ml-1 uppercase tracking-widest">강력 추천 꿀템</div>
                       <a
                         href={tip.productLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-between bg-gray-50 hover:bg-yellow-400 p-4 rounded-2xl transition-all group/btn"
+                        className="flex items-center justify-between bg-gray-50 hover:bg-yellow-400 p-3.5 rounded-2xl transition-all group/btn"
                       >
-                        <span className="text-xs font-black text-gray-700 group-hover/btn:text-gray-900">{tip.productName}</span>
-                        <span className="text-lg group-hover/btn:translate-x-1 transition-transform">🛒</span>
+                        <span className="text-[11.5px] font-bold text-gray-600 group-hover/btn:text-gray-900 truncate max-w-[85%]">{tip.productName}</span>
+                        <span className="text-[15px] group-hover/btn:translate-x-0.5 transition-transform">🛒</span>
                       </a>
                     </div>
                   </div>
                 )}
               />
             </div>
-
-            {/* ⏰ 마감임박 전용 섹션 (신설) */}
-            {impendingCards.length > 0 && (
-              <Section
-                title="마감임박! 놓치지 마세요"
-                icon={IMG_BASE + "icon-clock.png?v=" + V_NUM}
-                cards={impendingCards}
-                isCarousel={true}
-                onCardClick={setSelectedCard}
-                onMoreClick={() => {
-                  setActiveTab("블로그");
-                  setActiveBlogCat("전체");
-                  window.history.pushState({}, '', '/?tab=블로그');
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-              />
-            )}
-
-            <Section
-              title="놓치면 아까운 지원금"
-              icon={IMG_BASE + "icon-grant.png?v=" + V_NUM}
-              cards={grantCards}
-              isCarousel={true}
-              onCardClick={setSelectedCard}
-              onMoreClick={() => setActiveTab("지원금")}
-            />
-
-            <Section
-              title="즐거운 지역 행사"
-              icon={IMG_BASE + "icon-event.png?v=" + V_NUM}
-              cards={eventCards}
-              isCarousel={true}
-              onCardClick={setSelectedCard}
-              onMoreClick={() => setActiveTab("지역행사")}
-            />
-
-            <Section
-              title="유익한 생활 정보"
-              icon={IMG_BASE + "icon-info.png?v=" + V_NUM}
-              cards={infoCards}
-              isCarousel={true}
-              onCardClick={setSelectedCard}
-              onMoreClick={() => setActiveTab("생활정보")}
-            />
-
-            <Section
-              title="지혜가 쌓이는 도서 추천"
-              icon={IMG_BASE + "icon-book.png?v=" + V_NUM}
-              cards={bookCards}
-              isCarousel={true}
-              onCardClick={setSelectedCard}
-              onMoreClick={() => {
-                setActiveTab("블로그");
-                setActiveBlogCat("도서정보");
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-            />
-            
-            <Section
-              title="글로벌 트렌드: 세계 경제"
-              icon={IMG_BASE + "icon-world.png?v=" + V_NUM}
-              cards={worldCards}
-              isCarousel={true}
-              onCardClick={setSelectedCard}
-              onMoreClick={() => {
-                setActiveTab("세계 경제");
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-            />
           </>
         )}
 
@@ -1003,6 +943,7 @@ export default function DashboardClient({
                   "지역행사": "event",
                   "생활정보": "info",
                   "도서정보": "book",
+                  "도서 소식": "book",
                   "세계 경제": "world",
                   "지방선거": "election"
                 };
@@ -1011,11 +952,13 @@ export default function DashboardClient({
                   "지역행사": "지역행사",
                   "생활정보": "생활정보",
                   "도서정보": "도서정보",
+                  "도서 소식": "도서정보",
                   "세계 경제": "세계 경제",
                   "지방선거": "지방선거"
                 };
                 const match = c.category === catMap[activeTab] || c.category === korCatMap[activeTab] ||
-                  (activeTab === "지역행사" && (c.category === "행사" || c.category === "지역행사"));
+                  (activeTab === "지역행사" && (c.category === "행사" || c.category === "지역행사")) ||
+                  ((activeTab === "도서정보" || activeTab === "도서 소식") && (c.category === "book" || c.category === "도서정보"));
                 return match;
               }).sort((a, b) => {
                 const aEnded = a.title.includes("[종료]");

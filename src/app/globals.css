@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F8F9FD;
-  --foreground: #111111;
-  --sidebar: #FFFFFF;
-  --accent: #8A70FF;
-  --accent-light: #F0EDFF;
-  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-  --card-hover-shadow: 0 10px 40px rgba(138, 112, 255, 0.08);
+  --background: #F8F9FA; /* 부드럽고 눈이 편안한 밝은 회색 */
+  --foreground: #1A1A1A; /* 가독성이 뛰어난 차콜 블랙 */
+  --sidebar: #FFFFFF;    /* 카드 및 메뉴용 깨끗한 흰색 */
+  --accent: #FF6B6B;     /* 포인트 코랄 핑크 */
+  --accent-light: #F1F3F5; /* 아주 부드럽고 가벼운 회색 */
+  --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.02); /* 극도로 투명하고 얇은 최신 애플 스타일 그림자 */
+  --card-hover-shadow: 0 16px 40px rgba(0, 0, 0, 0.06); /* 부드러운 입체감을 주는 호버 그림자 */
 }
 
 @theme inline {
@@ -20,11 +20,7 @@
 }
 
 body {
-  background-image: url('/images/background1.png');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+  background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -79,13 +75,13 @@ body {
   transform: translateY(-4px);
 }
 
-/* 🎨 스크롤바 커스텀 스타일 (전역 적용) */
+/* 🎨 스크롤바 커스텀 스타일 (다크 테마) */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+.custom-scrollbar::-webkit-scrollbar-track { background: #222; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #666; }
 
 /* 🎡 무한 카드 캐러셀 애니메이션 */
 @keyframes scroll {

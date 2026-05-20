@@ -10,6 +10,7 @@
     "fetch-data": "node scripts/fetch-public-data.js && node scripts/fetch-gas-prices.js && node scripts/generate-blog-post.js && node scripts/auto-archive.js"
   },
   "dependencies": {
+    "@fontsource/noto-serif-kr": "^5.2.9",
     "@tailwindcss/typography": "^0.5.19",
     "dotenv": "^17.4.2",
     "gray-matter": "^4.0.3",
