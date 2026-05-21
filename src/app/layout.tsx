@@ -120,6 +120,20 @@ export default function RootLayout({
             strategy="afterInteractive"
             />
         )}
+        {/* 구글 태그 매니저 스크립트 */}
+        <Script
+          id="gtm-script"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+              })(window,document,'script','dataLayer','GTM-N8LDXVTL');
+            `,
+          }}
+        />
         {process.env.NEXT_PUBLIC_GA_ID && process.env.NEXT_PUBLIC_GA_ID !== "나중에_입력" && (
           <>
             <Script
@@ -181,6 +195,15 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col font-pretendard bg-background text-foreground transition-colors duration-300">
+        {/* 구글 태그 매니저 (자바스크립트가 꺼져있을 때 작동) */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-N8LDXVTL"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
         <CustomCursor />
         
         {/* 프리미엄 반응형 글래스모피즘 헤더 */}
