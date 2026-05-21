@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     default: "용인 가볼만한곳 & 용인 생활정보 가이드 | 루미 가이드",
     template: "%s | 루미 가이드"
   },
-  description: "2026년 용인 가볼만한곳, 지역 축제, 행사 정보부터 용인시 지원금, 이자 지원, 실생활 꿀팁까지! 용인 주민과 여행자를 위한 필수 정보를 매일 업데이트합니다.",
+  description: "용인 가볼만한곳, 지역 축제, 행사 정보부터 용인시 지원금, 실생활 꿀팁까지! 용인 주민과 여행자를 위한 정보를 매일 업데이트합니다.",
   alternates: {
     canonical: "https://koreatripinfo.com",
   },
