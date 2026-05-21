@@ -4,6 +4,7 @@ date: 2026-05-22T08:40:00.000Z
 summary: "하루에 단 두 번 열리는 바닷길로 유명한 화성 제부도에서 별도의 비용 없이 즐길 수 있는 자연 생태 갯벌 체험 및 해안가 산책 코스 정보를 안내합니다."
 category: 지역행사
 image: "new_01.png"
+link: "https://tour.hscity.go.kr/"
 tags:
   - 제부도여행
   - 갯벌체험

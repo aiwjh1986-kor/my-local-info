@@ -4,6 +4,7 @@ date: 2026-05-22T08:30:00.000Z
 summary: "용인에서 1시간 거리에 위치한 여주 남한강변의 자전거 무료 대여 행사 정보와 천년 고찰 신륵사 주변의 아름다운 힐링 산책 코스를 소개합니다."
 category: 지역행사
 image: "new_01.png"
+link: "https://www.yeoju.go.kr/tour/index.do"
 tags:
   - 여주신륵사
   - 남한강자전거길
