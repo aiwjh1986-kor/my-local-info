@@ -125,9 +125,12 @@ export default function DashboardClient({
     }
     
     try {
-      const res = await fetch("/api/subscribe", {
+      const res = await fetch("https://formspree.io/f/xnjrdvvo", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
         body: JSON.stringify({ email: newsletterEmail }),
       });
       
