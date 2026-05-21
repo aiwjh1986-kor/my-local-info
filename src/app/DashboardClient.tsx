@@ -9,6 +9,9 @@ import InfiniteCarousel from "@/components/InfiniteCarousel";
 import { Card } from "@/components/Card";
 import CoupangDynamicBanner from "@/components/CoupangDynamicBanner";
 import GasPriceWidget from "@/components/GasPriceWidget";
+import MapNoticeSection from "@/components/dashboard/MapNoticeSection";
+import NoticeBoard from "@/components/dashboard/NoticeBoard";
+import HeroSection from "@/components/dashboard/HeroSection";
 import data from "../../public/data/local-info.json";
 import lifeTips from "../../public/data/life-tips.json";
 
@@ -74,10 +77,12 @@ export default function DashboardClient({
   const [activeTab, setActiveTab] = useState("홈");
   const [activeBlogCat, setActiveBlogCat] = useState("전체");
   const [selectedCard, setSelectedCard] = useState<FeaturedCard | null>(null);
+  const [showMap, setShowMap] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [visitorCount, setVisitorCount] = useState(1248);
   const [gasPrices, setGasPrices] = useState<GasResponse | null>(null);
+  const [newsletterEmail, setNewsletterEmail] = useState("");
 
   // 실시간 주유 가격 로드
   useEffect(() => {
@@ -106,6 +111,21 @@ export default function DashboardClient({
   }, []);
 
   const [isAdmin, setIsAdmin] = useState(false);
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail) {
+      alert("이메일 주소를 입력해 주세요! 📧");
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newsletterEmail)) {
+      alert("올바른 이메일 주소 형식이 아니에요. 다시 확인해 주세요! 😅");
+      return;
+    }
+    alert("성공적으로 구독되었습니다! 매주 알찬 소식을 전해드릴게요. 💌");
+    setNewsletterEmail("");
+  };
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingCard, setEditingCard] = useState<FeaturedCard | null>(null);
   const [newImageUrl, setNewImageUrl] = useState("");
@@ -143,6 +163,17 @@ export default function DashboardClient({
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [searchParams]);
 
+  // 모달이 열릴 때 관광지 카드(id가 guide-로 시작)인 경우 지도를 기본 노출하도록 초기화
+  useEffect(() => {
+    if (selectedCard) {
+      if (selectedCard.id?.startsWith("guide-")) {
+        setShowMap(true);
+      } else {
+        setShowMap(false);
+      }
+    }
+  }, [selectedCard]);
+
   // ✨ 기존의 복잡한 자동 슬라이더 로직들은 CSS 애니메이션 방식으로 대체되어 제거되었습니다.
 
   const featuredCards = initialFeaturedCards;
@@ -178,6 +209,17 @@ export default function DashboardClient({
   const grantCards = allCards.filter(c => (c.category === "지원금" || c.category === "grant") && !c.title.includes("[종료]"));
   const eventCards = allCards.filter(c => (c.category === "지역행사" || c.category === "event") && !c.title.includes("[종료]"));
   const infoCards = allCards.filter(c => (c.category === "생활정보" || c.category === "info") && !c.title.includes("[종료]"));
+
+  // 📍 지역 축제 & 행사 자동 슬라이더 인덱스
+  const [eventSlideIdx, setEventSlideIdx] = useState(0);
+
+  useEffect(() => {
+    if (eventCards.length <= 1) return;
+    const interval = setInterval(() => {
+      setEventSlideIdx((prev) => (prev + 1) % eventCards.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [eventCards.length]);
   const bookCards = allCards.filter(c => (c.category === "도서정보" || c.category === "book") && !c.title.includes("[종료]"));
   const worldCards = allCards.filter(c => (c.category === "세계 경제" || c.category === "world") && !c.title.includes("[종료]"));
   const electionCards = allCards.filter(c => (c.category === "지방선거" || c.category === "election") && !c.title.includes("[종료]"));
@@ -398,6 +440,32 @@ export default function DashboardClient({
     return `${IMG_BASE}${cleanPath}?v=${V_NUM}`;
   };
 
+  // 상세 팝업 지도 임베드용 검색어 자동 정밀 파서 헬퍼
+  const getMapSearchKeyword = (card: FeaturedCard) => {
+    // 네이버 지도 링크 등이 포함되어 있다면 링크에서 검색어를 파싱해요
+    if (card.link && card.link.includes("search/")) {
+      try {
+        const parts = card.link.split("search/");
+        if (parts[1]) {
+          const decoded = decodeURIComponent(parts[1]);
+          return decoded;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    
+    // 타이틀에 [행정구역] 형태가 들어있다면 그 구역 이름과 장소명을 조합해 정확하게 찾아요
+    if (card.title.includes("] ")) {
+      const titleBody = card.title.split("] ")[1] || "";
+      if (titleBody.includes(",")) {
+        return titleBody.split(",")[1]?.trim() || titleBody.trim();
+      }
+      return titleBody.trim();
+    }
+    return card.region ? `용인 ${card.region} ${card.title}` : card.title;
+  };
+
   // 분류(카테고리) 수정 저장
   const updateCategory = async (newCategory: string) => {
     if (!selectedCard) return;
@@ -470,7 +538,6 @@ export default function DashboardClient({
               onClick={() => onCardClick(card)}
               isAdmin={isAdmin}
               onImageEdit={startImageEdit}
-              href={card.slug ? `/blog/${card.slug}` : undefined}
             />
           ))}
         </div>
@@ -479,118 +546,25 @@ export default function DashboardClient({
   };
 
   return (
-    <div className="font-[family-name:var(--font-pretendard)] pb-24 relative bg-[#F8F9FA]">
+    <div className="min-h-screen font-[family-name:var(--font-pretendard)] pb-24 relative bg-background text-foreground transition-colors duration-300">
+      {/* 프리미엄 다크 네이비/퍼플 그라데이션 광원 배경 */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-purple-950/20 blur-[130px] rounded-full" />
+        <div className="absolute bottom-[-5%] left-[-5%] w-[50%] h-[50%] bg-indigo-950/25 blur-[160px] rounded-full" />
+      </div>
 
       <main className="relative z-10 max-w-[1400px] mx-auto px-6 pt-10 transition-all duration-500">
 
         {activeTab === "홈" && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12">
-            {/* 메인 Hero 카드 (좌측 60%) */}
-            <div className="lg:col-span-8 bg-gray-900 rounded-[32px] relative overflow-hidden min-h-[440px] flex items-center shadow-[0_8px_30px_rgba(0,0,0,0.025)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.05)] transition-all duration-500 group">
-              {/* 배경 이미지 오버레이 */}
-              <div 
-                className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-luminosity group-hover:scale-[1.01] transition-transform duration-700"
-                style={{ backgroundImage: `url(${IMG_BASE}background1.png?v=${V_NUM})` }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/90 to-transparent" />
-              
-              <div className="relative z-10 w-full grid grid-cols-1 lg:grid-cols-12 gap-6 p-8 lg:p-12 items-center">
-                {/* 좌측 텍스트 영역 */}
-                <div className="lg:col-span-7 flex flex-col justify-center">
-                  <h1 className="text-4xl lg:text-[46px] font-bold text-white leading-tight mb-4 tracking-tight">
-                    Live.<br />
-                    Learn.<br />
-                    Yongin Guide.
-                  </h1>
-                  <p className="text-gray-300 text-[12px] lg:text-[13px] font-medium mb-6 max-w-sm leading-relaxed">
-                    용인시의 실시간 혜택 소식부터 숨겨진 생활 비결까지, 가장 똑똑하고 신뢰할 수 있는 정보를 제공합니다.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setActiveTab("지역행사");
-                      window.history.pushState({}, '', '/?tab=지역행사');
-                      window.scrollTo({ top: 500, behavior: "smooth" });
-                    }}
-                    className="self-start px-5 py-2.5 bg-[#FF6B6B] hover:bg-[#FF5252] text-white rounded-full text-xs font-bold hover:-translate-y-0.5 active:translate-y-0 shadow-md hover:shadow-lg transition-all flex items-center gap-2"
-                  >
-                    여행지 둘러보기 <span className="text-[14px]">→</span>
-                  </button>
-                </div>
-
-                {/* 우측 주유 정보 (데스크탑 전용, 박스 없이 배너에 직접 표시) */}
-                <div className="hidden lg:flex lg:col-span-5 flex-col justify-center pl-4">
-                  <div className="flex items-center gap-2 mb-5">
-                    <span className="text-lg">⛽</span>
-                    <span className="text-[15px] font-black text-white tracking-tight">오늘의 최저가 주유소</span>
-                    <span className="bg-green-400/90 text-white text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider animate-pulse">Live</span>
-                  </div>
-
-                  {gasPrices ? (
-                    <div className="space-y-5">
-                      {[
-                        { district: "수지구", data: gasPrices.suji },
-                        { district: "기흥구", data: gasPrices.giheung },
-                        { district: "처인구", data: gasPrices.cheoin }
-                      ].map((item, idx) => (
-                        <div key={idx}>
-                          <span className="text-white/50 text-[11px] font-bold tracking-wider uppercase">{item.district}</span>
-                          <div className="flex items-baseline gap-2 mt-0.5">
-                            <span className="text-white/80 text-[14px] font-semibold truncate max-w-[160px]">{item.data?.name || "정보없음"}</span>
-                            <span className="text-[#FFD166] text-[22px] font-black tracking-tight">{item.data?.price?.toLocaleString() || "-"}</span>
-                            <span className="text-white/40 text-[12px] font-bold">원/ℓ</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-white/40 text-sm font-bold">주유가 조회 중...</div>
-                  )}
-
-                  <span className="text-[9px] text-white/25 mt-5 font-bold select-none">* 오피넷(Opinet) 실시간 데이터 기준</span>
-                </div>
-              </div>
-            </div>
-
-            {/* 우측 bento 컬럼 (우측 40%) */}
-            <div className="lg:col-span-4 flex flex-col gap-5">
-              {/* 인기 여행지 카드 (5위까지) */}
-              <div className="bg-white rounded-[24px] border border-gray-100 p-6 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.04)] transition-all duration-300 flex flex-col justify-between flex-grow">
-                <div className="flex items-center justify-between mb-5">
-                  <h3 className="text-gray-900 font-bold text-[14px]">인기 여행지</h3>
-                  <button 
-                    onClick={() => {
-                      setActiveTab("지역행사");
-                      window.history.pushState({}, '', '/?tab=지역행사');
-                    }}
-                    className="text-gray-400 text-[11px] font-bold hover:text-blue-600 transition-colors"
-                  >
-                    더보기 →
-                  </button>
-                </div>
-
-                <div className="space-y-4">
-                  {[
-                    { rank: "01", name: "에버랜드", desc: "장미축제와 짜릿한 어트랙션", img: "everland_roses_thumb.png" },
-                    { rank: "02", name: "한국민속촌", desc: "조선시대로 떠나는 시간여행", img: "gksrkd_01.png" },
-                    { rank: "03", name: "농촌테마파크", desc: "가족과 함께 힐링하는 농촌체험", img: "thumb-temple.png" },
-                    { rank: "04", name: "용인자연휴양림", desc: "숲속에서 즐기는 힐링 캠핑", img: "thumb-rose.png" },
-                    { rank: "05", name: "경기도박물관", desc: "경기도 역사와 문화 탐방", img: "library_booktalk_thumb.png" }
-                  ].map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-3.5 group/item cursor-pointer" onClick={() => router.push('/?tab=지역행사')}>
-                      <span className="text-[15px] font-black text-gray-300 group-hover/item:text-blue-500 transition-colors">{item.rank}</span>
-                      <div className="w-9 h-9 rounded-full overflow-hidden border border-gray-100/60 bg-gray-50 flex-shrink-0">
-                        <img src={IMG_BASE + item.img} alt={item.name} className="w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-500" />
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[12.5px] font-bold text-gray-800 leading-tight group-hover/item:text-blue-600 transition-colors">{item.name}</span>
-                        <span className="text-[10px] text-gray-400 font-semibold mt-0.5">{item.desc}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+          <HeroSection
+            gasPrices={gasPrices}
+            visitorCount={visitorCount}
+            setActiveTab={setActiveTab}
+            onElectionClick={() => {
+              setActiveTab("지방선거");
+              window.history.pushState({}, '', '/?tab=지방선거');
+            }}
+          />
         )}
 
         {/* 🛍️ 쿠팡 파트너스 배너 */}
@@ -600,7 +574,140 @@ export default function DashboardClient({
 
         {activeTab === "홈" && (
           <>
+            {/* 📰 최신 소식 & 이메일 뉴스레터 구독 섹션 (지도 위로 대이동!) */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 my-10 max-w-7xl mx-auto w-full relative z-20">
+              
+              {/* 왼쪽: 최신 소식 (9칸) - 좌측 무한 롤링 자동 슬라이더 개편 */}
+              <div className="lg:col-span-9 flex flex-col overflow-hidden">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white font-[family-name:var(--font-noto-serif-kr)] tracking-tight">
+                    최신 소식
+                  </h2>
+                </div>
 
+                <InfiniteCarousel
+                  items={latestCards.slice(0, 12)}
+                  minItemsForScroll={3}
+                  renderItem={(card, idx, dragging) => {
+                    const viewCounts = [8925, 6825, 6985, 6825, 8925];
+                    const views = viewCounts[idx % viewCounts.length].toLocaleString();
+                    
+                    const getCategoryStyles = (category: string) => {
+                      switch (category) {
+                        case "grant":
+                        case "지원금":
+                          return { text: "지원금", bg: "bg-blue-500/20 text-blue-300 border border-blue-500/30" };
+                        case "event":
+                        case "지역행사":
+                        case "행사":
+                          return { text: "지역행사", bg: "bg-purple-500/20 text-purple-300 border border-purple-500/30" };
+                        case "info":
+                        case "생활정보":
+                          return { text: "생활정보", bg: "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" };
+                        case "book":
+                        case "도서정보":
+                        case "도서 소식":
+                        case "도서소식":
+                          return { text: "도서소식", bg: "bg-amber-500/20 text-amber-300 border border-amber-500/30" };
+                        case "world":
+                        case "세계 경제":
+                        case "세계경제":
+                          return { text: "세계경제", bg: "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30" };
+                        default:
+                          return { text: category, bg: "bg-slate-500/20 text-slate-300 border border-slate-500/30" };
+                      }
+                    };
+
+                    const catStyle = getCategoryStyles(card.category || "정보");
+
+                    return (
+                      <div
+                        onClick={() => {
+                          if (!dragging) {
+                            setSelectedCard(card);
+                          }
+                        }}
+                        className="group cursor-pointer rounded-3xl overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_16px_32px_rgba(0,0,0,0.3)] flex flex-col w-[240px] sm:w-[270px] md:w-[280px] lg:w-[290px] xl:w-[305px] flex-shrink-0 border border-white/5 hover:border-white/15 bg-slate-900/50"
+                      >
+                        {/* 16:9 꽉찬 이미지 */}
+                        <div className="relative aspect-video w-full overflow-hidden">
+                          <img
+                            src={card.image?.startsWith("http") ? card.image : (IMG_BASE + (card.image || "thumb-default.png") + "?v=" + V_NUM)}
+                            alt={card.title}
+                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          />
+                          {/* 카테고리 뱃지 (좌상단) */}
+                          <span className={`absolute top-3 left-3 z-10 text-[9px] font-black px-2.5 py-1 rounded-full backdrop-blur-md ${catStyle.bg}`}>
+                            {catStyle.text}
+                          </span>
+                        </div>
+
+                        {/* 하단 텍스트 영역 */}
+                        <div className="p-4 flex flex-col gap-2">
+                          <h3 className="text-[13px] lg:text-[14px] font-bold text-white line-clamp-2 leading-snug group-hover:text-blue-400 transition-colors">
+                            {card.title}
+                          </h3>
+                          <span className="text-[10px] text-gray-400 font-bold">{card.date}</span>
+                        </div>
+                      </div>
+                    );
+                  }}
+                />
+              </div>
+
+              {/* 오른쪽: 뉴스레터 구독 폼 (3칸) */}
+              <div className="lg:col-span-3">
+                <div className="bg-gradient-to-br from-purple-900/30 to-indigo-900/30 dark:from-purple-950/40 dark:to-indigo-950/40 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 shadow-xl flex flex-col justify-between h-full min-h-[380px] relative overflow-hidden group">
+                  <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-pink-500/20 blur-2xl rounded-full pointer-events-none" />
+                  
+                  <div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10 shadow-sm relative">
+                        <span className="text-xl">💌</span>
+                        <span className="absolute -top-1 -right-1 text-xs animate-bounce">✈️</span>
+                      </div>
+                    </div>
+
+                    <h3 className="text-[20px] font-[900] text-gray-900 dark:text-white mt-5 tracking-tight leading-tight">
+                      구독하고 더 빠르게!
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-slate-400 mt-2.5 font-bold leading-relaxed">
+                      새로운 정보와 꿀팁을<br />이메일로 편하게 받아보세요.
+                    </p>
+                  </div>
+
+                  <form onSubmit={handleNewsletterSubmit} className="mt-6 flex flex-col gap-3 relative z-10">
+                    <input
+                      type="email"
+                      value={newsletterEmail}
+                      onChange={(e) => setNewsletterEmail(e.target.value)}
+                      placeholder="이메일 주소 입력"
+                      className="w-full bg-white/5 border border-white/10 p-3.5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/40 transition-all font-bold text-xs text-gray-900 dark:text-white placeholder-slate-400"
+                    />
+                    <button
+                      type="submit"
+                      className="w-full bg-slate-900 hover:bg-slate-800 dark:bg-indigo-950/80 dark:hover:bg-indigo-900/80 text-white font-[900] text-xs py-4 rounded-2xl transition-all shadow-md active:scale-[0.98]"
+                    >
+                      구독하기
+                    </button>
+                  </form>
+
+                  <div className="text-[10px] text-gray-400 dark:text-slate-500 font-bold text-center mt-5">
+                    언제든지 구독 해지 가능해요.
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* 🗺️ 용인 구별 종합 지도 및 Bento 가이드 보드 */}
+            <div className="mb-12">
+              <MapNoticeSection 
+                setActiveTab={setActiveTab} 
+                onCardClick={setSelectedCard} 
+                allCards={allCards} 
+              />
+            </div>
 
             {/* 대망의 대시보드형 벤토 보드 (Endless 스크롤 제거, 한눈에 정보 집약) */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-12">
@@ -665,54 +772,84 @@ export default function DashboardClient({
                 </div>
               </div>
 
-              {/* 2. 지역 축제 & 행사 Bento (4칸) */}
-              <div className="md:col-span-4 bg-white rounded-[28px] border border-gray-100 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.015)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between min-h-[360px]">
-                <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <h3 className="text-gray-900 font-bold text-[14px] flex items-center gap-1.5">
+              {/* 2. 지역 축제 & 행사 Bento (4칸) - 프리미엄 자동 슬라이드 캐러셀 */}
+              <div 
+                onClick={() => {
+                  if (eventCards.length > 0) {
+                    setSelectedCard(eventCards[eventSlideIdx]);
+                  }
+                }}
+                className="md:col-span-4 bg-slate-950 rounded-[28px] border border-white/5 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.2)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.4)] hover:-translate-y-0.5 transition-all duration-500 flex flex-col justify-between min-h-[360px] relative overflow-hidden group cursor-pointer"
+              >
+                {/* 배경 이미지와 다크 글래스모피즘 오버레이 */}
+                {eventCards.length > 0 && (
+                  <div className="absolute inset-0 z-0 transition-all duration-700 ease-in-out">
+                    <img
+                      src={getImageUrl(eventCards[eventSlideIdx].image || "")}
+                      alt={eventCards[eventSlideIdx].title}
+                      className="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-1000"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-slate-950/40 backdrop-blur-[1px]" />
+                  </div>
+                )}
+
+                <div className="relative z-10 flex flex-col justify-between h-full min-h-[348px] w-full">
+                  {/* 상단 헤더 영역 */}
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-white font-bold text-[13px] flex items-center gap-1.5 backdrop-blur-md bg-white/10 px-3 py-1 rounded-full border border-white/10">
                       <span>📍</span> 지역 축제 & 행사
                     </h3>
                     <button
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setActiveTab("지역행사");
                         window.history.pushState({}, '', '/?tab=지역행사');
                       }}
-                      className="text-gray-400 text-[11px] font-bold hover:text-blue-600 transition-colors"
+                      className="text-gray-300 text-[10px] font-bold hover:text-blue-400 transition-colors backdrop-blur-md bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded-full border border-white/5"
                     >
                       더보기 →
                     </button>
                   </div>
 
-                  <div className="space-y-3.5">
-                    {eventCards.slice(0, 3).map((card, idx) => (
-                      <div 
-                        key={idx}
-                        onClick={() => setSelectedCard(card)}
-                        className="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-gray-50 cursor-pointer group transition-colors border border-transparent hover:border-gray-100"
-                      >
-                        <div className="w-10 h-10 rounded-xl overflow-hidden bg-gray-50 flex-shrink-0 border border-gray-100/50">
-                          <img 
-                            src={card.image?.startsWith("http") ? card.image : (IMG_BASE + (card.image || "thumb-default.png") + "?v=" + V_NUM)}
-                            alt={card.title} 
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                  {/* 중간 슬라이드 콘텐츠 영역 */}
+                  {eventCards.length > 0 ? (
+                    <div className="my-auto pt-6 pb-2 transition-all duration-500">
+                      <span className="inline-block bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[9px] font-black px-2 py-0.5 rounded-full mb-2">
+                        {eventCards[eventSlideIdx].region || "용인시 전체"}
+                      </span>
+                      <h4 className="text-white font-[900] text-[17px] leading-snug line-clamp-2 drop-shadow-md mb-2 group-hover:text-blue-400 transition-colors">
+                        {eventCards[eventSlideIdx].title}
+                      </h4>
+                      <p className="text-gray-300 text-[11px] font-semibold line-clamp-2 leading-relaxed opacity-85">
+                        {eventCards[eventSlideIdx].summary}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-gray-400 text-xs font-semibold text-center my-auto py-10">등록된 축제/행사 정보가 없습니다.</p>
+                  )}
+
+                  {/* 하단 페이지 카운터 & Dot 인디케이터 */}
+                  <div className="flex items-center justify-between border-t border-white/10 pt-4 mt-auto">
+                    <span className="text-[10px] font-bold text-gray-400">
+                      {eventCards.length > 0 ? `${eventSlideIdx + 1} / ${eventCards.length}` : "0 / 0"}
+                    </span>
+                    {eventCards.length > 1 && (
+                      <div className="flex gap-1.5">
+                        {eventCards.map((_, idx) => (
+                          <button
+                            key={idx}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEventSlideIdx(idx);
+                            }}
+                            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                              eventSlideIdx === idx ? "bg-blue-400 w-3" : "bg-white/30 hover:bg-white/50"
+                            }`}
                           />
-                        </div>
-                        <div className="flex flex-col min-w-0 flex-grow">
-                          <span className="text-[12.5px] font-bold text-gray-800 leading-snug group-hover:text-blue-600 transition-colors line-clamp-1">
-                            {card.title}
-                          </span>
-                          <span className="text-[10px] text-gray-400 font-bold mt-0.5">{card.region || "용인시 전체"}</span>
-                        </div>
+                        ))}
                       </div>
-                    ))}
-                    {eventCards.length === 0 && (
-                      <p className="text-gray-400 text-xs font-semibold text-center py-10">등록된 축제/행사 정보가 없습니다.</p>
                     )}
                   </div>
-                </div>
-
-                <div className="pt-4 border-t border-gray-50 flex items-center justify-between text-[11.5px] font-bold text-gray-400">
-                  <span>금주의 행사 일정 바로보기</span>
                 </div>
               </div>
 
@@ -797,10 +934,10 @@ export default function DashboardClient({
                           />
                         </div>
                         <div className="flex flex-col min-w-0 justify-center">
-                          <h4 className="text-[12px] font-bold text-gray-800 leading-snug group-hover:text-purple-600 transition-colors line-clamp-1">
+                          <h4 className="text-[12px] font-bold text-gray-850 dark:text-gray-100 leading-snug group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors line-clamp-1">
                             {card.title}
                           </h4>
-                          <p className="text-[10px] text-gray-400 font-medium line-clamp-2 mt-1 leading-normal">
+                          <p className="text-[10px] text-gray-455 dark:text-slate-400 font-medium line-clamp-2 mt-1 leading-normal">
                             {card.summary}
                           </p>
                         </div>
@@ -908,6 +1045,14 @@ export default function DashboardClient({
                 )}
               />
             </div>
+
+            {/* 최신 소식 & 이메일 구독 섹션이 대시보드 위쪽으로 이동하여 원래 자리는 빈 블록으로 처리합니다. */}
+
+            {/* 📢 용인시 뉴스 및 공지사항 보드 (맨 아래로 이사 완료) */}
+            <NoticeBoard 
+              setActiveTab={setActiveTab} 
+              onCardClick={setSelectedCard} 
+            />
           </>
         )}
 
@@ -972,15 +1117,7 @@ export default function DashboardClient({
                 <Card
                   key={idx}
                   card={card}
-                  onClick={() => {
-                    // 블로그 탭이거나 카드에 slug가 있는 경우 상세 페이지로 직접 이동
-                    if ((activeTab === "블로그" || activeTab === "홈") && card.slug) {
-                      router.push(`/blog/${card.slug}`);
-                    } else {
-                      setSelectedCard(card);
-                    }
-                  }}
-                  href={(activeTab === "블로그" || activeTab === "홈") && card.slug ? `/blog/${card.slug}` : undefined}
+                  onClick={() => setSelectedCard(card)}
                 />
               ))}
             </div>
@@ -995,32 +1132,71 @@ export default function DashboardClient({
       {/* 카드 상세 팝업 */}
       {selectedCard && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-5 animate-in fade-in duration-300">
-          <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onClick={() => setSelectedCard(null)} />
+          <div className="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm" onClick={() => setSelectedCard(null)} />
           <div
-            className="bg-white w-full max-w-4xl h-[90vh] lg:h-[85vh] rounded-[40px] lg:rounded-[60px] overflow-y-auto shadow-2xl animate-in zoom-in-95 duration-300 relative custom-scrollbar flex flex-col"
+            className="bg-white dark:bg-slate-900 w-full max-w-4xl h-[90vh] lg:h-[85vh] rounded-[40px] lg:rounded-[60px] overflow-y-auto shadow-2xl animate-in zoom-in-95 duration-300 relative custom-scrollbar flex flex-col border border-gray-100 dark:border-slate-800"
             onClick={e => e.stopPropagation()}
           >
-            {/* 상단 이미지 영역 (이제 본문과 함께 스크롤됨) */}
-            <div className="w-full relative flex-shrink-0">
-              <img
-                src={selectedCard.image?.startsWith("http") ? selectedCard.image : (IMG_BASE + (selectedCard.image || "thumb-default.png") + "?v=" + V_NUM)}
-                alt={selectedCard.title}
-                className="w-full h-auto min-h-[300px] lg:min-h-[500px] object-cover"
-              />
+            {/* 상단 미디어 영역 (지도가 기본으로 표시되며 이미지와 탭 토글 가능!) */}
+            <div className="w-full relative flex-shrink-0 h-[300px] lg:h-[500px] overflow-hidden bg-gray-100 dark:bg-gray-950">
+              {selectedCard.id?.startsWith("guide-") && showMap ? (
+                <iframe
+                  width="100%"
+                  height="100%"
+                  className="w-full h-full border-0 relative z-10 animate-in fade-in duration-300"
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(getMapSearchKeyword(selectedCard))}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                />
+              ) : (
+                <img
+                  src={selectedCard.image?.startsWith("http") ? selectedCard.image : (IMG_BASE + (selectedCard.image || "thumb-default.png") + "?v=" + V_NUM)}
+                  alt={selectedCard.title}
+                  className="w-full h-full object-cover relative z-10 animate-in fade-in duration-300"
+                />
+              )}
               {/* 닫기 버튼 (상단 이미지 위에 우아하게 배치) */}
               <button
                 onClick={() => setSelectedCard(null)}
-                className="absolute top-8 right-8 z-[80] w-14 h-14 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-gray-400 hover:text-gray-800 shadow-2xl border border-white hover:scale-110 transition-all text-3xl font-black pointer-events-auto"
+                className="absolute top-8 right-8 z-[80] w-14 h-14 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-full flex items-center justify-center text-gray-400 dark:text-slate-400 hover:text-gray-800 dark:hover:text-white shadow-2xl border border-white dark:border-slate-700 hover:scale-110 transition-all text-3xl font-black pointer-events-auto"
               >
                 ✕
               </button>
-              <div className="absolute top-8 left-8">
-                {renderTags(selectedCard.category)}
-              </div>
+              
+              {/* 관광 가이드 카드인 경우 노출되는 럭셔리 Glassmorphic "지도 🗺️ / 사진 🖼️" 토글 탭 단추 */}
+              {selectedCard.id?.startsWith("guide-") ? (
+                <div className="absolute top-8 left-8 z-[80] flex bg-white/80 dark:bg-slate-800/80 backdrop-blur-md p-1.5 rounded-2xl shadow-lg border border-white/20 dark:border-slate-700/20 gap-1 animate-in fade-in slide-in-from-left-2 duration-300">
+                  <button
+                    onClick={() => setShowMap(true)}
+                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all flex items-center gap-1 active:scale-95 ${
+                      showMap
+                        ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-sm shadow-emerald-500/20"
+                        : "text-gray-500 dark:text-slate-400 hover:text-gray-750 dark:hover:text-slate-200"
+                    }`}
+                  >
+                    <span>🗺️</span> 지도 보기
+                  </button>
+                  <button
+                    onClick={() => setShowMap(false)}
+                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all flex items-center gap-1 active:scale-95 ${
+                      !showMap
+                        ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-sm shadow-orange-500/20"
+                        : "text-gray-500 dark:text-slate-400 hover:text-gray-750 dark:hover:text-slate-200"
+                    }`}
+                  >
+                    <span>🖼️</span> 사진 보기
+                  </button>
+                </div>
+              ) : (
+                <div className="absolute top-8 left-8 z-[80]">
+                  {renderTags(selectedCard.category)}
+                </div>
+              )}
             </div>
             {/* 하단 본문 영역 (이미지 아래에 바로 이어짐) */}
             <div className="p-10 lg:p-20">
-              <h2 className="text-2xl font-[900] text-gray-900 mb-4 leading-tight">{selectedCard.title}</h2>
+              <h2 className="text-2xl font-[900] text-gray-900 dark:text-white mb-4 leading-tight">{selectedCard.title}</h2>
 
               {/* 관리자 수정 버튼 (ID나 Slug가 있으면 노출) */}
               {isAdmin && (selectedCard.slug || selectedCard.id) && (
@@ -1064,12 +1240,12 @@ export default function DashboardClient({
                 </div>
               )}
 
-              <div className="flex gap-4 mb-8 text-[11px] font-bold text-gray-400">
+              <div className="flex gap-4 mb-8 text-[11px] font-bold text-gray-400 dark:text-slate-400">
                 <span className="flex items-center gap-1.5">📅 {selectedCard.date}</span>
                 <span className="flex items-center gap-1.5">📍 {selectedCard.region || "용인"}</span>
               </div>
 
-              <div className="prose prose-sm prose-slate max-w-none prose-headings:font-black prose-a:text-blue-600">
+              <div className="prose prose-sm prose-slate dark:prose-invert max-w-none prose-headings:font-[900] dark:prose-headings:text-white dark:prose-strong:text-white prose-a:text-blue-500">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   components={{

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
 import { Geist, Geist_Mono, Baloo_2, Gamja_Flower, Noto_Serif_KR } from "next/font/google";
 import Script from "next/script";
@@ -82,6 +83,7 @@ export const metadata: Metadata = {
   },
 };
 
+import Header from "@/components/dashboard/Header";
 import Footer from "@/components/Footer";
 
 export default function RootLayout({
@@ -92,7 +94,7 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`${geistSans.variable} ${geistMono.variable} ${baloo2.variable} ${gamjaFlower.variable} ${notoSerifKr.variable} h-full antialiased light`}
+      className={`${geistSans.variable} ${geistMono.variable} ${baloo2.variable} ${gamjaFlower.variable} ${notoSerifKr.variable} h-full antialiased dark`}
     >
       <head>
         <meta name="google-adsense-account" content="ca-pub-5327170974242376" />
@@ -165,68 +167,13 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col font-pretendard bg-background text-foreground">
+      <body className="min-h-full flex flex-col font-pretendard bg-background text-foreground transition-colors duration-300">
         <CustomCursor />
-        {/* 미니멀한 Top Navigation Bar */}
-        <header className="sticky top-0 z-[100] bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 lg:py-5 w-full">
-          <div className="max-w-[1400px] mx-auto flex items-center justify-between">
-            {/* 한옥 기와 SVG 로고 + 브랜드명 */}
-            <a href="/" className="flex items-center gap-3 group">
-              <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 group-hover:scale-105 transition-transform duration-300">
-                <svg className="w-7 h-7" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  {/* 지붕 어두운 파랑 오버레이 */}
-                  <path d="M10 52C28 45 38 42 50 42C62 42 72 45 90 52C82 44 75 32 50 32C25 32 18 44 10 52Z" fill="#1E3B8B" />
-                  {/* 기와 밝은 파랑 */}
-                  <path d="M15 50C30 45 40 42 50 42C60 42 70 45 85 50C80 44 75 35 50 35C25 35 20 44 15 50Z" fill="#3B82F6" />
-                  {/* 대들보 (나무) */}
-                  <path d="M22 51H78V55H22V51Z" fill="#F59E0B" />
-                  {/* 서까래 디테일 */}
-                  <rect x="30" y="55" width="4" height="3" fill="#D97706" />
-                  <rect x="48" y="55" width="4" height="3" fill="#D97706" />
-                  <rect x="66" y="55" width="4" height="3" fill="#D97706" />
-                  {/* 나무 기둥 */}
-                  <rect x="31" y="58" width="3" height="15" fill="#B45309" />
-                  <rect x="66" y="58" width="3" height="15" fill="#B45309" />
-                  {/* 기단부 돌판 */}
-                  <path d="M18 73H82V77H18V73Z" fill="#E5E7EB" />
-                  <path d="M25 77H75V79H25V77Z" fill="#D1D5DB" />
-                </svg>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[17px] font-black text-gray-900 tracking-tight leading-none group-hover:text-blue-600 transition-colors">
-                  KoreaTripInfo
-                </span>
-                <span className="text-[9px] font-bold text-gray-400 tracking-wider mt-1">
-                  한국 여행의 모든 정보
-                </span>
-              </div>
-            </a>
-            
-            {/* 사용자 기획안 Core 6개 메뉴 - 감성적인 사각 버튼 형식 */}
-            <nav className="hidden xl:flex items-center gap-3.5 text-[13px] font-bold text-gray-700">
-              <a href="/?tab=홈" className="px-5 py-2.5 bg-gray-50 border border-gray-100/70 rounded-xl hover:bg-gray-100 hover:scale-105 hover:text-gray-950 transition-all shadow-[0_2px_8px_rgba(0,0,0,0.005)] text-center min-w-[70px]">홈</a>
-              <a href="/?tab=지원금" className="px-5 py-2.5 bg-gray-50 border border-gray-100/70 rounded-xl hover:bg-gray-100 hover:scale-105 hover:text-gray-950 transition-all shadow-[0_2px_8px_rgba(0,0,0,0.005)] text-center min-w-[85px]">지원금</a>
-              <a href="/?tab=지역행사" className="px-5 py-2.5 bg-gray-50 border border-gray-100/70 rounded-xl hover:bg-gray-100 hover:scale-105 hover:text-gray-950 transition-all shadow-[0_2px_8px_rgba(0,0,0,0.005)] text-center min-w-[95px]">지역행사</a>
-              <a href="/?tab=생활정보" className="px-5 py-2.5 bg-gray-50 border border-gray-100/70 rounded-xl hover:bg-gray-100 hover:scale-105 hover:text-gray-950 transition-all shadow-[0_2px_8px_rgba(0,0,0,0.005)] text-center min-w-[95px]">생활 정보</a>
-              <a href="/?tab=도서정보" className="px-5 py-2.5 bg-gray-50 border border-gray-100/70 rounded-xl hover:bg-gray-100 hover:scale-105 hover:text-gray-950 transition-all shadow-[0_2px_8px_rgba(0,0,0,0.005)] text-center min-w-[95px]">도서 소식</a>
-              <a href="/?tab=세계 경제" className="px-5 py-2.5 bg-gray-50 border border-gray-100/70 rounded-xl hover:bg-gray-100 hover:scale-105 hover:text-gray-950 transition-all shadow-[0_2px_8px_rgba(0,0,0,0.005)] text-center min-w-[95px]">세계 경제</a>
-            </nav>
-
-            {/* 우측 검색버튼 + 햄버거 메뉴 */}
-            <div className="flex items-center gap-2.5">
-              <button className="w-9 h-9 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center hover:bg-gray-100 hover:scale-105 transition-all" title="검색">
-                <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-              </button>
-              <button className="w-9 h-9 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center hover:bg-gray-100 hover:scale-105 transition-all" title="메뉴">
-                <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-        </header>
+        
+        {/* 프리미엄 반응형 글래스모피즘 헤더 */}
+        <Suspense fallback={<div className="h-16" />}>
+          <Header />
+        </Suspense>
 
         <main className="flex-grow pt-4">
           {children}

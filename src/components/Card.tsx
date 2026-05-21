@@ -65,7 +65,7 @@ export const Card = ({ card, onClick, isAdmin, onImageEdit, href }: CardProps) =
   const CardContent = (
     <div className="flex flex-col h-full bg-white border border-gray-100/80 shadow-[0_4px_24px_rgba(0,0,0,0.015)] rounded-[24px] overflow-hidden transition-all duration-300">
       {/* 썸네일 영역 */}
-      <div className="relative aspect-[16/10] overflow-hidden bg-gray-50">
+      <div className="relative aspect-video overflow-hidden bg-gray-50">
         <img
           src={card.image?.startsWith("http") ? card.image : (IMG_BASE + (card.image || "thumb-youth.png") + "?v=" + V_NUM)}
           alt={card.title}

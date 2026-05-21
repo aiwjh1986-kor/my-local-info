@@ -24,7 +24,6 @@ interface PostData {
 export default function PostClient({ initialPost }: { initialPost: PostData }) {
   const router = useRouter();
   const [post] = useState<PostData>(initialPost);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const getCategoryStyles = (cat: string) => {
     const c = cat.toLowerCase();
@@ -38,66 +37,6 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
   return (
     <div className="dashboard-container min-h-screen relative">
 
-      {/* 1. 메뉴 버튼 및 상단 퀵 내비게이션 */}
-      <div className="fixed top-6 left-0 right-0 z-[60] px-6 flex items-center justify-between pointer-events-none">
-        <button 
-          onClick={() => setIsMenuOpen(true)}
-          className="fixed top-6 left-5 z-[60] bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 lg:px-8 lg:py-4 rounded-full shadow-xl hover:scale-110 transition-all flex items-center justify-center group pointer-events-auto"
-        >
-          <span className="text-xl lg:text-2xl font-extrabold text-gray-800 font-[family-name:var(--font-baloo-2)] tracking-wider group-hover:text-blue-600 transition-colors">MENU</span>
-        </button>
-
-        {/* 중앙 퀵 바로가기 (바보가기) */}
-        <div className="pointer-events-auto hidden md:flex items-center gap-2 bg-white/70 backdrop-blur-xl border border-white/40 p-2 rounded-full shadow-2xl">
-          <QuickLink icon={IMG_BASE + "icon-home.png?v=" + V_NUM} label="홈" onClick={() => router.push("/")} />
-          <div className="w-[1px] h-4 bg-gray-200 mx-1" />
-          <QuickLink icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금 혜택" onClick={() => router.push("/?tab=지원금")} />
-          <QuickLink icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" onClick={() => router.push("/?tab=지역행사")} />
-          <QuickLink icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="생활 정보" onClick={() => router.push("/?tab=생활정보")} />
-          <QuickLink icon={IMG_BASE + "icon-book.png?v=" + V_NUM} label="도서 소식" onClick={() => router.push("/?tab=도서정보")} />
-        </div>
-
-        {/* 우측 상단 닫기 버튼 (X) */}
-        <div className="fixed top-6 right-6 z-[60] pointer-events-auto">
-          <button 
-            onClick={() => router.back()}
-            className="w-14 h-14 bg-white/80 backdrop-blur-md border border-gray-100 rounded-full shadow-xl hover:scale-110 hover:bg-white transition-all flex items-center justify-center text-gray-400 hover:text-gray-800 text-3xl font-black"
-            title="닫기"
-          >
-            ✕
-          </button>
-        </div>
-      </div>
-
-
-
-      {/* 2. 사이드바 드로어 (홈 화면과 디자인 동기화) */}
-      <aside className={`fixed left-0 top-0 bottom-0 w-[300px] lg:w-[420px] bg-white/95 backdrop-blur-2xl border-r border-gray-100 z-[110] flex flex-col p-8 lg:p-12 shadow-2xl transition-transform duration-500 ${
-        isMenuOpen ? "translate-x-0" : "-translate-x-full"
-      }`}>
-        <div className="flex items-center justify-between mb-8 lg:mb-16">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 lg:w-14 h-14">
-              <img src={IMG_BASE + "icon-menu-rabbit.png?v=" + V_NUM} alt="Menu Icon" className="w-full h-full object-contain" />
-            </div>
-            <h1 className="text-xl lg:text-3xl font-black text-[#111111]">메뉴</h1>
-          </div>
-          <button onClick={() => setIsMenuOpen(false)} className="text-4xl lg:text-5xl text-gray-300 hover:text-gray-800">×</button>
-        </div>
-        
-        <nav className="flex flex-col gap-3 lg:gap-6 overflow-y-auto no-scrollbar">
-          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-home.png?v=" + V_NUM} label="홈" />
-          <MenuLink onClick={() => router.push("/?tab=지원금")} icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금" />
-          <MenuLink onClick={() => router.push("/?tab=지역행사")} icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" />
-          <MenuLink onClick={() => router.push("/?tab=생활정보")} icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="생활정보" />
-          <MenuLink onClick={() => router.push("/?tab=도서정보")} icon={IMG_BASE + "icon-book.png?v=" + V_NUM} label="도서정보" />
-          <MenuLink onClick={() => router.push("/blog")} icon={IMG_BASE + "icon-blog.png?v=" + V_NUM} label="블로그" active={true} />
-        </nav>
-      </aside>
-
-      {isMenuOpen && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[65]" onClick={() => setIsMenuOpen(false)} />
-      )}
 
       {/* 3. 본문 영역 (전체화면 스타일 적용) */}
       <main className="pt-24 lg:pt-32 pb-20 px-0 sm:px-6">
@@ -222,37 +161,5 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
       </div>
 
     </div>
-  );
-}
-
-function MenuLink({ onClick, icon, label, active = false }: any) {
-  return (
-    <div 
-      onClick={onClick}
-      className={`flex items-center px-4 lg:px-6 py-2 lg:py-4 rounded-[16px] lg:rounded-[24px] transition-all font-black cursor-pointer group ${
-        active ? "bg-accent text-white shadow-lg scale-[1.02]" : "text-gray-500 hover:bg-gray-50"
-      }`}
-    >
-      <div className="flex items-center gap-3 lg:gap-6">
-        <div className="w-8 h-8 lg:w-12 h-12 flex items-center justify-center p-1 transform group-hover:scale-110 transition-transform">
-          <img src={icon} className="w-full h-full object-contain" alt={label} />
-        </div>
-        <span className="text-sm lg:text-lg tracking-tighter whitespace-nowrap">{label}</span>
-      </div>
-    </div>
-  );
-}
-
-function QuickLink({ icon, label, onClick, isMobile = false }: any) {
-  return (
-    <button 
-      onClick={onClick}
-      className={`flex items-center gap-1.5 lg:gap-2.5 px-3 lg:px-6 py-1.5 lg:py-2.5 rounded-full hover:bg-gray-50 transition-all group ${isMobile ? "bg-white/50" : ""}`}
-    >
-      <div className="w-5 h-5 lg:w-8 h-8 flex items-center justify-center group-hover:scale-110 transition-transform">
-        <img src={icon} className="w-full h-full object-contain" alt={label} />
-      </div>
-      <span className="text-[10px] lg:text-sm font-black text-gray-700 whitespace-nowrap">{label}</span>
-    </button>
   );
 }
