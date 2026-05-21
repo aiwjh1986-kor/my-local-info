@@ -1246,7 +1246,7 @@ export default function MapNoticeSection({
                           whileHover={{ scale: 1.04, y: -2 }}
                           whileTap={{ scale: 0.97 }}
                           onClick={() => handleSpotClick(spot.name, spot.keyword)} // 정확한 가이드 데이터를 불러오도록 spot.keyword로 매칭 인자 전달
-                          className="px-4 py-2.5 rounded-2xl bg-white dark:bg-gray-850 hover:bg-gradient-to-r hover:from-accent hover:to-accent-purple text-gray-700 dark:text-gray-200 hover:text-white dark:hover:text-white border border-gray-150 dark:border-gray-750 font-black text-[11px] flex items-center gap-2 shadow-sm transition-all text-left active:scale-[0.98]"
+                          className="px-4 py-2.5 rounded-2xl bg-white dark:bg-slate-800 hover:bg-gradient-to-r hover:from-accent hover:to-accent-purple text-gray-700 dark:text-gray-200 hover:text-white dark:hover:text-white border border-gray-150 dark:border-slate-700 font-black text-[11px] flex items-center gap-2 shadow-sm transition-all text-left active:scale-[0.98]"
                         >
                           <span>{spot.icon}</span>
                           <div>

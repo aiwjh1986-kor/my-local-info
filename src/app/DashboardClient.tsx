@@ -934,10 +934,10 @@ export default function DashboardClient({
                           />
                         </div>
                         <div className="flex flex-col min-w-0 justify-center">
-                          <h4 className="text-[12px] font-bold text-gray-850 dark:text-gray-100 leading-snug group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors line-clamp-1">
+                          <h4 className="text-[12px] font-bold text-gray-800 leading-snug group-hover:text-purple-600 transition-colors line-clamp-1">
                             {card.title}
                           </h4>
-                          <p className="text-[10px] text-gray-455 dark:text-slate-400 font-medium line-clamp-2 mt-1 leading-normal">
+                          <p className="text-[10px] text-gray-500 font-medium line-clamp-2 mt-1 leading-normal">
                             {card.summary}
                           </p>
                         </div>

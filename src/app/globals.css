@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #F8FAFC; /* 차분하고 밝은 Slate-50 계열의 프리미엄 연회색 */
@@ -14,8 +14,8 @@
   --card-hover-shadow: 0 20px 50px -10px rgba(99, 102, 241, 0.12), 0 16px 40px rgba(0, 0, 0, 0.04);
 }
 
-/* 🌙 다크모드 대응 (html 클래스에 dark가 붙었을 때) */
-html.dark {
+/* 🌙 다크모드 대응 */
+.dark {
   --background: #090D16; /* 심오하고 신비로운 다크 네이비 블랙 */
   --foreground: #F1F5F9; /* 부드러운 Slate-100 화이트 */
   --sidebar: #111827;
@@ -27,7 +27,7 @@ html.dark {
   --card-hover-shadow: 0 20px 50px -10px rgba(129, 140, 248, 0.15), 0 16px 40px rgba(0, 0, 0, 0.4);
 }
 
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
