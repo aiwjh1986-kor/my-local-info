@@ -112,7 +112,7 @@ export default function DashboardClient({
 
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newsletterEmail) {
       alert("이메일 주소를 입력해 주세요! 📧");
@@ -123,8 +123,23 @@ export default function DashboardClient({
       alert("올바른 이메일 주소 형식이 아니에요. 다시 확인해 주세요! 😅");
       return;
     }
-    alert("성공적으로 구독되었습니다! 매주 알찬 소식을 전해드릴게요. 💌");
-    setNewsletterEmail("");
+    
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: newsletterEmail }),
+      });
+      
+      if (res.ok) {
+        alert("성공적으로 구독되었습니다! 매주 알찬 소식을 전해드릴게요. 💌");
+        setNewsletterEmail("");
+      } else {
+        alert("구독에 실패했습니다. 잠시 후 다시 시도해 주세요. 😢");
+      }
+    } catch (error) {
+      alert("서버 연결에 문제가 발생했습니다. 😢");
+    }
   };
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingCard, setEditingCard] = useState<FeaturedCard | null>(null);
