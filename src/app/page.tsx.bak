@@ -20,7 +20,7 @@ export default function Page() {
       deadline: p.deadline || null,
       is_urgent: false,
       is_popular: true,
-      content: p.content, // 팝업창에서 상세 내용을 보기 위해 다시 포함!
+      content: p.content,
       slug: p.slug,
       image: p.image,
       link: p.link
@@ -28,22 +28,13 @@ export default function Page() {
 
   // featured-cards.json을 실시간으로 읽어옵니다. (이미지 수정 즉시 반영을 위함)
   const featuredPath = path.join(process.cwd(), 'public/data/featured-cards.json');
-  let featuredCards: any[] = [];
+  let featuredCards = [];
   try {
     const fileContent = fs.readFileSync(featuredPath, 'utf8');
     featuredCards = JSON.parse(fileContent);
   } catch (err) {
     console.error("Failed to read featured-cards.json:", err);
   }
-
-  // #2 속도 개선: 브라우저가 할 일(데이터 합치고 정렬하기)을 서버에서 미리 처리
-  const combined = [...blogPosts, ...featuredCards];
-  const unique = Array.from(new Map(combined.map(item => [item.slug || item.id, item])).values());
-  const allCards = unique.sort((a, b) => {
-    const dateA = new Date((a.date || "").toString().replace(/\./g, '-')).getTime();
-    const dateB = new Date((b.date || "").toString().replace(/\./g, '-')).getTime();
-    return dateB - dateA;
-  });
 
   // life-tips.json 읽어오기 (SEO용)
   const tipsPath = path.join(process.cwd(), 'public/data/life-tips.json');
@@ -94,7 +85,8 @@ export default function Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
       />
       <DashboardClient 
-        allCards={allCards} 
+        initialBlogPosts={blogPosts} 
+        initialFeaturedCards={featuredCards} 
       />
     </Suspense>
   );

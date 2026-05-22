@@ -1,9 +1,9 @@
 {
   "success": true,
-  "timestamp": "2026-05-21T12:48:57.145Z",
+  "timestamp": "2026-05-22T10:45:01.238Z",
   "data": {
     "suji": {
-      "name": "청정에너지주유소",
+      "name": "언남에너지유한책임회사",
       "price": 1975,
       "brand": "S-OIL"
     },
@@ -13,9 +13,9 @@
       "brand": "S-OIL"
     },
     "cheoin": {
-      "name": "(주)디오티디 용인드래곤주유소",
-      "price": 1983,
-      "brand": "현대오일뱅크"
+      "name": "(주)위굴리 고진역주유소",
+      "price": 1978,
+      "brand": "S-OIL"
     }
   }
 }

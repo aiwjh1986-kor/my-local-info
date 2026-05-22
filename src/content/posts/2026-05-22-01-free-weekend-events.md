@@ -1,10 +1,12 @@
 ---
-title: "용인 농촌테마파크 가족 봄나들이 축제 행사 일정 및 무료 입장 가이드"
+title: 용인 농촌테마파크 가족 봄나들이 축제 행사 일정 및 무료 입장 가이드
 date: 2026-05-22T08:00:00.000Z
-summary: "이번 주말 용인 농촌테마파크에서 개최되는 가족 봄나들이 축제의 상세 일정, 무료 입장 요건, 그리고 인근 주차장 이용 정보에 대해 상세히 안내해 드립니다."
+summary: >-
+  이번 주말 용인 농촌테마파크에서 개최되는 가족 봄나들이 축제의 상세 일정, 무료 입장 요건, 그리고 인근 주차장 이용 정보에 대해 상세히
+  안내해 드립니다.
 category: 지역행사
-image: "new_01.png"
-link: "https://www.yongin.go.kr/home/index.do"
+image: event/18.png
+link: 'https://www.yongin.go.kr/home/index.do'
 tags:
   - 용인농촌테마파크
   - 용인행사

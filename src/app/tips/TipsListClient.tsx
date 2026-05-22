@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { TipData } from "@/lib/posts";
@@ -12,6 +12,38 @@ export default function TipsListClient({ allTips }: { allTips: TipData[] }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingTipId, setEditingTipId] = useState("");
+  const [newImageUrl, setNewImageUrl] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  // 관리자 권한 확인
+  useEffect(() => {
+    const isAdminCookie = document.cookie.split('; ').find(row => row.startsWith('is_admin='));
+    if (isAdminCookie && isAdminCookie.split('=')[1] === 'true') {
+      setIsAdmin(true);
+    }
+  }, []);
+
+  const saveImageChanges = async () => {
+    if (!editingTipId) return;
+    setIsSaving(true);
+    try {
+      const res = await fetch("/api/update-tip-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: editingTipId, newImageUrl: newImageUrl }),
+      });
+      if (res.ok) window.location.reload();
+      else alert("팁 이미지 수정에 실패했습니다.");
+    } catch (err) {
+      alert("서버 오류가 발생했습니다.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const filteredTips = allTips.filter(tip => {
     return tip.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -146,11 +178,27 @@ export default function TipsListClient({ allTips }: { allTips: TipData[] }) {
                     alt={tip.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
-                  <div className="absolute top-4 left-4">
+                  <div className="absolute top-4 left-4 z-10">
                     <span className="bg-yellow-400/90 backdrop-blur-md text-gray-900 text-[10px] lg:text-xs font-black px-4 py-1.5 rounded-full shadow-lg">
                       {tip.category}
                     </span>
                   </div>
+                  {isAdmin && (
+                    <div className="absolute top-4 right-4 z-10">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setEditingTipId(tip.id);
+                          setNewImageUrl(tip.image);
+                          setIsEditModalOpen(true);
+                        }}
+                        className="bg-black/60 backdrop-blur-md text-white px-2.5 py-1.5 rounded-full text-[10px] font-bold hover:scale-105 transition-all shadow-md"
+                      >
+                        📸 수정
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="p-8 flex-1 flex flex-col justify-between">
@@ -222,6 +270,50 @@ export default function TipsListClient({ allTips }: { allTips: TipData[] }) {
           </div>
         </div>
       </footer>
+
+      {/* 이미지 수정 팝업 (관리자 전용) */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-5 animate-in fade-in duration-300">
+          <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-md" onClick={() => !isSaving && setIsEditModalOpen(false)} />
+          <div className="relative w-full max-w-lg bg-white rounded-[40px] shadow-2xl p-10 animate-in zoom-in-95 duration-300 border border-white">
+            <div className="text-center mb-8">
+              <div className="text-3xl mb-3">📸</div>
+              <h2 className="text-2xl font-black text-gray-900">이미지 주소 수정</h2>
+              <p className="text-gray-400 text-sm mt-1">꿀팁의 대표 이미지를 변경합니다.</p>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">New Image URL</label>
+                <textarea
+                  value={newImageUrl}
+                  onChange={(e) => setNewImageUrl(e.target.value)}
+                  className="w-full bg-gray-50 border border-gray-100 p-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-bold text-sm min-h-[100px]"
+                  placeholder="https://... 이미지 주소를 입력하세요"
+                  disabled={isSaving}
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setIsEditModalOpen(false)}
+                  disabled={isSaving}
+                  className="flex-1 bg-gray-100 text-gray-500 py-4 rounded-2xl text-sm font-black hover:bg-gray-200 transition-all disabled:opacity-50"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={saveImageChanges}
+                  disabled={isSaving}
+                  className="flex-[2] bg-blue-600 text-white py-4 rounded-2xl text-sm font-black shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {isSaving ? "저장 중..." : "저장하기"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

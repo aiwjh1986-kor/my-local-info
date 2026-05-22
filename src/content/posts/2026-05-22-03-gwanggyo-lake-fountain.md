@@ -1,10 +1,10 @@
 ---
-title: "수원 광교 호수공원 음악 분수쇼 야경 관람 가이드 및 주차장 총정리"
+title: 수원 광교 호수공원 음악 분수쇼 야경 관람 가이드 및 주차장 총정리
 date: 2026-05-22T08:20:00.000Z
-summary: "용인 근교에서 즐길 수 있는 최고의 무료 야경 코스인 수원 광교 호수공원의 빛과 음악의 분수쇼 상세 일정과 주차 정보를 안내합니다."
+summary: 용인 근교에서 즐길 수 있는 최고의 무료 야경 코스인 수원 광교 호수공원의 빛과 음악의 분수쇼 상세 일정과 주차 정보를 안내합니다.
 category: 지역행사
-image: "new_01.png"
-link: "https://www.suwon.go.kr/web/visitsuwon/index.do"
+image: event/20.png
+link: 'https://www.suwon.go.kr/web/visitsuwon/index.do'
 tags:
   - 광교호수공원
   - 음악분수쇼

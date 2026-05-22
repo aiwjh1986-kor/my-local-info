@@ -1,12 +1,13 @@
 ---
 id: tip16
-title: "✨ 화장실 곰팡이 뿌리뽑기! 제거 방법부터 방지 꿀팁까지"
-date: "2026-05-15"
-category: "욕실관리"
-summary: "눅눅한 화장실의 불청객 곰팡이, 완벽 제거법과 절대 다시 안 생기게 하는 예방 비결을 과학적인 원리와 함께 공개합니다."
-image: "bathroom_mold_removal_guide_1778851136495.png"
-productName: "뿌리까지 싹! 강력 곰팡이 제거 젤/스프레이"
-productLink: "https://www.coupang.com/np/search?q=%ED%99%94%EC%9E%A5%EC%8B%A4+%EA%B3%B0%ED%8C%A1%EC%9D%B4+%EC%A0%9C%EA%B1%B0%EC%A0%9C"
+title: ✨ 화장실 곰팡이 뿌리뽑기! 제거 방법부터 방지 꿀팁까지
+date: '2026-05-15'
+category: 욕실관리
+summary: '눅눅한 화장실의 불청객 곰팡이, 완벽 제거법과 절대 다시 안 생기게 하는 예방 비결을 과학적인 원리와 함께 공개합니다.'
+image: 'coopang/16.png'
+productName: 뿌리까지 싹! 강력 곰팡이 제거 젤/스프레이
+productLink: >-
+  https://www.coupang.com/np/search?q=%ED%99%94%EC%9E%A5%EC%8B%A4+%EA%B3%B0%ED%8C%A1%EC%9D%B4+%EC%A0%9C%EA%B1%B0%EC%A0%9C
 ---
 
 여름철뿐만 아니라 사계절 내내 우리를 괴롭히는 화장실의 검은 그림자, 바로 **곰팡이**입니다. 타일 사이사이에 박힌 곰팡이는 미관상 좋지 않을 뿐만 아니라, 호흡기 질환과 피부염의 원인이 되기도 합니다.

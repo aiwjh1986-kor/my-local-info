@@ -65,9 +65,11 @@ interface GasResponse {
 }
 
 export default function DashboardClient({
-  allCards
+  initialBlogPosts,
+  initialFeaturedCards
 }: {
-  allCards: FeaturedCard[]
+  initialBlogPosts: FeaturedCard[],
+  initialFeaturedCards: FeaturedCard[]
 }) {
   const router = useRouter();
   const { lastUpdate } = data;
@@ -192,10 +194,32 @@ export default function DashboardClient({
 
   // ✨ 기존의 복잡한 자동 슬라이더 로직들은 CSS 애니메이션 방식으로 대체되어 제거되었습니다.
 
-  // #1 & #2 속도 개선: 
-  // - 무거운 본문(content)을 초기 로딩에서 제외했습니다.
-  // - 데이터 병합과 정렬을 서버(page.tsx)에서 이미 처리해서 넘겨받습니다.
-  // const allCards = getCombinedData(); // 이 복잡한 계산을 브라우저가 더 이상 하지 않습니다!
+  const featuredCards = initialFeaturedCards;
+  const blogPosts = initialBlogPosts;
+
+  // 중복 제거 및 데이터 통합 (제목 기준)
+  const getCombinedData = () => {
+    // 1. 모든 데이터를 하나로 통합
+    const combined = [...initialBlogPosts, ...initialFeaturedCards];
+
+    // 2. 중복 제거 (slug 또는 id 기준)
+    const unique = Array.from(new Map(combined.map(item => [item.slug || item.id, item])).values());
+
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    // 3. 무조건 날짜 최신순(내림차순)으로만 정렬
+    return unique.sort((a, b) => {
+      const dateAStr = (a.date || "").toString().replace(/\./g, '-');
+      const dateBStr = (b.date || "").toString().replace(/\./g, '-');
+
+      const dateA = new Date(dateAStr).getTime();
+      const dateB = new Date(dateBStr).getTime();
+
+      return dateB - dateA;
+    });
+  };
+
+  const allCards = getCombinedData();
   // 🆕 최신 정보: [종료] 태그가 붙지 않고 지방선거 카테고리가 아닌 글들 중 상위 12개만 노출
   const latestCards = allCards
     .filter(c => !c.title.includes("[종료]") && c.category !== "지방선거" && c.category !== "election")
@@ -963,7 +987,7 @@ export default function DashboardClient({
                   </div>
                   <div>
                     <h2 className="text-[20px] font-bold text-gray-900 font-[family-name:var(--font-noto-serif-kr)] tracking-tight">
-                      실생활 꿀팁과 아이템
+                      추천 콘텐츠
                     </h2>
                     <p className="text-[11px] text-gray-400 font-bold mt-1">용인시 생활이 더 편리해지는 소소한 비결들</p>
                   </div>
@@ -1008,7 +1032,7 @@ export default function DashboardClient({
                       </span>
                     </div>
 
-                    <div className="mb-5 rounded-2xl overflow-hidden aspect-video bg-gray-50 flex-shrink-0">
+                    <div className="mb-5 rounded-2xl overflow-hidden aspect-[16/10] bg-gray-50 flex-shrink-0">
                       <img
                         src={getImageUrl(tip.image)}
                         alt={tip.title}
