@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { getAllFilesRecursive } = require('./utils');
 require('dotenv').config({ path: path.join(__dirname, '../.env.local') });
 
 async function fetchElectionNews() {
@@ -103,21 +104,18 @@ tags: [용인시, 지방선거, 용인뉴스, 선거동향]
 
     // 마크다운 파일 저장
     const postsDir = path.join(__dirname, '../src/content/posts');
-    const existingFiles = fs.readdirSync(postsDir);
-    const todayFiles = existingFiles.filter(f => f.startsWith(dateStr));
-    
-    let nextNum = 1;
-    if (todayFiles.length > 0) {
-      const numbers = todayFiles.map(f => {
-        const match = f.match(new RegExp(`${dateStr}-(\\d+)`));
-        return match ? parseInt(match[1]) : 0;
-      });
-      nextNum = Math.max(...numbers) + 1;
-    }
+    const existingFilesPaths = getAllFilesRecursive(postsDir);
+    const todayFiles = existingFilesPaths.filter(f => path.basename(f).startsWith(dateStr) && f.endsWith('.md'));
+    let nextNum = todayFiles.length + 1;
     const nextNumStr = String(nextNum).padStart(2, '0');
     const slug = `${dateStr}-${nextNumStr}-election-news`;
     const fileName = `${slug}.md`;
-    fs.writeFileSync(path.join(postsDir, fileName), cleanContent, 'utf8');
+
+    const targetDir = path.join(postsDir, '지방선거');
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
+    fs.writeFileSync(path.join(targetDir, fileName), cleanContent, 'utf8');
     
     console.log(`지방선거 뉴스 포스트 생성 완료: ${fileName}`);
 

@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import fs from 'fs';
 import path from 'path';
+import { getAllFilesRecursive } from '@/lib/posts';
 
 export const dynamic = 'force-static';
 
@@ -12,11 +13,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   let blogUrls: MetadataRoute.Sitemap = [];
   
   if (fs.existsSync(postsDirectory)) {
-    const fileNames = fs.readdirSync(postsDirectory);
-    blogUrls = fileNames
-      .filter((fileName) => fileName.endsWith('.md'))
-      .map((fileName) => ({
-        url: `${baseUrl}/blog/${fileName.replace(/\.md$/, '')}`,
+    const filePaths = getAllFilesRecursive(postsDirectory);
+    blogUrls = filePaths
+      .filter((filePath) => filePath.endsWith('.md'))
+      .map((filePath) => ({
+        url: `${baseUrl}/blog/${path.basename(filePath).replace(/\.md$/, '')}`,
         lastModified: new Date(),
         changeFrequency: 'daily' as const,
         priority: 0.7,

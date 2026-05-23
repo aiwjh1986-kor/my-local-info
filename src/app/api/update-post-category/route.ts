@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { getAllFilesRecursive } from '@/lib/posts';
 
 export async function POST(request: Request) {
   try {
@@ -10,17 +11,28 @@ export async function POST(request: Request) {
     // 1. 마크다운 파일 업데이트
     if (slug) {
       const postsDirectory = path.join(process.cwd(), 'src/content/posts');
-      const files = fs.readdirSync(postsDirectory);
-      const targetFile = files.find(file => file.includes(slug));
+      const filesPaths = getAllFilesRecursive(postsDirectory);
+      const targetFilePath = filesPaths.find(file => path.basename(file).includes(slug));
 
-      if (targetFile) {
-        const filePath = path.join(postsDirectory, targetFile);
-        const fileContent = fs.readFileSync(filePath, 'utf8');
+      if (targetFilePath) {
+        const fileContent = fs.readFileSync(targetFilePath, 'utf8');
         const { data, content } = matter(fileContent);
         
         data.category = category;
         const newContent = matter.stringify(content, data);
-        fs.writeFileSync(filePath, newContent);
+        
+        const safeCategory = category.replace(/[<>:"/\\|?*]/g, '_');
+        const newTargetDir = path.join(postsDirectory, safeCategory);
+        if (!fs.existsSync(newTargetDir)) {
+          fs.mkdirSync(newTargetDir, { recursive: true });
+        }
+        
+        const newFilePath = path.join(newTargetDir, path.basename(targetFilePath));
+        fs.writeFileSync(newFilePath, newContent);
+        
+        if (newFilePath !== targetFilePath) {
+          fs.unlinkSync(targetFilePath);
+        }
       }
     }
 

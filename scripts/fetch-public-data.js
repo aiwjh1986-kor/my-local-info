@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { getAllFilesRecursive } = require('./utils');
 require('dotenv').config({ path: path.join(__dirname, '../.env.local') });
 
 async function fetchPublicData() {
@@ -86,10 +87,10 @@ async function fetchPublicData() {
 
     // 홈페이지에 이미 게시된 글 제목들 가져오기
     const postsDir = path.join(__dirname, '../src/content/posts');
-    const existingFiles = fs.readdirSync(postsDir);
-    const postTitles = existingFiles.map(file => {
-      if (!file.endsWith('.md')) return '';
-      const content = fs.readFileSync(path.join(postsDir, file), 'utf8');
+    const existingFilesPaths = getAllFilesRecursive(postsDir);
+    const postTitles = existingFilesPaths.map(filePath => {
+      if (!filePath.endsWith('.md')) return '';
+      const content = fs.readFileSync(filePath, 'utf8');
       const titleMatch = content.match(/title:\s*"(.*)"/) || content.match(/title:\s*(.*)/);
       return titleMatch ? titleMatch[1].replace(/[^\wㄱ-ㅎ가-힣]/g, '') : '';
     }).filter(t => t !== '');

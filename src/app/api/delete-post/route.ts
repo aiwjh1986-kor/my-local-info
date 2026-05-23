@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { getAllFilesRecursive } from '@/lib/posts';
 
 export async function POST(request: Request) {
   // 관리자 확인
@@ -19,26 +20,16 @@ export async function POST(request: Request) {
   try {
     const postsDirectory = path.join(process.cwd(), 'src/content/posts');
     
-    // 파일명을 찾기 위한 시도 (slug가 b1인 경우와 2026-05-02-b1인 경우 모두 대응)
     let foundPath = '';
-    const possiblePaths = [
-      path.join(postsDirectory, `${slug}.md`),
-      // 혹시 데이터 파일의 ID만 넘어온 경우를 위해 전체 파일 목록에서 검색
-    ];
+    const allFiles = getAllFilesRecursive(postsDirectory);
     
-    for (const p of possiblePaths) {
-      if (fs.existsSync(p)) {
-        foundPath = p;
-        break;
-      }
-    }
-
-    // 만약 못 찾았다면 파일 목록에서 ID가 포함된 파일을 찾음 (예: b2 -> 2026-05-02-b2.md)
-    if (!foundPath) {
-      const files = fs.readdirSync(postsDirectory);
-      const matchedFile = files.find(f => f.endsWith(`-${slug}.md`) || f === `${slug}.md`);
-      if (matchedFile) {
-        foundPath = path.join(postsDirectory, matchedFile);
+    const exactMatch = allFiles.find(f => path.basename(f) === `${slug}.md`);
+    if (exactMatch) {
+      foundPath = exactMatch;
+    } else {
+      const partialMatch = allFiles.find(f => path.basename(f).endsWith(`-${slug}.md`));
+      if (partialMatch) {
+        foundPath = partialMatch;
       }
     }
 

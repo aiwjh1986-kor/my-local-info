@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { getAllFilesRecursive } = require('./utils');
 
 async function autoArchive() {
   const postsDir = path.join(__dirname, '../src/content/posts');
@@ -12,9 +13,10 @@ async function autoArchive() {
   let archivedCardsCount = 0;
 
   // 1. 마크다운 파일 정리
-  const files = fs.readdirSync(postsDir).filter(f => f.endsWith('.md'));
-  for (const file of files) {
-    const filePath = path.join(postsDir, file);
+  const filesPaths = getAllFilesRecursive(postsDir);
+  const files = filesPaths.filter(f => f.endsWith('.md'));
+  for (const filePath of files) {
+    const file = path.basename(filePath);
     let content = fs.readFileSync(filePath, 'utf8');
 
     const frontmatterMatch = content.match(/^---\n([\s\S]+?)\n---/);
@@ -76,8 +78,8 @@ async function autoArchive() {
         } else if (card.slug.includes('gas-prices')) {
           targetDeadline = card.date;
         } else {
-          const postPath = path.join(postsDir, `${card.slug}.md`);
-          if (fs.existsSync(postPath)) {
+          const postPath = filesPaths.find(f => path.basename(f) === `${card.slug}.md`);
+          if (postPath && fs.existsSync(postPath)) {
             const postContent = fs.readFileSync(postPath, 'utf8');
             const m = postContent.match(/deadline:\s*([\d-]+)/) || postContent.match(/endDate:\s*([\d-]+)/);
             if (m) targetDeadline = m[1];

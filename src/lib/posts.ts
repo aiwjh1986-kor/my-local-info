@@ -38,18 +38,35 @@ export interface TipData {
 
 const tipsDirectory = path.join(process.cwd(), 'src/content/tips');
 
+export function getAllFilesRecursive(dirPath: string, arrayOfFiles: string[] = []): string[] {
+  if (!fs.existsSync(dirPath)) return arrayOfFiles;
+  const files = fs.readdirSync(dirPath);
+
+  files.forEach((file) => {
+    const fullPath = path.join(dirPath, file);
+    if (fs.statSync(fullPath).isDirectory()) {
+      arrayOfFiles = getAllFilesRecursive(fullPath, arrayOfFiles);
+    } else {
+      if (file.endsWith('.md')) {
+        arrayOfFiles.push(fullPath);
+      }
+    }
+  });
+
+  return arrayOfFiles;
+}
+
 export function getSortedPostsData(): PostData[] {
   // src/content/posts 폴더가 없으면 빈 배열 반환
   if (!fs.existsSync(postsDirectory)) {
     return [];
   }
 
-  const fileNames = fs.readdirSync(postsDirectory);
-  const allPostsData = fileNames
-    .filter((fileName) => fileName.endsWith('.md'))
-    .map((fileName) => {
+  const allFiles = getAllFilesRecursive(postsDirectory);
+  const allPostsData = allFiles
+    .map((fullPath) => {
+      const fileName = path.basename(fullPath);
       const slug = fileName.replace(/\.md$/, '');
-      const fullPath = path.join(postsDirectory, fileName);
       const fileContents = fs.readFileSync(fullPath, 'utf8');
       const matterResult = matter(fileContents);
 
@@ -137,9 +154,10 @@ export function getSortedPostsData(): PostData[] {
 }
 
 export function getPostData(slug: string): PostData | null {
-  const fullPath = path.join(postsDirectory, `${slug}.md`);
+  const allFiles = getAllFilesRecursive(postsDirectory);
+  const fullPath = allFiles.find(file => path.basename(file) === `${slug}.md`);
 
-  if (!fs.existsSync(fullPath)) {
+  if (!fullPath) {
     return null;
   }
 

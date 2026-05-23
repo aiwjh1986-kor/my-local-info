@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { getAllFilesRecursive } from '@/lib/posts';
 
 export async function POST(request: Request) {
   // 관리자 확인
@@ -19,9 +20,10 @@ export async function POST(request: Request) {
 
   try {
     const postsDirectory = path.join(process.cwd(), 'src/content/posts');
-    const fullPath = path.join(postsDirectory, `${slug}.md`);
+    const allFiles = getAllFilesRecursive(postsDirectory);
+    const fullPath = allFiles.find(f => path.basename(f) === `${slug}.md`);
 
-    if (!fs.existsSync(fullPath)) {
+    if (!fullPath) {
       return NextResponse.json({ success: false, message: '게시글을 찾을 수 없습니다.' }, { status: 404 });
     }
 

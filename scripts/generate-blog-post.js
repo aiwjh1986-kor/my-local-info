@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { getAllFilesRecursive } = require('./utils');
 require('dotenv').config({ path: path.join(__dirname, '../.env.local') });
 
 async function generateBlogPosts() {
@@ -33,10 +34,10 @@ async function generateBlogPosts() {
     });
 
     // 이미 작성된 글 제목 리스트 가져오기 (매 루프마다 갱신하지 않고 초기에 한 번)
-    const existingFiles = fs.readdirSync(postsDir);
-    const postTitles = existingFiles.map(file => {
-      if (!file.endsWith('.md')) return '';
-      const content = fs.readFileSync(path.join(postsDir, file), 'utf8');
+    const existingFilesPaths = getAllFilesRecursive(postsDir);
+    const postTitles = existingFilesPaths.map(filePath => {
+      if (!filePath.endsWith('.md')) return '';
+      const content = fs.readFileSync(filePath, 'utf8');
       const titleMatch = content.match(/title:\s*"(.*)"/) || content.match(/title:\s*(.*)/);
       if (!titleMatch) return '';
       // 제목에서 특수문자 및 [용인] 등 말머리 제거 후 비교용 문자열 생성
@@ -55,7 +56,7 @@ async function generateBlogPosts() {
       if (!itemNameClean) continue;
 
       // 이미 작성된 글인지 확인
-      const isAlreadyWritten = existingFiles.some(file => item.id && file.includes(item.id)) || 
+      const isAlreadyWritten = existingFilesPaths.some(filePath => item.id && path.basename(filePath).includes(item.id)) || 
                                postTitles.some(pt => {
                                  // 매우 짧은 제목은 완전 일치만 확인
                                  if (pt.length < 5 || itemNameClean.length < 5) return pt === itemNameClean;
@@ -126,13 +127,19 @@ tags: [용인시, 실생활정보, 용인가이드]
         cleanContent = cleanContent.replace(/^```markdown\n/, '').replace(/\n```$/, '');
       }
 
-      const currentFiles = fs.readdirSync(postsDir);
-      const todayFiles = currentFiles.filter(f => f.startsWith(today));
+      const currentFilesPaths = getAllFilesRecursive(postsDir);
+      const todayFiles = currentFilesPaths.filter(f => path.basename(f).startsWith(today));
       let nextNum = todayFiles.length + 1;
       const nextNumStr = String(nextNum).padStart(2, '0');
       const fileName = `${today}-${nextNumStr}-${keyword}.md`;
 
-      fs.writeFileSync(path.join(postsDir, fileName), cleanContent, 'utf8');
+      const category = item.category === 'event' || item.category === '지역행사' ? '지역행사' : '생활정보';
+      const targetDir = path.join(postsDir, category);
+      if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir, { recursive: true });
+      }
+
+      fs.writeFileSync(path.join(targetDir, fileName), cleanContent, 'utf8');
       console.log(`  - 생성 완료: ${fileName}`);
       generatedCount++;
 

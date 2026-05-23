@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { getAllFilesRecursive } = require('./utils');
 require('dotenv').config({ path: path.join(__dirname, '../.env.local') });
 
 async function fetchGasPrices() {
@@ -91,21 +92,27 @@ async function fetchGasPrices() {
     let content = `---\ntitle: "${title}"\ndate: ${kstDate.toISOString()}\nsummary: "${summary}"\ncategory: 생활정보\nimage: info-gas.png\ntags: [용인시, 최저가주유소, 기름값정보, 실시간위젯]\n---\n\n${bodyContent}`;
 
     const postsDir = path.join(__dirname, '../src/content/posts');
-    const existingFiles = fs.readdirSync(postsDir);
     
     // 오늘 날짜로 생성할 파일명
     const slug = `${dateStr}-01-gas-prices`;
     const fileName = `${slug}.md`;
 
-    // 1. 과거 주유소 글 싹 다 지우기 (Auto Cleanup)
-    const oldGasFiles = existingFiles.filter(f => f.includes('gas-prices') && f !== fileName);
-    for (const oldFile of oldGasFiles) {
-      fs.unlinkSync(path.join(postsDir, oldFile));
-      console.log(`과거 주유소 포스트 삭제됨: ${oldFile}`);
-    }
+    const existingFilesPaths = getAllFilesRecursive(postsDir);
+    const gasPosts = existingFilesPaths.filter(f => f.endsWith('.md') && f.includes('-gas-prices.md'));
+    
+    // 이전 gas-prices 포스트 삭제 (있다면)
+    gasPosts.forEach(filePath => {
+      if (path.basename(filePath) !== fileName) {
+        fs.unlinkSync(filePath);
+        console.log(`과거 주유소 포스트 삭제됨: ${path.basename(filePath)}`);
+      }
+    });
 
-    // 2. 오늘의 새 글 저장
-    fs.writeFileSync(path.join(postsDir, fileName), content, 'utf8');
+    const targetDir = path.join(postsDir, '생활정보');
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
+    fs.writeFileSync(path.join(targetDir, fileName), content, 'utf8');
     console.log(`기름값 SEO용 블로그 포스트 생성 완료: ${fileName}`);
 
   } catch (error) {
