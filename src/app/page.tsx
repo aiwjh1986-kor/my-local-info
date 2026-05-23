@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { getSortedPostsData } from "@/lib/posts";
 import DashboardClient from "./DashboardClient";
+import MobileApp from "./MobileApp";
 import fs from 'fs';
 import path from 'path';
 
@@ -36,24 +37,36 @@ export default function Page() {
     console.error("Failed to read featured-cards.json:", err);
   }
 
-  // #2 속도 개선: 브라우저가 할 일(데이터 합치고 정렬하기)을 서버에서 미리 처리
-  const combined = [...blogPosts, ...featuredCards];
-  const unique = Array.from(new Map(combined.map(item => [item.slug || item.id, item])).values());
-  const allCards = unique.sort((a, b) => {
-    const dateA = new Date((a.date || "").toString().replace(/\./g, '-')).getTime();
-    const dateB = new Date((b.date || "").toString().replace(/\./g, '-')).getTime();
-    return dateB - dateA;
-  });
-
-  // life-tips.json 읽어오기 (SEO용)
+  // life-tips.json 읽어오기 (SEO용 및 꿀팁 탭 연동)
   const tipsPath = path.join(process.cwd(), 'public/data/life-tips.json');
-  let lifeTips = [];
+  let lifeTips: any[] = [];
   try {
     const fileContent = fs.readFileSync(tipsPath, 'utf8');
     lifeTips = JSON.parse(fileContent);
   } catch (err) {
     console.error("Failed to read life-tips.json:", err);
   }
+
+  const tipsCards = lifeTips.map(tip => ({
+    category: "실생활꿀팁",
+    title: tip.title,
+    summary: tip.description,
+    date: TODAY,
+    region: "전체",
+    image: tip.image,
+    slug: tip.slug || tip.id,
+    link: tip.productLink,
+    content: `### 💡 꿀팁: ${tip.title}\n\n${tip.description}\n\n---\n\n### 🛒 추천 아이템: ${tip.productName}\n\n[👉 최저가 확인 및 구매하기](${tip.productLink})`
+  }));
+
+  // #2 속도 개선: 브라우저가 할 일(데이터 합치고 정렬하기)을 서버에서 미리 처리
+  const combined = [...blogPosts, ...featuredCards, ...tipsCards];
+  const unique = Array.from(new Map(combined.map(item => [item.slug || item.id, item])).values());
+  const allCards = unique.sort((a, b) => {
+    const dateA = new Date((a.date || "").toString().replace(/\./g, '-')).getTime();
+    const dateB = new Date((b.date || "").toString().replace(/\./g, '-')).getTime();
+    return dateB - dateA;
+  });
 
   // 구글 검색용 구조화 데이터 (HowTo 모음)
   const howToJsonLd = {
@@ -93,9 +106,16 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
       />
-      <DashboardClient 
-        allCards={allCards} 
-      />
+      
+      {/* PC 버전 (태블릿 이상에서만 표시) */}
+      <div className="hidden md:block">
+        <DashboardClient allCards={allCards} />
+      </div>
+
+      {/* 스마트폰 전용 버전 (모바일에서만 표시) */}
+      <div className="block md:hidden">
+        <MobileApp allCards={allCards} gasPrices={gasPrices} />
+      </div>
     </Suspense>
   );
 }

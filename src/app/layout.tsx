@@ -206,15 +206,19 @@ export default function RootLayout({
         </noscript>
         <CustomCursor />
         
-        {/* 프리미엄 반응형 글래스모피즘 헤더 */}
-        <Suspense fallback={<div className="h-16" />}>
-          <Header />
-        </Suspense>
+        {/* 프리미엄 반응형 글래스모피즘 헤더 (PC 전용) */}
+        <div className="hidden md:block">
+          <Suspense fallback={<div className="h-16" />}>
+            <Header />
+          </Suspense>
+        </div>
 
-        <main className="flex-grow pt-4">
+        <main className="flex-grow">
           {children}
         </main>
-        <Footer />
+        <div className="hidden md:block">
+          <Footer />
+        </div>
         <BGMPlayer />
       </body>
     </html>

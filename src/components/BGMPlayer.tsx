@@ -59,6 +59,17 @@ export default function BGMPlayer() {
       audioRef.current.play().catch(err => console.log("Play failed on track change:", err));
     }
   }, [currentTrackIndex]);
+
+  useEffect(() => {
+    const handleToggle = () => togglePlay();
+    window.addEventListener('toggle-bgm', handleToggle);
+    return () => window.removeEventListener('toggle-bgm', handleToggle);
+  }, [isPlaying]);
+
+  // 브로드캐스트 상태
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('bgm-state', { detail: { isPlaying } }));
+  }, [isPlaying]);
  
   const togglePlay = () => {
     if (audioRef.current) {
@@ -75,7 +86,7 @@ export default function BGMPlayer() {
   };
  
   return (
-    <div className="fixed bottom-[210px] right-6 lg:bottom-[230px] lg:right-6 z-[200] flex flex-col items-center gap-2">
+    <div className="hidden md:flex fixed bottom-[210px] right-6 lg:bottom-[230px] lg:right-6 z-[200] flex-col items-center gap-2">
       <button
         onClick={(e) => {
           e.preventDefault();
