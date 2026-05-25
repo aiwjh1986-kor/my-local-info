@@ -60,25 +60,33 @@ async function fetchPublicData() {
       const summary = item['서비스목적요약'] || '';
       const target = item['지원대상'] || '';
 
-      // 1. 용인 관련 키워드 체크 (이름, 기관, 요약, 대상 등 어디라도 있으면 통과)
-      const isYongin = serviceName.includes('용인') || 
-                       agencyName.includes('용인') || 
-                       summary.includes('용인') || 
-                       target.includes('용인');
+      // 제외어 (지원금, 지원사업, 수계 등 아이와 무관한 행정/지원 제외)
+      if (serviceName.includes('지원사업') || serviceName.includes('지원금') || serviceName.includes('수계') || serviceName.includes('수당') || serviceName.includes('융자')) {
+        return false;
+      }
 
-      if (isYongin) return true;
+      // 1. 용인 및 근교(수원, 성남, 광주, 화성) 관련 키워드 체크
+      const isYongin = serviceName.includes('용인') || agencyName.includes('용인') || summary.includes('용인') || target.includes('용인');
+      const isSuwon = serviceName.includes('수원') || agencyName.includes('수원') || summary.includes('수원') || target.includes('수원');
+      const isSeongnam = serviceName.includes('성남') || agencyName.includes('성남') || summary.includes('성남') || target.includes('성남');
+      const isGwangju = serviceName.includes('경기 광주') || agencyName.includes('경기 광주') || summary.includes('경기 광주') || target.includes('경기 광주') || agencyName.includes('경기도 광주시');
+      const isHwaseong = serviceName.includes('화성') || agencyName.includes('화성') || summary.includes('화성') || target.includes('화성');
+
+      const isTargetArea = isYongin || isSuwon || isSeongnam || isGwangju || isHwaseong;
       
-      // 2. 지역행사/관광 정보 확장 (축제, 행사, 공연, 관광, 박물관, 미술관, 도서관, 전시)
+      // 2. 문화/지역행사/관광 정보 확장
       const isCulture = serviceName.includes('행사') || serviceName.includes('축제') || 
                         serviceName.includes('공연') || serviceName.includes('관광') ||
                         serviceName.includes('박물관') || serviceName.includes('미술관') ||
                         serviceName.includes('도서관') || serviceName.includes('전시');
 
-      if (isCulture) return true; 
+      // 3. 아이/가족/체험 중심 정보
+      const isKids = serviceName.includes('어린이') || serviceName.includes('가족') || 
+                     serviceName.includes('체험') || serviceName.includes('유아') || 
+                     summary.includes('어린이') || summary.includes('가족');
 
-      // 3. 경기도 단위 정보 (지원금 등 혜택 위주)
-      const isGyeonggi = serviceName.includes('경기') || agencyName.includes('경기');
-      if (isGyeonggi) return true;
+      // 해당 지역이면서 문화행사이거나 아이 관련 행사인 경우만 통과
+      if (isTargetArea && (isCulture || isKids)) return true;
 
       return false;
     });

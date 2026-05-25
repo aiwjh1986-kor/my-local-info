@@ -176,22 +176,6 @@
       }
     },
     {
-      "id": "b5",
-      "name": "한강수계 주민지원(일반지원사업)",
-      "category": "grant",
-      "startDate": "2020-12-17",
-      "endDate": "2099-12-31",
-      "location": "시·군·구청 또는 읍·면·동 주민센터",
-      "target": "상수원관리지역(용인, 남양주 등) 규제로 인해 재산상 불이익을 받는 주민 및 마을",
-      "summary": "한강 상수원관리지역 주민들을 대상으로 소득증대 및 복지 증진을 위한 마을단위 또는 가구별 사업비를 지원합니다.",
-      "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/148000000035",
-      "weather": {
-        "temp": "12",
-        "desc": "Overcast",
-        "humidity": "89"
-      }
-    },
-    {
       "id": "b6",
       "name": "관광진흥개발기금 융자지원",
       "category": "grant",
@@ -286,7 +270,23 @@
         "desc": "Sunny",
         "humidity": "40"
       }
+    },
+    {
+      "id": "b18",
+      "name": "수도법 상수원 보호구역 주민지원",
+      "category": "grant",
+      "startDate": "2020-12-17",
+      "endDate": "2026-12-31",
+      "location": "시·군·구청",
+      "target": "상수원보호구역 주민 또는 농림업종사자(수계기금 지원지역 제외)",
+      "summary": "상수원보호구역 주민 등을 대상으로 소득증대, 복지증진 등의 사업을 지원합니다.",
+      "link": "https://www.gov.kr/portal/rcvfvrSvc/dtlEx/148000000042",
+      "weather": {
+        "temp": "28",
+        "desc": "Sunny",
+        "humidity": "56"
+      }
     }
   ],
-  "lastUpdate": "2026-05-04"
+  "lastUpdate": "2026-05-25"
 }
