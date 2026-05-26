@@ -61,7 +61,7 @@ jobs:
           PUBLIC_DATA_API_KEY: ${{ secrets.PUBLIC_DATA_API_KEY }}
 
       - name: Deploy to Cloudflare Pages
-        run: npx wrangler pages deploy out --project-name=my-local-info
+        run: npx wrangler pages deploy out --project-name=my-local-info --branch="${{ github.ref_name }}" --commit-hash="${{ github.sha }}" --commit-message="Deploy from GitHub Actions" --commit-dirty=false
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
