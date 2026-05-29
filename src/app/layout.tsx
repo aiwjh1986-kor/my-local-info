@@ -94,6 +94,7 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${baloo2.variable} ${gamjaFlower.variable} ${notoSerifKr.variable} h-full antialiased`}
     >
       <head>
