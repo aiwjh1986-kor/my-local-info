@@ -6,7 +6,7 @@ category: "생활가전"
 summary: "비싼 이어폰 잃어버릴까 노심초사하셨나요? 커피 몇 잔 값이면 충분한 기적의 가성비, QCY 시리즈를 소개합니다."
 image: "coopang/14.png"
 productName: "가성비 끝판왕! QCY 무선 이어폰"
-productLink: "https://www.coupang.com/np/search?component=&q=QCY+T13+T43"
+productLink: "https://m.coupang.com/nm/search?q=QCY+T13+T43"
 ---
 
 ## 비싼 무선 이어폰, 잃어버릴까 불안하신가요?

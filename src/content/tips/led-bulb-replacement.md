@@ -7,7 +7,7 @@ summary: 자주 나가는 일반 전구 대신 수명 길고 전기료 아끼는
 image: coopang/02.png
 productName: 국민 전구! 번개표 LED 10W
 productLink: >-
-  https://www.coupang.com/np/search?component=&q=%EB%B2%88%EA%B0%9C%ED%91%9C+LED+%EC%A0%84%EA%B5%AC+10W+%EC%A3%BC%EA%B4%91%EC%83%89
+  https://m.coupang.com/nm/search?q=%EB%B2%88%EA%B0%9C%ED%91%9C+LED+%EC%A0%84%EA%B5%AC+10W+%EC%A3%BC%EA%B4%91%EC%83%89
 ---
 # 전기료 절약의 첫걸음, LED 전구 교체 가이드: 고르는 법부터 안전한 설치법까지
 

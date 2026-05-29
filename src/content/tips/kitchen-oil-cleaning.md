@@ -7,7 +7,7 @@ summary: '기름때 가득한 주방, 베이킹소다 하나면 힘들이지 않
 image: coopang/03.png
 productName: 생활필수품! 대용량 베이킹소다
 productLink: >-
-  https://www.coupang.com/np/search?component=&q=%EB%B2%A0%EC%9D%B4%ED%82%B9%EC%86%8C%EB%8B%A4+%EB%8C%80%EC%9A%A9%EB%9F%89
+  https://m.coupang.com/nm/search?q=%EB%B2%A0%EC%9D%B4%ED%82%B9%EC%86%8C%EB%8B%A4+%EB%8C%80%EC%9A%A9%EB%9F%89
 ---
 ## 만능 살림꾼 베이킹소다의 마법 같은 활용법과 안전한 사용 가이드
 
