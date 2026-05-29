@@ -7,7 +7,7 @@ summary: '청소해도 금방 쌓이는 창틀 먼지, 섬유유연제 코팅으
 image: coopang/06.png
 productName: 향기 뿜뿜! 고농축 섬유유연제
 productLink: >-
-  https://www.coupang.com/np/search?q=%EA%B3%A0%EB%86%8D%EC%B6%95+%EC%84%AC%EC%9C%A0%EC%9C%A0%EC%97%B0%EC%A0%9C
+  https://www.coupang.com/np/search?component=&q=%EA%B3%A0%EB%86%8D%EC%B6%95+%EC%84%AC%EC%9C%A0%EC%9C%A0%EC%97%B0%EC%A0%9C
 ---
 # 봄철 황사 대자연과의 전쟁, '이것' 하나로 창틀 먼지 완벽 방어하는 비법
 

@@ -75,7 +75,14 @@ export default function TipClient({ initialTip }: { initialTip: TipData }) {
 
             {/* 본문 내용 */}
             <div className="prose prose-lg lg:prose-2xl max-w-none prose-slate prose-headings:font-black prose-p:leading-relaxed prose-strong:text-blue-600 mb-16">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              <ReactMarkdown 
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  a: ({ node, ...props }) => (
+                    <a {...props} target="_blank" rel="noopener noreferrer" />
+                  )
+                }}
+              >
                 {initialTip.content}
               </ReactMarkdown>
             </div>
@@ -92,7 +99,7 @@ export default function TipClient({ initialTip }: { initialTip: TipData }) {
                     {initialTip.productName}
                   </div>
                   <button 
-                    onClick={() => window.open(initialTip.productLink, "_blank")}
+                    onClick={() => window.open(initialTip.productLink, "_blank", "noopener,noreferrer")}
                     className="w-full lg:w-auto bg-yellow-400 hover:bg-yellow-500 text-gray-900 px-12 py-5 lg:py-6 rounded-3xl font-black text-xl lg:text-2xl flex items-center justify-center gap-4 shadow-xl shadow-yellow-100 hover:scale-105 transition-all group"
                   >
                     <span>최저가 확인</span>

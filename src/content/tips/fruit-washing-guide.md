@@ -7,7 +7,7 @@ summary: '껍질째 먹는 과일, 그냥 물에 씻기 찝찝하셨죠? 농약 
 image: coopang/15.png
 productName: 안심 세정! 1종 주방세제 과일 채소 세정제
 productLink: >-
-  https://www.coupang.com/np/search?q=%EA%B3%BC%EC%9D%BC+%EC%84%B8%EC%A0%95%EC%A0%9C
+  https://www.coupang.com/np/search?component=&q=%EA%B3%BC%EC%9D%BC+%EC%84%B8%EC%A0%95%EC%A0%9C
 ---
 ## 우리가 매일 먹는 과일, 정말 깨끗하게 씻고 계시나요?
 

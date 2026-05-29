@@ -282,7 +282,16 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
                 <h2 className="text-xl font-bold leading-snug mb-3 tracking-tight">{selectedCard.title}</h2>
                 <div className="text-sm text-gray-400 mb-6 font-medium">{selectedCard.date}</div>
                 <div className="prose prose-sm prose-purple max-w-none">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{selectedCard.content || selectedCard.summary}</ReactMarkdown>
+                  <ReactMarkdown 
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      a: ({ node, ...props }) => (
+                        <a {...props} target="_blank" rel="noopener noreferrer" />
+                      )
+                    }}
+                  >
+                    {selectedCard.content || selectedCard.summary}
+                  </ReactMarkdown>
                 </div>
                 {selectedCard.link && (
                   <a href={selectedCard.link} target="_blank" rel="noreferrer" className="block w-full bg-purple-600 text-white text-center font-bold py-4 rounded-xl mt-8">

@@ -7,7 +7,7 @@ summary: '눅눅한 화장실의 불청객 곰팡이, 완벽 제거법과 절대
 image: 'coopang/16.png'
 productName: 뿌리까지 싹! 강력 곰팡이 제거 젤/스프레이
 productLink: >-
-  https://www.coupang.com/np/search?q=%ED%99%94%EC%9E%A5%EC%8B%A4+%EA%B3%B0%ED%8C%A1%EC%9D%B4+%EC%A0%9C%EA%B1%B0%EC%A0%9C
+  https://www.coupang.com/np/search?component=&q=%ED%99%94%EC%9E%A5%EC%8B%A4+%EA%B3%B0%ED%8C%A1%EC%9D%B4+%EC%A0%9C%EA%B1%B0%EC%A0%9C
 ---
 
 여름철뿐만 아니라 사계절 내내 우리를 괴롭히는 화장실의 검은 그림자, 바로 **곰팡이**입니다. 타일 사이사이에 박힌 곰팡이는 미관상 좋지 않을 뿐만 아니라, 호흡기 질환과 피부염의 원인이 되기도 합니다.
@@ -37,6 +37,6 @@ productLink: >-
 ### 🔗 정보 출처 및 관련 링크
 *   **과학적 근거**: 국립환경과학원 곰팡이 관리 가이드 참고
 *   **살림 노하우**: 현직 청소 전문가들이 추천하는 욕실 관리 루틴
-*   **함께 보면 좋은 제품**: [뿌리까지 싹! 강력 곰팡이 제거 젤/스프레이](https://www.coupang.com/np/search?q=%ED%99%94%EC%9E%A5%EC%8B%A4+%EA%B3%B0%ED%8C%A1%EC%9D%B4+%EC%A0%9C%EA%B1%B0%EC%A0%9C)
+*   **함께 보면 좋은 제품**: [뿌리까지 싹! 강력 곰팡이 제거 젤/스프레이](https://www.coupang.com/np/search?component=&q=%ED%99%94%EC%9E%A5%EC%8B%A4+%EA%B3%B0%ED%8C%A1%EC%9D%B4+%EC%A0%9C%EA%B1%B0%EC%A0%9C)
 
 지긋지긋한 화장실 곰팡이, 이제 과학적인 원리를 이용해 뿌리부터 뽑아보세요. 오늘부터 샤워 후 찬물 한 번, 스퀴지 한 번의 습관이 여러분의 욕실을 호텔처럼 쾌적하게 유지해 줄 것입니다!

@@ -1262,6 +1262,9 @@ export default function DashboardClient({
                           </button>
                         )}
                       </span>
+                    ),
+                    a: ({ node, ...props }) => (
+                      <a {...props} target="_blank" rel="noopener noreferrer" />
                     )
                   }}
                 >

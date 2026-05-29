@@ -75,7 +75,7 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
             {post.link && (
               <div className="mt-8 lg:mt-16">
                 <button 
-                  onClick={() => window.open(post.link, "_blank")}
+                  onClick={() => window.open(post.link, "_blank", "noopener,noreferrer")}
                   className="w-full py-6 lg:py-12 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-[30px] lg:rounded-[60px] font-black text-xl lg:text-5xl shadow-[0_20px_50px_rgba(249,115,22,0.3)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4 lg:gap-8 group"
                 >
                   <span className="text-2xl lg:text-6xl animate-bounce">🔗</span>
@@ -92,6 +92,9 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
               <ReactMarkdown 
                 remarkPlugins={[remarkGfm]}
                 components={{
+                  a: ({ node, ...props }) => (
+                    <a {...props} target="_blank" rel="noopener noreferrer" />
+                  ),
                   p: (props) => <p className="text-base sm:text-lg md:text-xl lg:text-3xl font-bold mb-6 lg:mb-12 leading-[1.6] text-gray-700" {...props} />,
                   h1: (props) => <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-black mb-8 lg:mb-20 text-[#111111] tracking-tighter" {...props} />,
                   h2: (props) => <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-black mb-6 lg:mb-16 text-[#111111] tracking-tighter border-b-4 border-accent/10 pb-3" {...props} />,
@@ -123,7 +126,7 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
             <div className="mt-20 flex flex-col lg:flex-row gap-8">
               {post.link && (
                 <button 
-                  onClick={() => window.open(post.link, "_blank")}
+                  onClick={() => window.open(post.link, "_blank", "noopener,noreferrer")}
                   className="flex-1 py-10 lg:py-14 bg-accent text-white rounded-[40px] lg:rounded-[60px] font-black text-2xl lg:text-5xl shadow-2xl hover:scale-[1.02] transition-all"
                 >
                   홈페이지 바로가기 ➔

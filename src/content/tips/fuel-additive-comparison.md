@@ -6,7 +6,7 @@ category: "차량관리"
 summary: "불스원샷, 검아웃, 맥세이버! 내 차에 맞는 연료첨가제는 무엇일까요? 실제 사용자 리뷰와 특징을 분석해 드립니다."
 image: "coopang/15.png"
 productName: "내 차에 맞는 연료첨가제 구경하기"
-productLink: "https://www.coupang.com/np/search?q=%EC%97%B0%EB%A3%8C%EC%B2%A8%EA%B0%80%EC%A0%9C+%EB%B6%88%EC%8A%A4%EC%9B%90%EC%83%B7+%EA%B2%80%EC%95%84%EC%9B%83+%EB%A7%A5%EC%84%B8%EC%9D%B4%EB%B2%84"
+productLink: "https://www.coupang.com/np/search?component=&q=%EC%97%B0%EB%A3%8C%EC%B2%A8%EA%B0%80%EC%A0%9C+%EB%B6%88%EC%8A%A4%EC%9B%90%EC%83%B7+%EA%B2%80%EC%95%84%EC%9B%83+%EB%A7%A5%EC%84%B8%EC%9D%B4%EB%B2%84"
 ---
 
 ## 내 차 엔진, 예전 같지 않다면? 연료첨가제가 답일까?
