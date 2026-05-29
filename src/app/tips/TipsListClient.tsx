@@ -9,7 +9,7 @@ const V_NUM = "15";
 const IMG_BASE = "/images/";
 
 export default function TipsListClient({ allTips }: { allTips: TipData[] }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -73,55 +73,8 @@ export default function TipsListClient({ allTips }: { allTips: TipData[] }) {
         }}
       />
 
-      {/* 🏮 메뉴 버튼 (상단 바 없이 단독으로 플로팅) */}
-      <button
-        onClick={() => setIsMenuOpen(true)}
-        className="fixed top-6 left-5 z-[60] bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 lg:px-8 lg:py-4 rounded-full shadow-xl hover:scale-110 transition-all flex items-center justify-center group"
-      >
-        <span className="text-xl lg:text-2xl font-extrabold text-gray-800 tracking-wider group-hover:text-blue-600 transition-colors uppercase">MENU</span>
-      </button>
 
-      {/* 2. 사이드바 드로어 */}
-      <aside className={`fixed left-0 top-0 bottom-0 w-[300px] lg:w-[420px] bg-white/95 backdrop-blur-2xl border-r border-gray-100 z-[110] flex flex-col p-8 lg:p-12 shadow-2xl transition-transform duration-500 ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}>
-        <div className="flex items-center justify-between mb-8 lg:mb-16">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 lg:w-14 h-14">
-              <img src={IMG_BASE + "icon-menu-rabbit.png?v=" + V_NUM} alt="Menu Icon" className="w-full h-full object-contain" />
-            </div>
-            <h1 className="text-xl lg:text-3xl font-black text-[#111111]">메뉴</h1>
-          </div>
-          <button onClick={() => setIsMenuOpen(false)} className="text-4xl lg:text-5xl text-gray-300 hover:text-gray-800">×</button>
-        </div>
 
-        <nav className="flex flex-col gap-3 lg:gap-6 overflow-y-auto no-scrollbar">
-          <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-home.png?v=" + V_NUM} label="홈" />
-          <MenuLink onClick={() => router.push("/?tab=지원금")} icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금" />
-          <MenuLink onClick={() => router.push("/?tab=지역행사")} icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" />
-          <MenuLink onClick={() => router.push("/?tab=생활정보")} icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="생활정보" />
-          <MenuLink onClick={() => router.push("/?tab=도서정보")} icon={IMG_BASE + "icon-book.png?v=" + V_NUM} label="도서정보" />
-          <MenuLink onClick={() => router.push("/blog")} icon={IMG_BASE + "icon-blog.png?v=" + V_NUM} label="블로그" />
-          <MenuLink onClick={() => router.push("/tips")} icon={IMG_BASE + "icon-ggul.png?v=" + V_NUM} label="실생활 꿀팁" active={true} />
-        </nav>
-      </aside>
-
-      {isMenuOpen && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[65]" onClick={() => setIsMenuOpen(false)} />
-      )}
-
-      {/* 퀵 내비게이션 바 */}
-      <div className="fixed top-6 left-0 right-0 z-[60] px-6 flex items-center justify-between pointer-events-none">
-        <div className="w-[120px] lg:w-[150px] hidden md:block" />
-        <div className="pointer-events-auto hidden md:flex items-center gap-2 bg-white/70 backdrop-blur-xl border border-white/40 p-2 rounded-full shadow-2xl">
-          <QuickLink icon={IMG_BASE + "icon-home.png?v=" + V_NUM} label="홈" onClick={() => router.push("/")} />
-          <div className="w-[1px] h-4 bg-gray-200 mx-1" />
-          <QuickLink icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금 혜택" onClick={() => router.push("/?tab=지원금")} />
-          <QuickLink icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" onClick={() => router.push("/?tab=지역행사")} />
-          <QuickLink icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="생활 정보" onClick={() => router.push("/?tab=생활정보")} />
-          <QuickLink icon={IMG_BASE + "icon-ggul.png?v=" + V_NUM} label="실생활 꿀팁" onClick={() => router.push("/tips")} />
-        </div>
-        <div className="w-[80px] lg:w-[150px] hidden md:block" />
-      </div>
 
       {/* 🏮 헤더 영역 */}
       <header className="pt-32 lg:pt-48 pb-6 px-6 text-center">
@@ -319,22 +272,6 @@ export default function TipsListClient({ allTips }: { allTips: TipData[] }) {
   );
 }
 
-function MenuLink({ onClick, icon, label, active = false }: any) {
-  return (
-    <div
-      onClick={onClick}
-      className={`flex items-center px-4 lg:px-6 py-2 lg:py-4 rounded-[16px] lg:rounded-[24px] transition-all font-black cursor-pointer group ${active ? "bg-yellow-400 text-gray-900 shadow-lg scale-[1.02]" : "text-gray-500 hover:bg-gray-50"
-        }`}
-    >
-      <div className="flex items-center gap-3 lg:gap-6">
-        <div className="w-8 h-8 lg:w-12 h-12 flex items-center justify-center p-1 transform group-hover:scale-110 transition-transform">
-          <img src={icon} className="w-full h-full object-contain" alt={label} />
-        </div>
-        <span className="text-sm lg:text-lg tracking-tighter whitespace-nowrap">{label}</span>
-      </div>
-    </div>
-  );
-}
 
 function QuickLink({ icon, label, onClick }: any) {
   return (

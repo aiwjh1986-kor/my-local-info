@@ -113,22 +113,7 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
         <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[65]" onClick={() => setIsMenuOpen(false)} />
       )}
 
-      {/* 퀵 내비게이션 바 (중앙/우측 조절) */}
-      <div className="fixed top-6 left-0 right-0 z-[60] px-6 flex items-center justify-between pointer-events-none">
-        <div className="w-[120px] lg:w-[150px] hidden md:block" /> {/* 좌측 여백 확보용 */}
 
-        <div className="pointer-events-auto hidden md:flex items-center gap-2 bg-white/70 backdrop-blur-xl border border-white/40 p-2 rounded-full shadow-2xl">
-          <QuickLink icon={IMG_BASE + "icon-home.png?v=" + V_NUM} label="홈" onClick={() => router.push("/")} />
-          <div className="w-[1px] h-4 bg-gray-200 mx-1" />
-          <QuickLink icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금 혜택" onClick={() => router.push("/?tab=지원금")} />
-          <QuickLink icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" onClick={() => router.push("/?tab=지역행사")} />
-          <QuickLink icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="생활 정보" onClick={() => router.push("/?tab=생활정보")} />
-          <QuickLink icon={IMG_BASE + "icon-book.png?v=" + V_NUM} label="도서 소식" onClick={() => router.push("/?tab=도서정보")} />
-          <QuickLink icon={IMG_BASE + "icon-ggul.png?v=" + V_NUM} label="실생활 꿀팁" onClick={() => router.push("/tips")} />
-        </div>
-
-        <div className="w-[80px] lg:w-[150px] hidden md:block" />
-      </div>
 
       {/* 2. 히어로 타이틀 영역 */}
       <header className="pt-48 lg:pt-48 pb-12 lg:pb-20 px-6 text-center">

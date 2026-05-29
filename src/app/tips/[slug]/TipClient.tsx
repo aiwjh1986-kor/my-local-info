@@ -37,15 +37,7 @@ export default function TipClient({ initialTip }: { initialTip: TipData }) {
         }}
       />
 
-      {/* 🏮 상단 메뉴 & 헤더 (기존 디자인 유지) */}
-      <div className="fixed top-6 left-5 z-[60] flex items-center gap-4">
-        <button 
-          onClick={() => router.push("/")}
-          className="bg-white/80 backdrop-blur-md border border-gray-100 px-6 py-3 rounded-full shadow-xl hover:scale-110 transition-all font-black text-gray-800"
-        >
-          HOME
-        </button>
-      </div>
+
 
       <main className="relative z-10 max-w-4xl mx-auto px-6 pt-32 lg:pt-48">
         <article className="bg-white/90 backdrop-blur-2xl rounded-[40px] lg:rounded-[60px] overflow-hidden shadow-2xl border border-white">
