@@ -6,7 +6,7 @@ category: "생활정보"
 summary: "빨아도 사라지지 않는 수건의 퀴퀴한 냄새, 과탄산소다와 식초를 활용해 완벽하게 잡아보세요."
 image: "coopang/12.png"
 productName: "살림 필수품! 대용량 과탄산소다"
-productLink: "https://m.coupang.com/nm/search?q=%EA%B3%BC%ED%83%84%EC%82%B0%EC%86%8C%EB%8B%A4"
+productLink: "https://link.coupang.com/a/d9uFkttHoa"
 ---
 
 샤워 후 기분 좋게 수건을 꺼냈는데, 코를 찌르는 퀴퀴한 '쉰내' 때문에 인상을 찌푸린 적 있으신가요? 분명히 세탁기로 돌렸고, 심지어 섬유유연제까지 듬뿍 넣었는데 왜 냄새가 사라지지 않을까요?
@@ -41,6 +41,6 @@ productLink: "https://m.coupang.com/nm/search?q=%EA%B3%BC%ED%83%84%EC%82%B0%EC%8
 ### 🔗 정보 출처 및 관련 링크
 *   **학술 자료**: 모락셀라균의 특성과 살균법 연구 (미생물학회지 등 참고)
 *   **살림 노하우**: 현직 세탁 전문가 및 살림 유튜버들의 검증된 세탁 루틴
-*   **함께 보면 좋은 제품**: [살림 필수품! 대용량 과탄산소다](https://m.coupang.com/nm/search?q=%EA%B3%BC%ED%83%84%EC%82%B0%EC%86%8C%EB%8B%A4)
+*   **함께 보면 좋은 제품**: [살림 필수품! 대용량 과탄산소다](https://link.coupang.com/a/d9uFkttHoa)
 
 수건 냄새, 이제 단순히 향기로 덮지 마세요. 과학적인 원리를 이용해 세균의 뿌리를 뽑으면 매일 아침 호텔 수건처럼 상쾌한 기분을 느끼실 수 있습니다!

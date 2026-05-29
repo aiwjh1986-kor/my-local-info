@@ -6,7 +6,7 @@ category: 생활꿀팁
 summary: 독한 세정제 없이 주방세제 자연퐁 3X로 간편하게 화장실의 찌든 때를 청소하는 꿀팁을 소개합니다.
 image: coopang/17.png
 productName: 자연퐁 3X 주방세제
-productLink: 'https://m.coupang.com/nm/search?q=%EC%9E%90%EC%97%B0%ED%90%81+3x'
+productLink: 'https://link.coupang.com/a/d9uWKugibs'
 ---
 
 화장실은 가족 모두가 매일 사용하는 공간인 만큼 꾸준한 관리가 중요합니다. 하지만 매번 강한 세정제를 사용하거나 대청소를 진행하는 것은 시간과 체력 소모가 크기 때문에 부담스럽게 느껴질 수 있습니다. 이러한 경우에는 주방세제로도 잘 알려진 **자연퐁 3X**를 활용하여 간편한 일상 청소를 진행할 수 있습니다.

@@ -46,8 +46,9 @@ export default function TipsListClient({ allTips }: { allTips: TipData[] }) {
   };
 
   const filteredTips = allTips.filter(tip => {
-    return tip.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tip.summary.toLowerCase().includes(searchQuery.toLowerCase());
+    const titleMatch = (tip.title || "").toLowerCase().includes(searchQuery.toLowerCase());
+    const summaryMatch = (tip.summary || "").toLowerCase().includes(searchQuery.toLowerCase());
+    return titleMatch || summaryMatch;
   });
 
   const getImageUrl = (path: string) => {

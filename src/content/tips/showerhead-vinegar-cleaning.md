@@ -7,7 +7,7 @@ summary: 샤워기 물줄기가 예전 같지 않다면? 식초를 이용해 석
 image: coopang/04.png
 productName: 친환경 살림꾼! 넉넉한 식초 세트
 productLink: >-
-  https://m.coupang.com/nm/search?q=%EC%82%B4%EB%A6%BC%EC%9A%A9+%EC%8B%9D%EC%B4%88
+  https://link.coupang.com/a/d9uhLK1NJY
 ---
 ## 샤워기 청소가 꼭 필요한 숨겨진 이유
 
