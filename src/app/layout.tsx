@@ -97,7 +97,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${baloo2.variable} ${gamjaFlower.variable} ${notoSerifKr.variable} h-full antialiased`}
     >
       <head>
-        <script
+        <meta name="google-adsense-account" content="ca-pub-5327170974242376" />
+      </head>
+      <body className="min-h-full flex flex-col font-pretendard bg-background text-foreground transition-colors duration-300">
+        <Script
+          id="theme-script"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               try {
@@ -110,7 +115,6 @@ export default function RootLayout({
             `,
           }}
         />
-        <meta name="google-adsense-account" content="ca-pub-5327170974242376" />
         {process.env.NEXT_PUBLIC_ADSENSE_ID && process.env.NEXT_PUBLIC_ADSENSE_ID !== "나중에_입력" && (
           <Script
             id="adsense-id"
@@ -156,8 +160,8 @@ export default function RootLayout({
             />
           </>
         )}
-        <script
-          key="json-ld-website"
+        <Script
+          id="json-ld-website"
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
@@ -169,8 +173,8 @@ export default function RootLayout({
             })
           }}
         />
-        <script
-          key="json-ld-breadcrumb"
+        <Script
+          id="json-ld-breadcrumb"
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
@@ -193,8 +197,6 @@ export default function RootLayout({
             })
           }}
         />
-      </head>
-      <body className="min-h-full flex flex-col font-pretendard bg-background text-foreground transition-colors duration-300">
         {/* 구글 태그 매니저 (자바스크립트가 꺼져있을 때 작동) */}
         <noscript>
           <iframe
