@@ -4,10 +4,10 @@ title: "\U0001F34E 잔류 농약 걱정 뚝! 깨끗한 과일 세척을 위한 '
 date: '2026-05-05'
 category: 생활정보
 summary: '껍질째 먹는 과일, 그냥 물에 씻기 찝찝하셨죠? 농약 제거 효과가 가장 뛰어난 세척 가이드를 알려드립니다.'
-image: coopang/15.png
+image: coopang/10.png
 productName: 안심 세정! 1종 주방세제 과일 채소 세정제
 productLink: >-
-  https://m.coupang.com/nm/search?q=%EA%B3%BC%EC%9D%BC+%EC%84%B8%EC%A0%95%EC%A0%9C
+  https://link.coupang.com/a/d9t5U5epMG
 ---
 ## 우리가 매일 먹는 과일, 정말 깨끗하게 씻고 계시나요?
 
