@@ -273,16 +273,4 @@ export default function TipsListClient({ allTips }: { allTips: TipData[] }) {
 }
 
 
-function QuickLink({ icon, label, onClick }: any) {
-  return (
-    <button
-      onClick={onClick}
-      className="flex items-center gap-2.5 px-6 py-2.5 rounded-full hover:bg-gray-50 transition-all group"
-    >
-      <div className="w-8 h-8 flex items-center justify-center group-hover:scale-110 transition-transform">
-        <img src={icon} className="w-full h-full object-contain" alt={label} />
-      </div>
-      <span className="text-sm font-black text-gray-700 whitespace-nowrap">{label}</span>
-    </button>
-  );
-}
+
