@@ -6,7 +6,7 @@ category: "생활정보"
 summary: "카페에서 가져온 커피 찌꺼기, 그냥 버리지 마세요! 주방 기름때 제거와 천연 탈취제로 훌륭하게 변신합니다."
 image: "coopang/13.png"
 productName: "간편한 활용! 다용도 국물팩/거름망"
-productLink: "https://m.coupang.com/nm/search?q=%EB%8B%A4%EC%9A%A9%EB%8F%84+%EA%B1%B0%EB%A6%84%EB%A7%9D"
+productLink: "https://link.coupang.com/a/d9tCHcvzxY"
 ---
 
 카페에서 무료로 나눠주는 커피 찌꺼기, 한 봉지 들고 왔다가 결국 곰팡이가 피어 버린 적 있으신가요? 은은한 향기만 보고 가져왔다면 반만 알고 계신 겁니다. 커피 찌꺼기는 사실 화학적으로 매우 흥미롭고 유용한 성분들로 가득 찬 **'천연 마법 가루'**거든요.
@@ -48,6 +48,6 @@ productLink: "https://m.coupang.com/nm/search?q=%EB%8B%A4%EC%9A%A9%EB%8F%84+%EA%
 ### 🔗 정보 출처 및 관련 링크
 *   **학술 자료**: 커피 부산물의 화학적 성분 분석 및 활용 방안 (식품과학회지 참고)
 *   **생활 지혜**: 제로 웨이스트(Zero Waste) 전문가들의 검증된 업사이클링 팁
-*   **함께 보면 좋은 제품**: [간편한 활용! 다용도 국물팩/거름망](https://m.coupang.com/nm/search?q=%EB%B1%A1%ED%81%AC+%EA%B1%B0%EB%A6%84%EB%A7%9D)
+*   **함께 보면 좋은 제품**: [간편한 활용! 다용도 국물팩/거름망](https://link.coupang.com/a/d9tCHcvzxY)
 
 버려지는 커피 찌꺼기의 놀라운 과학! 오늘부터는 그냥 버리지 말고 우리 집 생활 곳곳에서 마법 같은 변화를 경험해 보세요.
