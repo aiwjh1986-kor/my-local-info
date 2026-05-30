@@ -61,7 +61,7 @@ async function fetchPublicData() {
       const target = item['지원대상'] || '';
 
       // 제외어 (지원금, 지원사업, 수계 등 아이와 무관한 행정/지원 제외)
-      if (serviceName.includes('지원사업') || serviceName.includes('지원금') || serviceName.includes('수계') || serviceName.includes('수당') || serviceName.includes('융자')) {
+      if (serviceName.includes('지원사업') || serviceName.includes('지원금') || serviceName.includes('수계') || serviceName.includes('수당') || serviceName.includes('융자') || serviceName.includes('상수원')) {
         return false;
       }
 
@@ -131,6 +131,7 @@ async function fetchPublicData() {
 - 축제/행사/공연/관광지/박물관/전시면 'event'
 - 용인시 도서관 정보나 도서 관련 소식이면 'book'
 - 그 외 실생활에 유용한 정보(생활꿀팁 등)는 'info'
+- **중요**: 동/면/리 단위의 지역/마을 공동 지원 사업(예: 상수원 보호구역 등)이나 개인이 직접적인 혜택을 받기 어려운 행정 정보라면 category를 반드시 'exclude'로 설정해.
 반드시 JSON 객체만 출력해. 다른 텍스트 없이.
 
 공공데이터 내용:
@@ -154,6 +155,11 @@ ${JSON.stringify(item)}`;
       let aiText = geminiResult.candidates[0].content.parts[0].text;
       aiText = aiText.replace(/```json|```/g, '').trim();
       const newItem = JSON.parse(aiText);
+      
+      if (newItem.category === 'exclude') {
+        console.log(`- 제외됨 (행정/마을지원): ${newItem.name}`);
+        continue;
+      }
       
       if (weatherInfo) newItem.weather = weatherInfo;
 

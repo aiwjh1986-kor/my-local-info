@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "fetch-data": "node scripts/fetch-public-data.js && node scripts/fetch-gas-prices.js && node scripts/generate-blog-post.js && node scripts/auto-archive.js"
+    "fetch-data": "node scripts/fetch-public-data.js && node scripts/fetch-gas-prices.js && node scripts/generate-blog-post.js && node scripts/auto-archive.js",
+    "fetch-tour": "node scripts/fetch-tour-data.js",
+    "fetch-news": "node scripts/fetch-yongin-news.js"
   },
   "dependencies": {
     "@fontsource/noto-serif-kr": "^5.2.9",
