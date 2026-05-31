@@ -24,7 +24,7 @@ interface FeaturedCard {
 
 const icons = [
   { name: "마감임박!", src: "/images/icon-clock.png", tab: "마감임박" },
-  { name: "꿀팁", src: "/images/icon-ggul.png", tab: "꿀팁" },
+  { name: "생활꿀팁", src: "/images/icon-ggul.png", tab: "생활꿀팁" },
   { name: "EVENT", src: "/images/icon-event.png", tab: "지역행사" },
   { name: "지원금", src: "/images/icon-grant.png", tab: "지원금" },
   { name: "HOME", src: "/images/icon-home.png", tab: "홈" },
@@ -132,7 +132,7 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
       "지역행사": ["event", "행사", "지역행사"],
       "생활정보": ["info", "생활정보"],
       "도서정보": ["book", "도서정보", "도서"],
-      "꿀팁": ["tip", "꿀팁", "실생활꿀팁", "info", "생활정보"] // 꿀팁이 없을 경우 생활정보라도 나오도록 보완
+      "생활꿀팁": ["tip", "꿀팁", "실생활꿀팁", "info", "생활정보"] // 꿀팁이 없을 경우 생활정보라도 나오도록 보완
     };
     const targets = (catMap[activeTab] || [activeTab]).map(t => t.toLowerCase());
     return allCards.filter(post => !post.title.includes("[종료]") && targets.includes((post.category || "").toLowerCase()));
@@ -147,13 +147,6 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
       
       {activeTab === "홈" ? (
         <div className="flex-1 overflow-y-auto pb-6 pt-8 px-5 z-10 flex flex-col">
-          {/* Top Small Ad Banner */}
-          <div className="w-full flex justify-center mb-6">
-            <a href="https://link.coupang.com/a/ecHFMwyzVA" target="_blank" rel="noopener noreferrer">
-              <img src="https://ads-partners.coupang.com/banners/993397?subId=&traceId=V0-301-f5c692db558def48-I993397&w=120&h=60" alt="Coupang Ad" className="rounded-md shadow-sm opacity-90 hover:opacity-100 transition-opacity" />
-            </a>
-          </div>
-
           {/* Top Info Area & Utility Buttons */}
           <div className="flex justify-between items-start mb-6 relative">
             <div>
@@ -221,9 +214,9 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
             {loopCards.reduce((acc: React.ReactNode[], card, idx) => {
               acc.push(
                 <div 
-                key={`card-${idx}`} 
-                onClick={() => handleCardClick(card)}
-                className="snap-start flex-shrink-0 w-[240px] bg-white text-gray-900 rounded-[20px] overflow-hidden shadow-lg cursor-pointer"
+                  key={`card-${idx}`} 
+                  onClick={() => handleCardClick(card)}
+                  className="snap-start flex-shrink-0 w-[240px] bg-white text-gray-900 rounded-[20px] overflow-hidden shadow-lg cursor-pointer"
                 >
                   <img src={card.image?.startsWith('http') ? card.image : `/images/${card.image || 'thumb-youth.png'}`} alt="thumb" className="w-full h-[120px] object-cover" />
                   <div className="p-3">
@@ -235,19 +228,16 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
               
               // Insert Ad after every 3rd card
               if ((idx + 1) % 3 === 0) {
-                // Calculate which ad image to show (1 to 17)
-                const adNum = ((idx / 3) % 17) + 1;
-                const paddedNum = String(Math.floor(adNum)).padStart(2, '0');
-                
                 acc.push(
                   <div 
                     key={`ad-${idx}`} 
-                    onClick={() => window.open('https://link.coupang.com/a/bTj90g', '_blank')}
-                    className="snap-start flex-shrink-0 w-[240px] bg-white rounded-[20px] overflow-hidden shadow-lg relative cursor-pointer flex flex-col justify-center items-center h-full min-h-[160px]"
+                    className="snap-start flex-shrink-0 w-[240px] bg-white rounded-[20px] overflow-hidden shadow-lg relative flex flex-col justify-center items-center h-[180px]"
                   >
-                    <img src={`/images/coopang/${paddedNum}.png`} alt="추천 상품" className="w-full h-full object-contain p-2" />
+                    <a href="https://link.coupang.com/a/ecH6eLl6Bw" target="_blank" rel="noreferrer" className="w-full h-full flex justify-center items-center">
+                      <img src="https://ads-partners.coupang.com/banners/993400?subId=&traceId=V0-301-f5c692db558def48-I993400&w=300&h=250" alt="광고" className="w-full h-full object-cover" />
+                    </a>
                     <div className="absolute inset-0 bg-black/5 hover:bg-black/10 transition-colors pointer-events-none"></div>
-                    <div className="absolute top-0 right-0 bg-black/50 text-white text-[9px] px-1.5 py-0.5 m-2 rounded z-10">AD</div>
+                    <div className="absolute top-0 right-0 bg-black/50 text-white text-[9px] px-1.5 py-0.5 m-2 rounded z-10 pointer-events-none">AD</div>
                   </div>
                 );
               }
