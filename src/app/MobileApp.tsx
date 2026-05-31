@@ -217,14 +217,18 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
               
               // Insert Ad after every 3rd card
               if ((idx + 1) % 3 === 0) {
+                // Calculate which ad image to show (1 to 17)
+                const adNum = ((idx / 3) % 17) + 1;
+                const paddedNum = String(Math.floor(adNum)).padStart(2, '0');
+                
                 acc.push(
                   <div 
                     key={`ad-${idx}`} 
                     onClick={() => window.open('https://link.coupang.com/a/bTj90g', '_blank')}
-                    className="snap-start flex-shrink-0 w-[240px] bg-white rounded-[20px] overflow-hidden shadow-lg relative cursor-pointer flex flex-col justify-center items-center"
+                    className="snap-start flex-shrink-0 w-[240px] bg-white rounded-[20px] overflow-hidden shadow-lg relative cursor-pointer flex flex-col justify-center items-center h-full min-h-[160px]"
                   >
-                    <img src="/images/coopang/01.png" alt="추천 상품" className="w-full h-full object-cover absolute inset-0" />
-                    <div className="absolute inset-0 bg-black/10 hover:bg-black/20 transition-colors"></div>
+                    <img src={`/images/coopang/${paddedNum}.png`} alt="추천 상품" className="w-full h-full object-contain p-2" />
+                    <div className="absolute inset-0 bg-black/5 hover:bg-black/10 transition-colors pointer-events-none"></div>
                     <div className="absolute top-0 right-0 bg-black/50 text-white text-[9px] px-1.5 py-0.5 m-2 rounded z-10">AD</div>
                   </div>
                 );
