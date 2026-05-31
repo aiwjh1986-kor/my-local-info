@@ -147,6 +147,13 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
       
       {activeTab === "홈" ? (
         <div className="flex-1 overflow-y-auto pb-6 pt-8 px-5 z-10 flex flex-col">
+          {/* Top Small Ad Banner */}
+          <div className="w-full flex justify-center mb-6">
+            <a href="https://link.coupang.com/a/ecHFMwyzVA" target="_blank" rel="noopener noreferrer">
+              <img src="https://ads-partners.coupang.com/banners/993397?subId=&traceId=V0-301-f5c692db558def48-I993397&w=120&h=60" alt="Coupang Ad" className="rounded-md shadow-sm opacity-90 hover:opacity-100 transition-opacity" />
+            </a>
+          </div>
+
           {/* Top Info Area & Utility Buttons */}
           <div className="flex justify-between items-start mb-6 relative">
             <div>
