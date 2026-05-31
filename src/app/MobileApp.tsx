@@ -173,7 +173,18 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
                 <button onClick={() => window.scrollTo({top:0, behavior:'smooth'})} className="px-3 h-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-sm text-xs font-bold tracking-wide" title="위로 가기">TOP</button>
               </div>
               <div className="text-sm font-semibold opacity-80 mb-1">주요 일정 디데이</div>
-              <div className="text-2xl font-black text-[#FF6B6B]">지방선거 D-11</div>
+              {(() => {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const electionDay = new Date("2026-06-03T00:00:00");
+                const diffTime = electionDay.getTime() - today.getTime();
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                const dDayText = diffDays > 0 ? `D-${diffDays}` : diffDays === 0 ? "D-Day" : `D+${Math.abs(diffDays)}`;
+                
+                return (
+                  <div className="text-2xl font-black text-[#FF6B6B]">지방선거 {dDayText}</div>
+                );
+              })()}
               <div className="text-[10px] mt-1 opacity-80">제9회 전국동시지방선거<br/>2026년 6월 3일</div>
             </div>
           </div>
