@@ -45,6 +45,36 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
     return () => window.removeEventListener('bgm-state', handleBgmState);
   }, []);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !window.history.state) {
+      window.history.replaceState({ tab: "홈" }, "");
+    }
+    const onPopState = (e: PopStateEvent) => {
+      if (selectedCard) {
+        setSelectedCard(null);
+      } else {
+        setActiveTab(e.state?.tab || "홈");
+      }
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [selectedCard]);
+
+  const handleTabChange = (tab: string) => {
+    if (tab === activeTab) return;
+    window.history.pushState({ tab }, "");
+    setActiveTab(tab);
+  };
+
+  const handleCardClick = (card: FeaturedCard) => {
+    window.history.pushState({ tab: activeTab, modal: true }, "");
+    setSelectedCard(card);
+  };
+
+  const handleBackClick = () => {
+    window.history.back();
+  };
+
   const latestCards = allCards.filter(c => !c.title.includes("[종료]")).slice(0, 10);
   const loopCards = Array(20).fill(latestCards).flat();
 
@@ -173,9 +203,9 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
             {loopCards.reduce((acc: React.ReactNode[], card, idx) => {
               acc.push(
                 <div 
-                  key={`card-${idx}`} 
-                  onClick={() => setSelectedCard(card)}
-                  className="snap-start flex-shrink-0 w-[240px] bg-white text-gray-900 rounded-[20px] overflow-hidden shadow-lg cursor-pointer"
+                key={`card-${idx}`} 
+                onClick={() => handleCardClick(card)}
+                className="snap-start flex-shrink-0 w-[240px] bg-white text-gray-900 rounded-[20px] overflow-hidden shadow-lg cursor-pointer"
                 >
                   <img src={card.image?.startsWith('http') ? card.image : `/images/${card.image || 'thumb-youth.png'}`} alt="thumb" className="w-full h-[120px] object-cover" />
                   <div className="p-3">
@@ -209,7 +239,7 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
           {/* Bottom Icons Grid */}
           <div className="grid grid-cols-4 gap-y-6 gap-x-2 mt-8 z-20">
             {icons.map(icon => (
-              <div key={icon.name} onClick={() => setActiveTab(icon.tab)} className="flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-transform">
+              <div key={icon.name} onClick={() => handleTabChange(icon.tab)} className="flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-transform">
                 <div className="w-16 h-16 bg-[#b19df5] shadow-inner rounded-2xl flex items-center justify-center mb-2 relative border border-white/20">
                   <img src={icon.src} alt={icon.name} className="w-12 h-12 object-contain drop-shadow-md" />
                 </div>
@@ -226,7 +256,7 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setActiveTab("홈");
+                  handleBackClick();
                 }} 
                 className="p-3 -ml-2 text-gray-700 hover:text-black font-extrabold mr-1 text-2xl active:bg-gray-200 rounded-full cursor-pointer relative z-[100] transition-colors"
                 title="뒤로 가기"
@@ -243,7 +273,7 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
               >
                 {isBgmPlaying ? '🎵' : '🔇'}
               </button>
-              <button onClick={() => setActiveTab("홈")} className="px-3 h-8 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center border border-gray-200 text-[11px] font-black tracking-wide transition-colors">HOME</button>
+              <button onClick={() => handleTabChange("홈")} className="px-3 h-8 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center border border-gray-200 text-[11px] font-black tracking-wide transition-colors">HOME</button>
               <button onClick={() => window.scrollTo({top:0, behavior:'smooth'})} className="px-3 h-8 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center border border-gray-200 text-[11px] font-black tracking-wide transition-colors">TOP</button>
             </div>
           </div>
@@ -256,7 +286,7 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
             {icons.filter(icon => icon.tab !== "홈").map(icon => (
               <button 
                 key={icon.name} 
-                onClick={() => setActiveTab(icon.tab)}
+                onClick={() => handleTabChange(icon.tab)}
                 className={`snap-start flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-colors ${
                   activeTab === icon.tab 
                     ? 'bg-[#9b82f3] text-white border-[#9b82f3] font-black shadow-sm' 
@@ -273,7 +303,7 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
             {filteredCards.length > 0 ? filteredCards.map((card, idx) => (
               <div 
                 key={idx} 
-                onClick={() => setSelectedCard(card)}
+                onClick={() => handleCardClick(card)}
                 className="bg-gray-100 border-b border-gray-200 pb-4 pt-2 cursor-pointer active:bg-gray-200"
               >
                 <h3 className="font-bold text-[15px] mb-1.5 leading-snug tracking-tight text-gray-900">{card.title}</h3>
@@ -292,7 +322,7 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
           <div className="bg-white w-full max-w-[480px] h-[90vh] sm:h-[80vh] sm:rounded-3xl rounded-t-3xl flex flex-col overflow-hidden animate-slide-up">
             <div className="flex justify-between items-center p-4 border-b border-gray-100 bg-white sticky top-0 z-10">
               <span className="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded-full">{selectedCard.category}</span>
-              <button onClick={() => setSelectedCard(null)} className="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full font-bold">✕</button>
+              <button onClick={handleBackClick} className="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full font-bold">✕</button>
             </div>
             <div className="overflow-y-auto flex-1">
               <img src={selectedCard.image?.startsWith('http') ? selectedCard.image : `/images/${selectedCard.image || 'thumb-youth.png'}`} alt="img" className="w-full aspect-video object-cover bg-gray-100" />
