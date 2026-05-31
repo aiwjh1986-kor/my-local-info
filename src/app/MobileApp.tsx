@@ -223,7 +223,7 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
                     onClick={() => window.open('https://link.coupang.com/a/bTj90g', '_blank')}
                     className="snap-start flex-shrink-0 w-[240px] bg-white rounded-[20px] overflow-hidden shadow-lg relative cursor-pointer flex flex-col justify-center items-center"
                   >
-                    <img src="https://image9.coupangcdn.com/image/affiliate/banner/b0b5dcbddfdbfd71d9d936de3ca6498a@2x.jpg" alt="추천 상품" className="w-full h-full object-cover absolute inset-0" />
+                    <img src="/images/coopang/01.png" alt="추천 상품" className="w-full h-full object-cover absolute inset-0" />
                     <div className="absolute inset-0 bg-black/10 hover:bg-black/20 transition-colors"></div>
                     <div className="absolute top-0 right-0 bg-black/50 text-white text-[9px] px-1.5 py-0.5 m-2 rounded z-10">AD</div>
                   </div>
