@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getSortedPostsData } from "@/lib/posts";
+import { getSortedPostsData, getSortedTipsData } from "@/lib/posts";
 import DashboardClient from "./DashboardClient";
 import MobileApp from "./MobileApp";
 import fs from 'fs';
@@ -47,16 +47,17 @@ export default function Page() {
     console.error("Failed to read life-tips.json:", err);
   }
 
-  const tipsCards = lifeTips.map(tip => ({
+  const tipsData = getSortedTipsData();
+  const tipsCards = tipsData.map(tip => ({
     category: "실생활꿀팁",
     title: tip.title,
-    summary: tip.description,
-    date: TODAY,
+    summary: tip.summary,
+    date: tip.date || TODAY,
     region: "전체",
     image: tip.image,
     slug: tip.slug || tip.id,
     link: tip.productLink,
-    content: `### 💡 꿀팁: ${tip.title}\n\n${tip.description}\n\n---\n\n### 🛒 추천 아이템: ${tip.productName}\n\n[👉 최저가 확인 및 구매하기](${tip.productLink})`
+    content: tip.content || `### 💡 꿀팁: ${tip.title}\n\n${tip.summary}\n\n---\n\n### 🛒 추천 아이템: ${tip.productName}\n\n[👉 최저가 확인 및 구매하기](${tip.productLink})`
   }));
 
   // #2 속도 개선: 브라우저가 할 일(데이터 합치고 정렬하기)을 서버에서 미리 처리

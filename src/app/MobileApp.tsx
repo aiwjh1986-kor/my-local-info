@@ -163,6 +163,12 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
             </div>
           </div>
 
+          {/* Ad Banner */}
+          <div className="mb-6 rounded-[20px] overflow-hidden shadow-lg relative cursor-pointer" onClick={() => window.open('https://link.coupang.com/a/bTj90g', '_blank')}>
+            <img src="https://image9.coupangcdn.com/image/affiliate/banner/b0b5dcbddfdbfd71d9d936de3ca6498a@2x.jpg" alt="쿠팡 배너" className="w-full h-auto object-cover" />
+            <div className="absolute top-0 right-0 bg-black/50 text-white text-[9px] px-1.5 py-0.5 m-2 rounded">AD</div>
+          </div>
+
           {/* Latest News Horizontal Scroll */}
           <h2 className="text-lg font-bold mb-3">최신 소식</h2>
           <div 
@@ -290,12 +296,12 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
                       )
                     }}
                   >
-                    {selectedCard.content || selectedCard.summary}
+                    {selectedCard.content || selectedCard.detail || selectedCard.summary}
                   </ReactMarkdown>
                 </div>
                 {selectedCard.link && (
-                  <a href={selectedCard.link} target="_blank" rel="noreferrer" className="block w-full bg-purple-600 text-white text-center font-bold py-4 rounded-xl mt-8">
-                    자세히 보기
+                  <a href={selectedCard.link} target="_blank" rel="noreferrer" className="block w-full bg-[#A855F7] text-white text-center font-bold py-4 rounded-xl mt-8">
+                    {selectedCard.category?.includes("꿀팁") || selectedCard.category?.includes("생활정보") ? "구매하러 가기" : "자세히 보기"}
                   </a>
                 )}
               </div>

@@ -60,21 +60,21 @@ export default function CoupangDynamicBanner() {
   }, []);
 
   return (
-    <div className="w-full max-w-5xl mx-auto flex flex-col items-center gap-3 overflow-hidden rounded-[30px] bg-white/60 backdrop-blur-md p-6 border border-white shadow-xl my-10 relative z-30">
+    <div className="w-full max-w-5xl mx-auto flex flex-col items-center gap-2 md:gap-3 overflow-hidden rounded-[20px] md:rounded-[30px] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-3 md:p-6 border border-white/50 dark:border-white/10 shadow-lg md:shadow-xl my-6 md:my-10 relative z-30 transition-all">
       <div
         ref={containerRef}
-        className="w-full flex justify-center items-center overflow-hidden min-h-[170px] relative"
+        className="w-full flex justify-center items-center overflow-hidden min-h-[170px] relative rounded-xl"
       >
-        <div className="absolute inset-0 flex items-center justify-center text-gray-200 text-[10px] font-bold">
+        <div className="absolute inset-0 flex items-center justify-center text-gray-400 dark:text-gray-500 text-[11px] font-bold">
           광고 로딩 중...
         </div>
       </div>
-      <div className="flex items-center gap-2 opacity-30">
-        <div className="w-1 h-1 rounded-full bg-gray-400" />
-        <p className="text-[9px] font-bold text-gray-400 text-center uppercase tracking-tighter">
+      <div className="flex items-center gap-2 opacity-40">
+        <div className="w-1 h-1 rounded-full bg-gray-500" />
+        <p className="text-[8px] md:text-[9px] font-bold text-gray-500 text-center tracking-tighter">
           이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
         </p>
-        <div className="w-1 h-1 rounded-full bg-gray-400" />
+        <div className="w-1 h-1 rounded-full bg-gray-500" />
       </div>
     </div>
   );
