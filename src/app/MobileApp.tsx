@@ -163,32 +163,44 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
             </div>
           </div>
 
-          {/* Ad Banner */}
-          <div className="mb-6 rounded-[20px] overflow-hidden shadow-lg relative cursor-pointer" onClick={() => window.open('https://link.coupang.com/a/bTj90g', '_blank')}>
-            <img src="https://image9.coupangcdn.com/image/affiliate/banner/b0b5dcbddfdbfd71d9d936de3ca6498a@2x.jpg" alt="쿠팡 배너" className="w-full h-auto object-cover" />
-            <div className="absolute top-0 right-0 bg-black/50 text-white text-[9px] px-1.5 py-0.5 m-2 rounded">AD</div>
-          </div>
-
-          {/* Latest News Horizontal Scroll */}
+          {/* Latest News Horizontal Scroll (Ads every 3 items) */}
           <h2 className="text-lg font-bold mb-3">최신 소식</h2>
           <div 
             ref={scrollRef} 
             className="flex gap-4 overflow-x-auto pb-4 -mx-5 px-5 snap-x scroll-smooth [&::-webkit-scrollbar]:hidden"
             style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
           >
-            {loopCards.map((card, idx) => (
-              <div 
-                key={idx} 
-                onClick={() => setSelectedCard(card)}
-                className="snap-start flex-shrink-0 w-[240px] bg-white text-gray-900 rounded-[20px] overflow-hidden shadow-lg"
-              >
-                <img src={card.image?.startsWith('http') ? card.image : `/images/${card.image || 'thumb-youth.png'}`} alt="thumb" className="w-full h-[120px] object-cover" />
-                <div className="p-3">
-                  <span className="text-[9px] font-bold text-purple-600 bg-purple-100 px-2 py-0.5 rounded-full mb-1 inline-block">{card.category}</span>
-                  <div className="text-xs font-bold line-clamp-2 leading-snug">{card.title}</div>
+            {loopCards.reduce((acc: React.ReactNode[], card, idx) => {
+              acc.push(
+                <div 
+                  key={`card-${idx}`} 
+                  onClick={() => setSelectedCard(card)}
+                  className="snap-start flex-shrink-0 w-[240px] bg-white text-gray-900 rounded-[20px] overflow-hidden shadow-lg cursor-pointer"
+                >
+                  <img src={card.image?.startsWith('http') ? card.image : `/images/${card.image || 'thumb-youth.png'}`} alt="thumb" className="w-full h-[120px] object-cover" />
+                  <div className="p-3">
+                    <span className="text-[9px] font-bold text-purple-600 bg-purple-100 px-2 py-0.5 rounded-full mb-1 inline-block">{card.category}</span>
+                    <div className="text-xs font-bold line-clamp-2 leading-snug">{card.title}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+              
+              // Insert Ad after every 3rd card
+              if ((idx + 1) % 3 === 0) {
+                acc.push(
+                  <div 
+                    key={`ad-${idx}`} 
+                    onClick={() => window.open('https://link.coupang.com/a/bTj90g', '_blank')}
+                    className="snap-start flex-shrink-0 w-[240px] bg-white rounded-[20px] overflow-hidden shadow-lg relative cursor-pointer flex flex-col justify-center items-center"
+                  >
+                    <img src="https://image9.coupangcdn.com/image/affiliate/banner/b0b5dcbddfdbfd71d9d936de3ca6498a@2x.jpg" alt="추천 상품" className="w-full h-full object-cover absolute inset-0" />
+                    <div className="absolute inset-0 bg-black/10 hover:bg-black/20 transition-colors"></div>
+                    <div className="absolute top-0 right-0 bg-black/50 text-white text-[9px] px-1.5 py-0.5 m-2 rounded z-10">AD</div>
+                  </div>
+                );
+              }
+              return acc;
+            }, [])}
           </div>
 
           {/* Spacer */}
