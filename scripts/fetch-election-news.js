@@ -72,7 +72,7 @@ ${newsListStr}
 title: "[용인시] ${displayDate} 용인 지방선거 최신 동향 요약 📰"
 date: ${kstDate.toISOString()}
 summary: "용인시 지방선거 관련 오늘의 주요 뉴스들을 알기 쉽게 요약해 드립니다!"
-category: 생활정보
+category: 지방선거
 image: event/지방선거.png
 tags: [용인시, 지방선거, 용인뉴스, 선거동향]
 ---
@@ -94,6 +94,7 @@ tags: [용인시, 지방선거, 용인뉴스, 선거동향]
 
     if (!aiResponse) {
       console.error('AI 응답 생성 실패');
+      console.error('API Error Response:', JSON.stringify(data, null, 2));
       return;
     }
 
@@ -140,7 +141,7 @@ tags: [용인시, 지방선거, 용인뉴스, 선거동향]
       const dDayStr = dDay > 0 ? `(D-${dDay})` : dDay === 0 ? "(D-Day)" : "(종료)";
 
       const newCard = {
-        category: "생활정보",
+        category: "지방선거",
         title: `[용인시] ${dDayStr} ${displayDate} 용인 지방선거 최신 동향 요약 📰`,
         summary: "용인시 지방선거 관련 오늘의 주요 뉴스들을 알기 쉽게 요약해 드립니다!",
         content: bodyContent,
