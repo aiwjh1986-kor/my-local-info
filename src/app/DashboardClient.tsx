@@ -1042,11 +1042,7 @@ export default function DashboardClient({
 
             {/* 최신 소식 & 이메일 구독 섹션이 대시보드 위쪽으로 이동하여 원래 자리는 빈 블록으로 처리합니다. */}
 
-            {/* 📢 용인시 뉴스 및 공지사항 보드 (맨 아래로 이사 완료) */}
-            <NoticeBoard 
-              setActiveTab={setActiveTab} 
-              onCardClick={setSelectedCard} 
-            />
+
           </>
         )}
 

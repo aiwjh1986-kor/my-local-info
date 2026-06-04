@@ -17,21 +17,7 @@ interface HeroSectionProps {
   onElectionClick?: () => void;
 }
 
-// 🗳️ 실시간 D-Day 계산기 (지방선거 및 주요 마감일용)
-function getElectionDDay() {
-  const target = new Date("2026-06-03T00:00:00+09:00");
-  const today = new Date();
-  const difference = target.getTime() - today.getTime();
-  const daysLeft = Math.ceil(difference / (1000 * 60 * 60 * 24));
 
-  if (daysLeft > 0) {
-    return `지방선거 D-${daysLeft}`;
-  } else if (daysLeft === 0) {
-    return "지방선거 D-Day";
-  } else {
-    return `지방선거 D+${Math.abs(daysLeft)}`;
-  }
-}
 
 export default function HeroSection({
   gasPrices,
@@ -128,48 +114,46 @@ export default function HeroSection({
         {/* 우측 50%: 4개 플로팅 Bento 위젯 카드 */}
         <div className="lg:col-span-5 grid grid-cols-2 gap-4 relative z-10">
           {/* Card 1: 날씨 & 실시간 시계 */}
+          {/* Card 1: 날씨 & 오늘의 운세/명언 */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="premium-glass p-5 rounded-[24px] flex flex-col justify-between h-[180px] hover:premium-glass-hover hover:scale-[1.02] cursor-pointer"
+            className="premium-glass p-5 rounded-[24px] col-span-2 grid grid-cols-2 gap-4 h-[180px] hover:premium-glass-hover hover:scale-[1.02] cursor-pointer"
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500">실시간 용인 날씨</span>
-              <CloudSun className="w-5 h-5 text-accent" />
+            {/* 좌측: 날씨 */}
+            <div className="flex flex-col justify-between border-r border-gray-200/50 dark:border-gray-700/50 pr-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500">실시간 용인 날씨</span>
+                <CloudSun className="w-5 h-5 text-accent" />
+              </div>
+              <div className="flex flex-col mt-4">
+                <span className="text-[32px] font-black text-gray-900 dark:text-white leading-none">21°C</span>
+                <span className="text-[12px] font-bold text-gray-600 dark:text-gray-300 mt-1">맑음 (미세먼지 보통)</span>
+              </div>
+              <div className="text-[10px] font-bold text-[#FF6B6B] dark:text-[#FF8787] mt-auto">
+                🕒 {time || "오전 09:00"}
+              </div>
             </div>
-            <div className="flex flex-col mt-4">
-              <span className="text-[32px] font-black text-gray-900 dark:text-white leading-none">21°C</span>
-              <span className="text-[12px] font-bold text-gray-600 dark:text-gray-300 mt-1">맑음 (미세먼지 보통)</span>
-            </div>
-            <div className="text-[10px] font-bold text-[#FF6B6B] dark:text-[#FF8787] mt-auto">
-              🕒 {time || "오후 07:25"}
-            </div>
-          </motion.div>
 
-          {/* Card 2: D-day 카운터 */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            onClick={onElectionClick}
-            className="premium-glass p-5 rounded-[24px] flex flex-col justify-between h-[180px] hover:premium-glass-hover hover:scale-[1.02] hover:border-accent/40 active:scale-98 transition-all duration-300 cursor-pointer"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500">주요 일정 디데이</span>
-              <CalendarDays className="w-5 h-5 text-accent-purple" />
+            {/* 우측: 오늘의 한 줄 */}
+            <div className="flex flex-col justify-between pl-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500">오늘의 한 줄</span>
+                <span className="text-lg">🍀</span>
+              </div>
+              <div className="flex flex-col mt-2 mb-auto">
+                <span className="text-[13px] font-black text-gray-800 dark:text-gray-200 leading-snug break-keep">
+                  "작은 변화가 일어날 때 진정한 삶을 살게 된다."
+                </span>
+                <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1.5 font-bold">
+                  - 레프 톨스토이 -
+                </span>
+              </div>
+              <div className="text-[10px] font-black text-accent-purple mt-auto">
+                기분 좋은 하루 보내세요! ✨
+              </div>
             </div>
-            <div className="flex flex-col mt-4">
-              <span className="text-[24px] font-black text-[#FF6B6B] dark:text-[#FF8787] leading-tight">
-                {getElectionDDay()}
-              </span>
-              <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 mt-1 leading-snug">
-                제9회 전국동시지방선거<br />투표일: 2026년 6월 3일
-              </span>
-            </div>
-            <span className="text-[9.5px] font-black text-accent dark:text-accent-purple mt-auto">
-              소중한 한 표를 행사하세요!
-            </span>
           </motion.div>
 
           {/* Card 3: 실시간 최저가 주유소 */}
