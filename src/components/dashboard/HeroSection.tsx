@@ -144,10 +144,10 @@ export default function HeroSection({
               </div>
               <div className="flex flex-col mt-2 mb-auto">
                 <span className="text-[13px] font-black text-gray-800 dark:text-gray-200 leading-snug break-keep">
-                  "작은 변화가 일어날 때 진정한 삶을 살게 된다."
+                  "시작이 반이다."
                 </span>
                 <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1.5 font-bold">
-                  - 레프 톨스토이 -
+                  - 아리스토텔레스 -
                 </span>
               </div>
               <div className="text-[10px] font-black text-accent-purple mt-auto">
