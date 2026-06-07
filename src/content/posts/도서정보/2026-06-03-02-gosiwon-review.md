@@ -4,7 +4,7 @@ date: '2026-06-03'
 summary: '단순한 공포가 아닌 사람 냄새 나는 따뜻한 호러 소설, 전건우 작가의 ''고시원 기담'' 리뷰'
 category: 도서정보
 image: book/13.png
-link: ''
+link: 'https://link.coupang.com/a/eoyE71tEpo'
 tags:
   - 도서리뷰
   - 고시원기담

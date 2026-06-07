@@ -29,13 +29,13 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
       .catch(console.error);
   }, []);
 
-  const categories = ["전체", "지원금", "지역행사", "생활정보", "도서정보"];
+  const categories = ["전체", "지원금", "지역행사", "용인시정보", "도서정보"];
   
   const getCategoryStyles = (cat: string) => {
     const c = (cat || "").toLowerCase();
     if (c === "grant" || c === "지원금") return "bg-orange-100 text-orange-600 border-orange-200";
     if (c === "event" || c === "행사") return "bg-blue-100 text-blue-600 border-blue-200";
-    if (c === "info" || c === "생활정보") return "bg-green-100 text-green-600 border-green-200";
+    if (c === "info" || c === "용인시정보") return "bg-green-100 text-green-600 border-green-200";
     if (c === "book" || c === "도서소식" || c === "도서정보") return "bg-purple-100 text-purple-600 border-purple-200";
     return "bg-gray-100 text-gray-600 border-gray-200";
   };
@@ -57,7 +57,7 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
   const filteredPosts = activeCat === "전체" 
     ? sortedAllPosts 
     : sortedAllPosts.filter(p => {
-        const catMap: any = { "지원금": "grant", "지역행사": "event", "생활정보": "info", "도서정보": "book" };
+        const catMap: any = { "지원금": "grant", "지역행사": "event", "용인시정보": "info", "도서정보": "book" };
         const target = catMap[activeCat] || activeCat;
         return p.category === target || 
                p.category === activeCat || 
@@ -102,7 +102,7 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
           <MenuLink onClick={() => router.push("/")} icon={IMG_BASE + "icon-home.png?v=" + V_NUM} label="홈" />
           <MenuLink onClick={() => router.push("/?tab=지원금")} icon={IMG_BASE + "icon-grant.png?v=" + V_NUM} label="지원금" />
           <MenuLink onClick={() => router.push("/?tab=지역행사")} icon={IMG_BASE + "icon-event.png?v=" + V_NUM} label="지역행사" />
-          <MenuLink onClick={() => router.push("/?tab=생활정보")} icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="생활정보" />
+          <MenuLink onClick={() => router.push("/?tab=용인시정보")} icon={IMG_BASE + "icon-info.png?v=" + V_NUM} label="용인시정보" />
           <MenuLink onClick={() => router.push("/?tab=도서정보")} icon={IMG_BASE + "icon-book.png?v=" + V_NUM} label="도서정보" />
           <MenuLink onClick={() => router.push("/blog")} icon={IMG_BASE + "icon-blog.png?v=" + V_NUM} label="블로그" active={true} />
           <MenuLink onClick={() => router.push("/tips")} icon={IMG_BASE + "icon-ggul.png?v=" + V_NUM} label="실생활 꿀팁" />
@@ -167,7 +167,7 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
                       <span className={`px-4 py-2 backdrop-blur-md rounded-2xl text-[10px] lg:text-xs font-black uppercase tracking-widest shadow-lg border ${getCategoryStyles(post.category)}`}>
                         {post.category === "grant" ? "지원금" : 
                          post.category === "event" || post.category === "지역행사" || post.category === "행사" ? "지역행사" : 
-                         post.category === "info" ? "생활정보" : 
+                         post.category === "info" ? "용인시정보" : 
                          post.category === "book" ? "도서소식" : post.category}
                       </span>
                       {(() => {

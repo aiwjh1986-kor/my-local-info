@@ -76,7 +76,7 @@ async function generateBlogPosts() {
         ? `현재 용인 날씨: ${item.weather.desc}, 기온: ${item.weather.temp}°C`
         : '날씨 정보 없음';
 
-      const prompt = `너는 '용인시 생활정보 및 여행가이드' 블로그의 전문 에디터야.
+      const prompt = `너는 '용인시 용인시정보 및 여행가이드' 블로그의 전문 에디터야.
 주의: '루미예요', '루미가 추천해요'와 같은 가상의 이름이나 오글거리는 인사말은 절대 넣지 마.
 아래 정보를 바탕으로 블로그 글을 작성해줘.
 
@@ -95,10 +95,10 @@ async function generateBlogPosts() {
 title: "[용인] ${item.name || item.title}"
 date: ${kstDate.toISOString()}
 summary: "${item.summary || '용인시 최신 소식을 전해드립니다.'}"
-category: ${item.category === 'event' || item.category === '지역행사' ? '지역행사' : '생활정보'}
+category: ${item.category === 'event' || item.category === '지역행사' ? '지역행사' : '용인시정보'}
 image: new_01.png
 link: "${item.link || ''}"
-tags: [용인시, 실생활정보, 용인가이드]
+tags: [용인시, 실용인시정보, 용인가이드]
 ---
 
 (본문 내용)`;
@@ -133,7 +133,7 @@ tags: [용인시, 실생활정보, 용인가이드]
       const nextNumStr = String(nextNum).padStart(2, '0');
       const fileName = `${today}-${nextNumStr}-${keyword}.md`;
 
-      const category = item.category === 'event' || item.category === '지역행사' ? '지역행사' : '생활정보';
+      const category = item.category === 'event' || item.category === '지역행사' ? '지역행사' : '용인시정보';
       const targetDir = path.join(postsDir, category);
       if (!fs.existsSync(targetDir)) {
         fs.mkdirSync(targetDir, { recursive: true });

@@ -7,7 +7,7 @@ image: 생활/01.png
 link: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/142100000003'
 tags:
   - 용인시
-  - 실생활정보
+  - 실용인시정보
   - 용인가이드
 ---
 

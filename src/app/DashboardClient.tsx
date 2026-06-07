@@ -202,7 +202,7 @@ export default function DashboardClient({
     .slice(0, 12);
   const grantCards = allCards.filter(c => (c.category === "지원금" || c.category === "grant") && !c.title.includes("[종료]"));
   const eventCards = allCards.filter(c => (c.category === "지역행사" || c.category === "event") && !c.title.includes("[종료]"));
-  const infoCards = allCards.filter(c => (c.category === "생활정보" || c.category === "info") && !c.title.includes("[종료]"));
+  const infoCards = allCards.filter(c => (c.category === "용인시정보" || c.category === "info") && !c.title.includes("[종료]"));
 
   // 📍 지역 축제 & 행사 자동 슬라이더 인덱스
   const [eventSlideIdx, setEventSlideIdx] = useState(0);
@@ -238,8 +238,9 @@ export default function DashboardClient({
       "지원금": ["grant", "지원금", "subsidy"],
       "행사": ["event", "행사", "지역행사", "지역 행사"],
       "지역행사": ["event", "행사", "지역행사", "지역 행사"],
-      "생활정보": ["info", "생활정보", "life"],
+      "용인시정보": ["info", "용인시정보", "life"],
       "도서정보": ["book", "도서정보", "도서 소식", "도서"],
+      "독서일기": ["diary", "독서일기", "reading diary"],
       "세계 경제": ["world", "세계 경제", "economy"],
       "지방선거": ["election", "지방선거"]
     };
@@ -273,8 +274,8 @@ export default function DashboardClient({
       label = "행사";
       bgColor = "bg-blue-100";
       textColor = "text-blue-600";
-    } else if (cat === "info" || cat === "생활정보") {
-      label = "생활정보";
+    } else if (cat === "info" || cat === "용인시정보") {
+      label = "용인시정보";
       bgColor = "bg-green-100";
       textColor = "text-green-600";
     } else if (cat === "book" || cat === "도서정보") {
@@ -596,8 +597,8 @@ export default function DashboardClient({
                         case "행사":
                           return { text: "지역행사", bg: "bg-purple-500/20 text-purple-300 border border-purple-500/30" };
                         case "info":
-                        case "생활정보":
-                          return { text: "생활정보", bg: "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" };
+                        case "용인시정보":
+                          return { text: "용인시정보", bg: "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" };
                         case "book":
                         case "도서정보":
                         case "도서 소식":
@@ -856,8 +857,8 @@ export default function DashboardClient({
                     </h3>
                     <button
                       onClick={() => {
-                        setActiveTab("생활정보");
-                        window.history.pushState({}, '', '/?tab=생활정보');
+                        setActiveTab("용인시정보");
+                        window.history.pushState({}, '', '/?tab=용인시정보');
                       }}
                       className="text-gray-400 text-[11px] font-bold hover:text-green-600 transition-colors"
                     >
@@ -1056,7 +1057,7 @@ export default function DashboardClient({
             {/* 블로그 탭인 경우 상단 카테고리 필터 */}
             {activeTab === "블로그" && (
               <div className="flex gap-2 overflow-x-auto pb-6 no-scrollbar">
-                {["전체", "지원금", "지역행사", "생활정보", "도서정보", "세계 경제"].map((cat) => (
+                {["전체", "지원금", "지역행사", "용인시정보", "도서정보", "독서일기", "세계 경제"].map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setActiveBlogCat(cat)}
@@ -1071,31 +1072,34 @@ export default function DashboardClient({
               </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {(activeTab === "블로그" ? filteredPosts : allCards.filter(c => {
+            {(() => {
+              const cardsToRender = (activeTab === "블로그" ? filteredPosts : allCards.filter(c => {
                 const catMap: Record<string, string> = {
                   "지원금": "grant",
                   "지역행사": "event",
-                  "생활정보": "info",
+                  "용인시정보": "info",
                   "도서정보": "book",
                   "도서 소식": "book",
+                  "독서일기": "diary",
                   "세계 경제": "world",
                   "지방선거": "election"
                 };
                 const korCatMap: Record<string, string> = {
                   "지원금": "지원금",
                   "지역행사": "지역행사",
-                  "생활정보": "생활정보",
+                  "용인시정보": "용인시정보",
                   "도서정보": "도서정보",
                   "도서 소식": "도서정보",
+                  "독서일기": "독서일기",
                   "세계 경제": "세계 경제",
                   "지방선거": "지방선거"
                 };
                 const match = c.category === catMap[activeTab] || c.category === korCatMap[activeTab] ||
                   (activeTab === "지역행사" && (c.category === "행사" || c.category === "지역행사")) ||
-                  ((activeTab === "도서정보" || activeTab === "도서 소식") && (c.category === "book" || c.category === "도서정보"));
+                  ((activeTab === "도서정보" || activeTab === "도서 소식") && (c.category === "book" || c.category === "도서정보")) ||
+                  (activeTab === "독서일기" && (c.category === "diary" || c.category === "독서일기"));
                 return match;
-              }).sort((a, b) => {
+              })).sort((a, b) => {
                 const aEnded = a.title.includes("[종료]");
                 const bEnded = b.title.includes("[종료]");
                 if (aEnded && !bEnded) return 1;
@@ -1103,14 +1107,41 @@ export default function DashboardClient({
                 const dateA = new Date((a.date || "").toString().replace(/\./g, '-')).getTime();
                 const dateB = new Date((b.date || "").toString().replace(/\./g, '-')).getTime();
                 return dateB - dateA;
-              })).map((card, idx) => (
-                <Card
-                  key={idx}
-                  card={card}
-                  onClick={() => setSelectedCard(card)}
-                />
-              ))}
-            </div>
+              });
+
+              const isDiaryView = activeTab === "독서일기" || (activeTab === "블로그" && activeBlogCat === "독서일기");
+
+              return isDiaryView ? (
+                <div className="flex flex-col gap-4 w-full max-w-4xl mx-auto">
+                  {cardsToRender.map((card, idx) => (
+                    <div
+                      key={idx}
+                      onClick={() => setSelectedCard(card)}
+                      className="bg-white border border-gray-100 p-6 rounded-[24px] cursor-pointer shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-0.5"
+                    >
+                      <h3 className="font-bold text-lg text-gray-900 mb-2 tracking-tight group-hover:text-purple-600 transition-colors">{card.title}</h3>
+                      <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{card.summary}</p>
+                      <div className="text-xs text-purple-400 font-black mt-4 flex items-center gap-2">
+                        <span>📅</span> {card.date}
+                      </div>
+                    </div>
+                  ))}
+                  {cardsToRender.length === 0 && (
+                    <div className="text-center text-gray-400 py-20 text-sm font-bold">작성된 독서일기가 없습니다.</div>
+                  )}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {cardsToRender.map((card, idx) => (
+                    <Card
+                      key={idx}
+                      card={card}
+                      onClick={() => setSelectedCard(card)}
+                    />
+                  ))}
+                </div>
+              );
+            })()}
           </div>
         )}
         {/* 🛍️ 홈 화면 하단 쿠팡 파트너스 다이나믹 배너 */}
@@ -1215,7 +1246,7 @@ export default function DashboardClient({
 
                   <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-2xl border border-gray-100">
                     <span className="text-[10px] font-black text-gray-400 px-2">분류 이동:</span>
-                    {["지원금", "지역행사", "생활정보"].map(cat => (
+                    {["지원금", "지역행사", "용인시정보"].map(cat => (
                       <button
                         key={cat}
                         onClick={() => updateCategory(cat)}
@@ -1292,7 +1323,7 @@ export default function DashboardClient({
                     rel="noopener noreferrer"
                     className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 rounded-2xl text-sm font-[900] text-center shadow-lg shadow-orange-100 hover:opacity-90 transition-all hover:-translate-y-0.5 active:translate-y-0"
                   >
-                    {selectedCard.category?.includes("꿀팁") || selectedCard.category?.includes("생활정보") || selectedCard.category === "book" || selectedCard.category === "도서정보" ? "구매하러 가기" : "홈페이지 바로가기"}
+                    {selectedCard.category?.includes("꿀팁") || selectedCard.category?.includes("용인시정보") || selectedCard.category === "book" || selectedCard.category === "도서정보" || selectedCard.category === "독서일기" ? "구매하러 가기" : "홈페이지 바로가기"}
                   </a>
                 )}
                 <button
@@ -1357,14 +1388,14 @@ export default function DashboardClient({
           />
           <MenuLink
             onClick={() => {
-              setActiveTab("생활정보");
+              setActiveTab("용인시정보");
               setIsMenuOpen(false);
-              window.history.pushState({}, '', '/?tab=생활정보');
+              window.history.pushState({}, '', '/?tab=용인시정보');
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             icon={IMG_BASE + "icon-info.png?v=" + V_NUM}
-            label="생활정보"
-            active={activeTab === "생활정보"}
+            label="용인시정보"
+            active={activeTab === "용인시정보"}
           />
           <MenuLink
             onClick={() => {
@@ -1377,6 +1408,17 @@ export default function DashboardClient({
             icon={IMG_BASE + "icon-book.png?v=" + V_NUM}
             label="도서정보"
             active={activeTab === "블로그" && activeBlogCat === "도서정보"}
+          />
+          <MenuLink
+            onClick={() => {
+              setActiveTab("독서일기");
+              setIsMenuOpen(false);
+              window.history.pushState({}, '', '/?tab=독서일기');
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            icon={IMG_BASE + "icon-book.png?v=" + V_NUM}
+            label="독서일기"
+            active={activeTab === "독서일기"}
           />
           <MenuLink
             onClick={() => {

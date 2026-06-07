@@ -139,7 +139,7 @@ export default function MapNoticeSection({
     // === [수지구 6곳] ===
     "광교산": {
       id: "guide-gwanggyosan",
-      category: "생활정보",
+      category: "용인시정보",
       title: "⛰️ [수지구 명소] 사계절 청정 대자연과 함께하는 힐링 건강 하이킹, 광교산 산림욕장",
       summary: "맑은 공기와 수려한 계곡을 자랑하며 시민들의 건강 아지트 역할을 톡톡히 하는 청정 웰빙 등산 코스를 자세히 소개해 드립니다.",
       date: "2026.05.21",
@@ -184,7 +184,7 @@ export default function MapNoticeSection({
     },
     "식물원": {
       id: "guide-dongcheonbotanic",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🌿 [수지구 명소] 도심 속 꼬마 숲 탐험과 미니 동물 먹이주기 체험, 동천자연식물원",
       summary: "아이들의 감성과 오감을 자극하는 아기자기한 식물원 및 소동물 체험 코스를 친절하게 소개해 드립니다.",
       date: "2026.05.21",
@@ -225,7 +225,7 @@ export default function MapNoticeSection({
     },
     "포은아트홀": {
       id: "guide-poeunarthall",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🎭 [수지구 명소] 고품격 뮤지컬과 세계적인 클래식 공연의 감동을 그대로, 용인포은아트홀",
       summary: "시민들에게 문화적 감동과 화려한 무대 예술을 선사하는 고품격 공연 문화 공간의 모든 것을 담아냈습니다.",
       date: "2026.05.21",
@@ -268,7 +268,7 @@ export default function MapNoticeSection({
     },
     "수지생태공원": {
       id: "guide-sujiecological",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🌊 [수지구 명소] 도심 속에서 아이들과 함께 걷는 촉촉한 숲생태 관찰로, 수지 생태공원",
       summary: "맹꽁이가 울고 딱따구리가 노래하는 도심 속 습지 생태 천국이자 청정 비오톱 체험길을 소개해 드립니다.",
       date: "2026.05.21",
@@ -311,7 +311,7 @@ export default function MapNoticeSection({
     },
     "신세계백화점": {
       id: "guide-shinsegaejukjeon",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🛍️ [수지구 명소] 쇼핑과 미식, 다채로운 키즈 클래스 문화가 한곳에 녹아든 신세계백화점 경기점",
       summary: "주말 실내 데이트와 패밀리 복합 문화 트렌드의 중심지인 백화점 스마트 쇼핑 코스를 자세하게 안내해 드립니다.",
       date: "2026.05.21",
@@ -358,7 +358,7 @@ export default function MapNoticeSection({
     },
     "정평천": {
       id: "guide-jeongpyeongcheon",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🌸 [수지구 명소] 흐드러지는 눈부신 벚꽃 터널과 흐르는 맑은 시내, 수지 정평천 벚꽃 산책길",
       summary: "봄날의 흐드러지는 눈꽃 축제부터 야간 감성 산책까지, 물소리와 꽃향기가 어우러진 도심 수변 보행 코스를 안내해 드립니다.",
       date: "2026.05.21",
@@ -402,7 +402,7 @@ export default function MapNoticeSection({
     // === [기흥구 7곳] ===
     "민속촌": {
       id: "guide-folkvillage",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🛖 [기흥구 명소] 300년 전 생생한 조선시대로의 타임슬립과 화려한 전통 축제, 한국민속촌",
       summary: "살아있는 조선 시대 캐릭터들과 한복 체험, 신명 나는 전통 마당놀이와 야간 개장 꿀팁까지 알차게 정리했습니다.",
       date: "2026.05.21",
@@ -447,7 +447,7 @@ export default function MapNoticeSection({
     },
     "백남준": {
       id: "guide-namjune",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🎨 [기흥구 명소] 미디어아트 거장의 예술적 상상력과 첨단 기술의 충돌, 백남준아트센터",
       summary: "세계적인 비디오 아티스트 백남준의 예술혼과 창조적인 영감을 자극하는 특별 전시 가이드를 소개해 드립니다.",
       date: "2026.05.21",
@@ -490,7 +490,7 @@ export default function MapNoticeSection({
     },
     "기흥호수": {
       id: "guide-giheunglake",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🌊 [기흥구 명소] 도심 속 은빛 물결을 따라 걷는 환상적인 수변 순환 산책로, 기흥호수공원",
       summary: "붉게 물드는 석양 명소이자 애견 공원, 탁 트인 수변 데크로드와 추천 도보 코스를 안내해 드립니다.",
       date: "2026.05.21",
@@ -533,7 +533,7 @@ export default function MapNoticeSection({
     },
     "어린이박물관": {
       id: "guide-childmuseum",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🦖 [기흥구 명소] 놀이와 학습이 살아 숨 쉬는 국내 최대 규모의 어린이 오감 체험 놀이터, 경기도 어린이박물관",
       summary: "아이들의 두뇌 발달과 끝없는 웃음소리를 보장하는 최고의 에듀테인먼트 체험관 정보를 알기 쉽게 가이드 해드립니다.",
       date: "2026.05.21",
@@ -577,7 +577,7 @@ export default function MapNoticeSection({
     },
     "이케아": {
       id: "guide-ikeagiheung",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🛍️ [기흥구 명소] 북유럽 감성의 예쁜 홈스타일링 아이디어와 쇼룸, 이케아 기흥점",
       summary: "트렌디한 인테리어 가구와 맛있는 북유럽식 푸드코트까지 갖춘 복합 실내 쇼핑 나들이 가이드를 전해 드립니다.",
       date: "2026.05.21",
@@ -617,7 +617,7 @@ export default function MapNoticeSection({
     },
     "롯데아울렛": {
       id: "guide-lottepremium",
-      category: "생활정보",
+      category: "용인시정보",
       title: "👗 [기흥구 명소] 웅장한 가든 피크닉과 수려한 명품 패션 쇼핑의 낙원, 롯데 프리미엄 아울렛 기흥점",
       summary: "이탈리아 피렌체 감성의 아기자기한 광장과 주말 아웃도어 쇼핑 꿀팁을 전해 드립니다.",
       date: "2026.05.21",
@@ -659,7 +659,7 @@ export default function MapNoticeSection({
     },
     "코리아CC": {
       id: "guide-koreacc",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🏌️ [기흥구 명소] 도심 가까이서 펼쳐지는 환상적인 명품 골프 코스와 야간 라이트 필드, 코리아CC",
       summary: "골퍼들의 자부심이자 야간 3부 라운딩 성지로 유명한 고품격 컨트리클럽의 핵심 정보를 알려 드립니다.",
       date: "2026.05.21",
@@ -704,7 +704,7 @@ export default function MapNoticeSection({
     // === [처인구 7곳] ===
     "에버랜드": {
       id: "guide-everland",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🎡 [처인구 명소] 세계 최고의 환상과 모험이 펼쳐지는 초대형 테마파크, 에버랜드 & 캐리비안베이",
       summary: "세계 최고 수준의 스릴 우든 코스터 T-익스프레스 탑재 및 귀여운 푸바오 가족의 판다월드 주차장 꿀팁 총정리입니다.",
       date: "2026.05.21",
@@ -747,7 +747,7 @@ export default function MapNoticeSection({
     },
     "휴양림": {
       id: "guide-forest",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🌲 [처인구 명소] 숲속 통나무집과 하늘을 나는 짚라인의 대자연 쉼터, 용인자연휴양림",
       summary: "푸른 숲 향기와 짚라인 액티비티, 숲속 패밀리 캠핑장 예약 꿀팁까지 숲속 힐링의 모든 것을 정리해 드립니다.",
       date: "2026.05.21",
@@ -793,7 +793,7 @@ export default function MapNoticeSection({
     },
     "와우정사": {
       id: "guide-wowjeongsa",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🛕 [처인구 명소] 세계 최대 거대 누워있는 와불 부처님과 이국적 탑들이 가득한 힐링 사찰, 와우정사",
       summary: "세계 140여 개국 불교문화 교류의 메카이자 돌탑 정원, 이색 힐링 산책 동선과 주차 꿀팁을 전해 드립니다.",
       date: "2026.05.21",
@@ -836,7 +836,7 @@ export default function MapNoticeSection({
     },
     "스피드웨이": {
       id: "guide-speedway",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🏎️ [처인구 명소] 엔진 굉음과 아스팔트 위의 뜨거운 스릴이 격돌하는 한국 레이싱의 메카, 용인 스피드웨이",
       summary: "모터스포츠 매니아들의 심장을 뛰게 하는 아스팔트 트랙 레이싱 역사와 관람 방법, 주차 가이드를 담았습니다.",
       date: "2026.05.21",
@@ -877,7 +877,7 @@ export default function MapNoticeSection({
     },
     "한택식물원": {
       id: "guide-hantaek",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🌾 [처인구 명소] 국내 최대 규모의 자생 식물 천국과 동화 속 바오밥 나무 온실, 한택식물원",
       summary: "세계 각국 1만여 종의 희귀 식물 조경과 어린왕자 바오밥나무를 직접 만나는 비밀 정원의 코스를 소개합니다.",
       date: "2026.05.21",
@@ -920,7 +920,7 @@ export default function MapNoticeSection({
     },
     "농촌테마파크": {
       id: "guide-ruralthemepark",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🏞️ [처인구 명소] 아이들이 마음껏 흙 밟고 뛰노는 꽃동산 원두막 피크닉, 용인농촌테마파크",
       summary: "초록빛 다랑이 논 체험과 들꽃 정원, 바람 부는 원두막을 선점하여 즐기는 소풍 꿀팁을 전해 드립니다.",
       date: "2026.05.21",
@@ -965,7 +965,7 @@ export default function MapNoticeSection({
     },
     "대장금파크": {
       id: "guide-daejanggeumpark",
-      category: "생활정보",
+      category: "용인시정보",
       title: "🏕️ [처인구 명소] 드라마 선덕여왕, 해품달의 찬란한 조선 왕조가 부활하는 한류 사극 메카, 용인 대장금파크",
       summary: "세계적인 한류 역사극 촬영 서식지와 어마어마한 궁궐 세트장, 주말 이색 데이트 코스를 담았습니다.",
       date: "2026.05.21",
@@ -1019,7 +1019,7 @@ export default function MapNoticeSection({
       // 롤백 방지용 기본 가이드 동적 제작
       const guideCard: FeaturedCard = {
         id: `spot-${keyword}`,
-        category: "생활정보",
+        category: "용인시정보",
         title: `📍 용인 ${selectedDistrict === "suji" ? "수지구" : selectedDistrict === "giheung" ? "기흥구" : "처인구"} 추천 장소: [${spotName}]`,
         summary: `${spotName}은 용인을 빛내는 소중한 랜드마크입니다.`,
         date: "2026.05.21",

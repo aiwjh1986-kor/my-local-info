@@ -7,7 +7,7 @@ image: event/08.png
 link: 'https://racing.hyundai.com'
 tags:
   - 용인시
-  - 실생활정보
+  - 실용인시정보
   - 루미가이드
 ---
 

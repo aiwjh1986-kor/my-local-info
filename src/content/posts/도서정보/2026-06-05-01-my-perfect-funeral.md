@@ -4,6 +4,7 @@ date: 2026-06-05T20:00:00.000Z
 summary: '죽음을 무겁지 않게, 그러나 가볍지도 않게 다루며 삶에 대한 깊은 성찰을 이끌어내는 소설 리뷰입니다.'
 category: 도서정보
 image: book/14.png
+link: "https://link.coupang.com/a/eoyPhm00J2"
 tags:
   - 도서추천
   - 나의완벽한장례식

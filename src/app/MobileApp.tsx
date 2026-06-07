@@ -27,9 +27,9 @@ const icons = [
   { name: "생활꿀팁", src: "/images/icon-ggul.png", tab: "생활꿀팁" },
   { name: "EVENT", src: "/images/icon-event.png", tab: "지역행사" },
   { name: "지원금", src: "/images/icon-grant.png", tab: "지원금" },
-  { name: "HOME", src: "/images/icon-home.png", tab: "홈" },
   { name: "BOOK", src: "/images/icon-book.png", tab: "도서정보" },
-  { name: "생활정보", src: "/images/icon-info.png", tab: "생활정보" },
+  { name: "독서일기", src: "/images/독서일기.png", tab: "독서일기" },
+  { name: "용인시정보", src: "/images/icon-info.png", tab: "용인시정보" },
   { name: "BLOG", src: "/images/icon-blog.png", tab: "블로그" },
 ];
 
@@ -130,9 +130,10 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
     const catMap: Record<string, string[]> = {
       "지원금": ["grant", "지원금", "subsidy"],
       "지역행사": ["event", "행사", "지역행사"],
-      "생활정보": ["info", "생활정보"],
+      "용인시정보": ["info", "용인시정보"],
       "도서정보": ["book", "도서정보", "도서"],
-      "생활꿀팁": ["tip", "꿀팁", "실생활꿀팁", "info", "생활정보"] // 꿀팁이 없을 경우 생활정보라도 나오도록 보완
+      "독서일기": ["diary", "독서일기", "reading diary"],
+      "생활꿀팁": ["tip", "꿀팁", "실생활꿀팁", "info", "용인시정보"] // 꿀팁이 없을 경우 용인시정보라도 나오도록 보완
     };
     const targets = (catMap[activeTab] || [activeTab]).map(t => t.toLowerCase());
     return allCards.filter(post => !post.title.includes("[종료]") && targets.includes((post.category || "").toLowerCase()));
@@ -342,7 +343,7 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
                 </div>
                 {selectedCard.link && (
                   <a href={selectedCard.link} target="_blank" rel="noreferrer" className="block w-full bg-[#A855F7] text-white text-center font-bold py-4 rounded-xl mt-8">
-                    {selectedCard.category?.includes("꿀팁") || selectedCard.category?.includes("생활정보") ? "구매하러 가기" : "자세히 보기"}
+                    {selectedCard.category?.includes("꿀팁") || selectedCard.category?.includes("용인시정보") ? "구매하러 가기" : "자세히 보기"}
                   </a>
                 )}
               </div>

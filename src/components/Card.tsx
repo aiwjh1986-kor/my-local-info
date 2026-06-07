@@ -40,8 +40,8 @@ const renderTags = (cat: string) => {
   } else if (cat === "event" || cat === "행사" || cat === "지역행사") {
     label = "지역행사";
     tagStyles = "bg-[#EBF5FF] text-[#0066CC] border border-[#D5EBFF]";
-  } else if (cat === "info" || cat === "생활정보") {
-    label = "생활정보";
+  } else if (cat === "info" || cat === "용인시정보") {
+    label = "용인시정보";
     tagStyles = "bg-[#EDF7ED] text-[#2E7D32] border border-[#DBEED9]";
   } else if (cat === "book" || cat === "도서정보") {
     label = "도서정보";

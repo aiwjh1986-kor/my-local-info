@@ -14,7 +14,7 @@ const cards = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 const catMap = {
   '지원금': 'grant',
   '행사': 'event',
-  '생활정보': 'info',
+  '용인시정보': 'info',
   '도서정보': 'book'
 };
 

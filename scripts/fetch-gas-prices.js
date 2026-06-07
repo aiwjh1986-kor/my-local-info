@@ -104,7 +104,7 @@ async function fetchGasPrices() {
 
     bodyContent += `---\n\n### 💡 알뜰 주유 꿀팁!\n1. **지역화폐 활용**: '용인와이페이' 가맹점인 주유소를 이용하면 추가 혜택을 받을 수 있어요!\n2. **오전 주유**: 기온이 낮은 오전에 주유하면 조금 더 이득이라는 점!\n\n오늘도 알뜰하고 행복한 하루 되세요! ❤️🐰\n\n---\n*본 정보는 오피넷(Opinet) 실시간 API 데이터를 바탕으로 작성되었습니다.*\n`;
 
-    let content = `---\ntitle: "${title}"\ndate: ${kstDate.toISOString()}\nsummary: "${summary}"\ncategory: 생활정보\nimage: info-gas.png\ntags: [용인시, 최저가주유소, 기름값정보, 실시간위젯]\n---\n\n${bodyContent}`;
+    let content = `---\ntitle: "${title}"\ndate: ${kstDate.toISOString()}\nsummary: "${summary}"\ncategory: 용인시정보\nimage: info-gas.png\ntags: [용인시, 최저가주유소, 기름값정보, 실시간위젯]\n---\n\n${bodyContent}`;
 
     const postsDir = path.join(__dirname, '../src/content/posts');
     
@@ -123,7 +123,7 @@ async function fetchGasPrices() {
       }
     });
 
-    const targetDir = path.join(postsDir, '생활정보');
+    const targetDir = path.join(postsDir, '용인시정보');
     if (!fs.existsSync(targetDir)) {
       fs.mkdirSync(targetDir, { recursive: true });
     }
@@ -135,7 +135,7 @@ async function fetchGasPrices() {
     if (fs.existsSync(featuredCardsPath)) {
       let cards = JSON.parse(fs.readFileSync(featuredCardsPath, 'utf8'));
       const newCard = {
-        category: '생활정보',
+        category: '용인시정보',
         title: title,
         summary: summary,
         content: bodyContent,

@@ -4,6 +4,7 @@ date: 2026-06-07T10:00:00.000Z
 summary: '각자의 고민을 안고 살아가는 현대인들에게 따뜻한 위로를 건네는 소설, 불편한 편의점 리뷰입니다.'
 category: 도서정보
 image: book/16.png
+link: "https://link.coupang.com/a/eoyZqjdNaS"
 tags:
   - 도서추천
   - 불편한편의점

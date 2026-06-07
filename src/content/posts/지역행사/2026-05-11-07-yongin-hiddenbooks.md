@@ -7,7 +7,7 @@ image: event/13.png
 link: 'https://lib.yongin.go.kr'
 tags:
   - 용인시
-  - 실생활정보
+  - 실용인시정보
   - 루미가이드
 ---
 

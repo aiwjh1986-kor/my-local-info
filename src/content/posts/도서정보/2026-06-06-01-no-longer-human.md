@@ -4,6 +4,7 @@ date: 2026-06-06T10:00:00.000Z
 summary: '나 자신을 잃어버린 채 타인의 시선에 맞춰 살아가는 현대인들에게 던지는 묵직한 질문, 다자이 오사무의 인간실격 리뷰입니다.'
 category: 도서정보
 image: book/15.png
+link: "https://link.coupang.com/a/eoyWgmXxDM"
 tags:
   - 도서추천
   - 인간실격

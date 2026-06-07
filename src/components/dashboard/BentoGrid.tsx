@@ -80,7 +80,7 @@ export default function BentoGrid({
       title: "실생활 정보",
       desc: "주유비 아끼는 오늘의 정보",
       icon: <Lightbulb className="w-5 h-5 text-emerald-500" />,
-      tab: "생활정보",
+      tab: "용인시정보",
       color: "from-emerald-500/10 to-teal-500/10",
       textColor: "text-emerald-500",
     },

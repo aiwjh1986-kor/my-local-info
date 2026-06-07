@@ -7,7 +7,7 @@ image: event/11.png
 link: 'https://www.yicf.or.kr'
 tags:
   - 용인시
-  - 실생활정보
+  - 실용인시정보
   - 루미가이드
 ---
 

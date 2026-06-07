@@ -16,9 +16,9 @@ files.forEach(f => {
     if(!map[cat]) map[cat] = [];
     map[cat].push(f);
   } else {
-    categories.add('생활정보'); // default
-    if(!map['생활정보']) map['생활정보'] = [];
-    map['생활정보'].push(f);
+    categories.add('용인시정보'); // default
+    if(!map['용인시정보']) map['용인시정보'] = [];
+    map['용인시정보'].push(f);
   }
 });
 

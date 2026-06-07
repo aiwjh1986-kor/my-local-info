@@ -29,7 +29,7 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
     const c = cat.toLowerCase();
     if (c === "grant" || c === "지원금") return "bg-orange-500 text-white";
     if (c === "event" || c === "행사" || c === "지역행사") return "bg-blue-500 text-white";
-    if (c === "info" || c === "생활정보") return "bg-green-500 text-white";
+    if (c === "info" || c === "용인시정보") return "bg-green-500 text-white";
     if (c === "book" || c === "도서소식" || c === "도서정보") return "bg-purple-500 text-white";
     return "bg-gray-500 text-white";
   };
@@ -57,7 +57,7 @@ export default function PostClient({ initialPost }: { initialPost: PostData }) {
               <span className={`px-6 py-2 ${getCategoryStyles(post.category)} text-xs lg:text-xl font-black rounded-full uppercase tracking-widest shadow-lg`}>
                 {post.category === "grant" ? "지원금" : 
                  post.category === "event" || post.category === "행사" || post.category === "지역행사" ? "지역행사" : 
-                 post.category === "info" ? "생활정보" : 
+                 post.category === "info" ? "용인시정보" : 
                  post.category === "book" ? "도서소식" : post.category}
               </span>
               <time className="text-sm lg:text-2xl font-bold text-gray-300">{post.date}</time>

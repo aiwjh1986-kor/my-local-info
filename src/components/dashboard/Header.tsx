@@ -71,8 +71,9 @@ export default function Header() {
     { id: "홈", label: "홈", path: "/" },
     { id: "지원금", label: "지원금", path: `/?tab=${encodeURIComponent("지원금")}` },
     { id: "지역행사", label: "지역행사", path: `/?tab=${encodeURIComponent("지역행사")}` },
-    { id: "생활정보", label: "생활정보", path: `/?tab=${encodeURIComponent("생활정보")}` },
+    { id: "용인시정보", label: "용인시정보", path: `/?tab=${encodeURIComponent("용인시정보")}` },
     { id: "도서정보", label: "도서정보", path: `/?tab=${encodeURIComponent("도서정보")}` },
+    { id: "독서일기", label: "독서일기", path: `/?tab=${encodeURIComponent("독서일기")}` },
     { id: "블로그", label: "블로그", path: `/?tab=${encodeURIComponent("블로그")}` },
   ];
 

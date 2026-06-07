@@ -2,7 +2,7 @@
 id: tip10
 title: "\U0001F34E 잔류 농약 걱정 뚝! 깨끗한 과일 세척을 위한 '5분 담금법'"
 date: '2026-05-05'
-category: 생활정보
+category: 용인시정보
 summary: '껍질째 먹는 과일, 그냥 물에 씻기 찝찝하셨죠? 농약 제거 효과가 가장 뛰어난 세척 가이드를 알려드립니다.'
 image: coopang/10.png
 productName: 안심 세정! 1종 주방세제 과일 채소 세정제

@@ -4,6 +4,7 @@ date: 2026-06-01T09:56:00.000Z
 summary: 아이들에게 호기심이라는 씨앗을 심어주고 스스로 배우는 즐거움을 알려주는 훌륭한 과학 입문서 『이상한 과학책』을 추천합니다.
 category: 도서정보
 image: book/12.png
+link: "https://link.coupang.com/a/eoypaanAvQ"
 tags:
   - 이상한과학책
   - 김진우

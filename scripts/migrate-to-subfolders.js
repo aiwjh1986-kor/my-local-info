@@ -20,7 +20,7 @@ function runMigration() {
       const content = fs.readFileSync(fullPath, 'utf8');
       const m = matter(content);
       
-      let cat = '생활정보'; // default
+      let cat = '용인시정보'; // default
       if (m.data.category) {
         cat = String(m.data.category).replace(/['"]/g, '').trim();
       }

@@ -4,7 +4,7 @@ require('dotenv').config({ path: path.join(__dirname, '../.env.local') });
 
 async function generate() {
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-  const prompt = `너는 '용인시 생활정보 및 여행가이드' 블로그의 전문 에디터야.
+  const prompt = `너는 '용인시 용인시정보 및 여행가이드' 블로그의 전문 에디터야.
 오늘은 우리 지역 분들이 서울로 나들이 갈 때 아주 좋을 만한 고궁 행사를 소개하는 글을 쓸 거야.
 아래 주어진 정보를 바탕으로 아주 길고 풍성하게, 한글 공백 포함 '최소 2000자 이상'의 분량으로 블로그 글을 작성해줘.
 

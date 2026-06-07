@@ -2,7 +2,7 @@
 id: tip12
 title: "🧺 수건에서 쉰내가 난다면? 뽀송뽀송하게 되살리는 식초 세탁법"
 date: "2026-05-05"
-category: "생활정보"
+category: "용인시정보"
 summary: "빨아도 사라지지 않는 수건의 퀴퀴한 냄새, 과탄산소다와 식초를 활용해 완벽하게 잡아보세요."
 image: "coopang/12.png"
 productName: "살림 필수품! 대용량 과탄산소다"

@@ -118,7 +118,7 @@ export function getSortedPostsData(): PostData[] {
         title: matterResult.data.title || "제목 없음",
         date,
         summary: matterResult.data.summary || '',
-        category: (matterResult.data.category || '생활정보').toString().replace(/["']/g, "").trim().toLowerCase(),
+        category: (matterResult.data.category || '용인시정보').toString().replace(/["']/g, "").trim().toLowerCase(),
         tags: Array.isArray(matterResult.data.tags) ? matterResult.data.tags : [],
         link: matterResult.data.link || '',
         content: matterResult.content || '',

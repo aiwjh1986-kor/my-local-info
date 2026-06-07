@@ -39,39 +39,11 @@ export default function Footer() {
               한국 여행을 더 쉽고, 더 즐겁게!
               용인시의 축제, 지원금 혜택부터 생활 꿀팁까지 꼭 필요한 모든 정보를 한곳에 모았습니다.
             </p>
-            {/* Social Icons (Instagram, Youtube, Facebook, Naver Blog) */}
-            <div className="flex items-center gap-3">
-              <a href="#" className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xs hover:scale-105 hover:bg-gray-50 transition-all">📷</a>
-              <a href="#" className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xs hover:scale-105 hover:bg-gray-50 transition-all">🎥</a>
-              <a href="#" className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xs hover:scale-105 hover:bg-gray-50 transition-all">📘</a>
-              <a href="#" className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xs hover:scale-105 hover:bg-gray-50 transition-all">💚</a>
-            </div>
+
           </div>
 
           {/* Quick Links Columns (Middle - Colspan 6) */}
           <div className="md:col-span-5 grid grid-cols-3 gap-6">
-            {/* Column 1: 여행 정보 */}
-            <div>
-              <h4 className="text-gray-900 font-bold text-[13px] mb-5 tracking-wide">여행 정보</h4>
-              <ul className="space-y-3.5 text-[12.5px] font-semibold text-gray-400">
-                <li><Link href="/?tab=지역행사" className="hover:text-gray-900 transition-colors">여행지</Link></li>
-                <li><Link href="/tips" className="hover:text-gray-900 transition-colors">여행 가이드</Link></li>
-                <li><Link href="/?tab=생활정보" className="hover:text-gray-900 transition-colors">숙소 추천</Link></li>
-                <li><Link href="/?tab=생활정보" className="hover:text-gray-900 transition-colors">맛집 탐방</Link></li>
-              </ul>
-            </div>
-            
-            {/* Column 2: 여행 준비 */}
-            <div>
-              <h4 className="text-gray-900 font-bold text-[13px] mb-5 tracking-wide">여행 준비</h4>
-              <ul className="space-y-3.5 text-[12.5px] font-semibold text-gray-400">
-                <li><Link href="/parking" className="hover:text-gray-900 transition-colors">교통 정보</Link></li>
-                <li><Link href="/tips" className="hover:text-gray-900 transition-colors">여행 팁</Link></li>
-                <li><Link href="/?tab=지원금" className="hover:text-gray-900 transition-colors">여행 상품</Link></li>
-                <li><Link href="/?tab=지원금" className="hover:text-gray-900 transition-colors">여행자 보험</Link></li>
-              </ul>
-            </div>
-
             {/* Column 3: 고객 센터 */}
             <div>
               <h4 className="text-gray-900 font-bold text-[13px] mb-5 tracking-wide">고객 센터</h4>
@@ -90,14 +62,14 @@ export default function Footer() {
               <span className="text-2xl">🎒</span>
               <div>
                 <h5 className="text-[13px] font-bold text-gray-800 leading-snug">
-                  여행이 더 편해지는<br />꿀팁을 확인하세요!
+                  다양한 지역행사를<br />확인해보세요!
                 </h5>
               </div>
               <Link 
-                href="/tips" 
+                href="/?tab=지역행사" 
                 className="w-full py-2.5 bg-gray-950 text-white rounded-xl text-center text-xs font-bold hover:bg-gray-800 transition-all flex items-center justify-center gap-1.5"
               >
-                여행 팁 보러가기 <span>→</span>
+                지역행사 보러가기 <span>→</span>
               </Link>
             </div>
           </div>

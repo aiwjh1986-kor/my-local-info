@@ -52,7 +52,7 @@ async function fetchElectionNews() {
     // 주요 뉴스 최대 10건만 요약
     const newsListStr = items.slice(0, 10).map((item, idx) => `${idx + 1}. 제목: ${item.title}\n   링크: ${item.link}`).join('\n\n');
 
-    const prompt = `너는 '용인시 생활정보 및 여행가이드' 블로그의 전문 에디터야.
+    const prompt = `너는 '용인시 용인시정보 및 여행가이드' 블로그의 전문 에디터야.
 주의: '루미예요', '루미가 추천해요'와 같은 가상의 이름이나 오글거리는 인사말은 절대 넣지 마.
 아래는 오늘 수집된 '용인시 지방선거' 관련 최신 뉴스 헤드라인들이야.
 

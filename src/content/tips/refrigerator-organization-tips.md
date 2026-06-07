@@ -2,7 +2,7 @@
 id: tip11
 title: "❄️ 냉장고 공간이 2배로! 식재료 신선도를 지키는 스마트 수납법"
 date: '2026-05-05'
-category: 생활정보
+category: 용인시정보
 summary: '열 때마다 한숨 나오는 복잡한 냉장고, 소분 보관과 배치 전략으로 깔끔하게 정리해 보세요.'
 image: coopang/11.png
 productName: 깔끔 수납! 냉장고 투명 정리함 세트

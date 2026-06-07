@@ -7,7 +7,7 @@ image: event/12.png
 link: 'https://www.yongin.go.kr'
 tags:
   - 용인시
-  - 실생활정보
+  - 실용인시정보
   - 루미가이드
 ---
 
