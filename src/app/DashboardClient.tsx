@@ -1323,7 +1323,7 @@ export default function DashboardClient({
                     rel="noopener noreferrer"
                     className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 rounded-2xl text-sm font-[900] text-center shadow-lg shadow-orange-100 hover:opacity-90 transition-all hover:-translate-y-0.5 active:translate-y-0"
                   >
-                    {selectedCard.category?.includes("꿀팁") || selectedCard.category?.includes("용인시정보") || selectedCard.category === "book" || selectedCard.category === "도서정보" || selectedCard.category === "독서일기" ? "구매하러 가기" : "홈페이지 바로가기"}
+                    {selectedCard.category?.includes("꿀팁") || selectedCard.category === "book" || selectedCard.category === "도서정보" || selectedCard.category === "독서일기" ? "구매하러 가기" : "홈페이지 바로가기"}
                   </a>
                 )}
                 <button
