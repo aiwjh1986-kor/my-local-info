@@ -1427,8 +1427,8 @@ export default function DashboardClient({
           <MenuLink
             onClick={() => {
               setActiveTab("홈");
+              router.push("/");
               setIsMenuOpen(false);
-              window.history.pushState({}, '', '/');
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             icon={IMG_BASE + "icon-home.png?v=" + V_NUM}
@@ -1543,7 +1543,7 @@ export default function DashboardClient({
         <button
           onClick={() => {
             setActiveTab("홈");
-            window.history.pushState({}, '', '/');
+            router.push("/");
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
           className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-white/50 flex flex-col items-center justify-center group active:scale-90 transition-all"
