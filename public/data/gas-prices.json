@@ -1,11 +1,11 @@
 {
   "success": true,
-  "timestamp": "2026-05-30T04:15:22.876Z",
+  "timestamp": "2026-06-09T11:31:25.464Z",
   "data": {
     "suji": {
-      "name": "언남에너지유한책임회사",
+      "name": "미키주유소",
       "price": 1975,
-      "brand": "S-OIL",
+      "brand": "일반주유소",
       "dieselName": "경일석유(주) 도영주유소",
       "dieselPrice": 1974,
       "dieselBrand": "GS칼텍스"
@@ -15,16 +15,16 @@
       "price": 1973,
       "brand": "S-OIL",
       "dieselName": "동백호수주유소",
-      "dieselPrice": 1963,
+      "dieselPrice": 1969,
       "dieselBrand": "S-OIL"
     },
     "cheoin": {
-      "name": "(주)디오티디 용인드래곤주유소",
+      "name": "블루그린㈜ 마평지점",
       "price": 1983,
       "brand": "현대오일뱅크",
-      "dieselName": "(주)위굴리 고진역주유소",
-      "dieselPrice": 1973,
-      "dieselBrand": "S-OIL"
+      "dieselName": "㈜더오일 용인지점",
+      "dieselPrice": 1972,
+      "dieselBrand": "일반주유소"
     }
   }
 }

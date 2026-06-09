@@ -22,7 +22,7 @@ async function fetchTourData() {
   try {
     const encodedKey = encodeURIComponent(API_KEY);
     // areaCode=31 (경기도), eventStartDate=오늘날짜
-    const url = `http://apis.data.go.kr/B551011/KorService1/searchFestival1?serviceKey=${encodedKey}&numOfRows=5&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&listYN=Y&arrange=A&eventStartDate=${dateStr}&areaCode=31`;
+    const url = `https://apis.data.go.kr/B551011/KorService2/searchFestival2?serviceKey=${encodedKey}&numOfRows=5&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&arrange=A&eventStartDate=${dateStr}&areaCode=31`;
 
     const res = await fetch(url);
     const text = await res.text();

@@ -74,6 +74,7 @@ export default function DashboardClient({
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("홈");
   const [activeBlogCat, setActiveBlogCat] = useState("전체");
+  const [activeSubCat, setActiveSubCat] = useState("전체");
   const [selectedCard, setSelectedCard] = useState<FeaturedCard | null>(null);
   const [showMap, setShowMap] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -172,6 +173,7 @@ export default function DashboardClient({
     const tab = searchParams.get("tab");
     if (tab) {
       setActiveTab(tab);
+      setActiveSubCat("전체");
     } else {
       setActiveTab("홈");
     }
@@ -179,10 +181,19 @@ export default function DashboardClient({
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [searchParams]);
 
-  // 모달이 열릴 때 관광지 카드(id가 guide-로 시작)인 경우 지도를 기본 노출하도록 초기화
+  const isMapEnabled = (card: FeaturedCard | null) => {
+    if (!card) return false;
+    return card.id?.startsWith("guide-") || 
+           card.category === "추천코스" || 
+           card.category === "지역행사" || 
+           card.category === "행사" || 
+           card.category === "event";
+  };
+
+  // 모달이 열릴 때 지도 기능이 있는 카드인 경우 지도를 기본 노출하도록 초기화
   useEffect(() => {
     if (selectedCard) {
-      if (selectedCard.id?.startsWith("guide-")) {
+      if (isMapEnabled(selectedCard)) {
         setShowMap(true);
       } else {
         setShowMap(false);
@@ -437,6 +448,10 @@ export default function DashboardClient({
 
   // 상세 팝업 지도 임베드용 검색어 자동 정밀 파서 헬퍼
   const getMapSearchKeyword = (card: FeaturedCard) => {
+    if (card.category === "추천코스") {
+      return card.region ? `${card.region} 관광` : card.title;
+    }
+
     // 네이버 지도 링크 등이 포함되어 있다면 링크에서 검색어를 파싱해요
     if (card.link && card.link.includes("search/")) {
       try {
@@ -450,7 +465,20 @@ export default function DashboardClient({
       }
     }
     
-    // 타이틀에 [행정구역] 형태가 들어있다면 그 구역 이름과 장소명을 조합해 정확하게 찾아요
+    // 타이틀에 대괄호 [장소명] 형태가 들어있다면, 괄호 안의 텍스트가 장소일 확률이 높아요!
+    const bracketMatch = card.title.match(/\[(.*?)\]/);
+    if (bracketMatch) {
+      const bracketText = bracketMatch[1].trim();
+      // 날짜나 카테고리 태그가 아니라 장소명 키워드를 포함하거나 일반 단어라면 장소로 간주
+      const isStatusOrDate = /종료|마감|예정|진행|안내|행사|축제|코스|[0-9]/.test(bracketText);
+      const isPlaceKeyword = /홀|센터|파크|공원|구청|도서관|미술관|박물관|체육관|시장|마을|광장|경기장/.test(bracketText);
+      
+      if (isPlaceKeyword || (!isStatusOrDate && bracketText.length > 2)) {
+        return bracketText; // 예: "용인 포은아트홀"
+      }
+    }
+    
+    // 장소명이 괄호에 없다면, 기존처럼 괄호 밖의 내용을 시도합니다.
     if (card.title.includes("] ")) {
       const titleBody = card.title.split("] ")[1] || "";
       if (titleBody.includes(",")) {
@@ -458,7 +486,7 @@ export default function DashboardClient({
       }
       return titleBody.trim();
     }
-    return card.region ? `용인 ${card.region} ${card.title}` : card.title;
+    return card.region && card.region !== "전체" ? `${card.region} ${card.title}` : card.title;
   };
 
   // 분류(카테고리) 수정 저장
@@ -1054,6 +1082,25 @@ export default function DashboardClient({
               <p className="text-sm text-gray-400 font-bold">상세 정보를 확인해 보세요.</p>
             </div>
 
+            {/* 지역행사 탭인 경우 하위 카테고리 필터 */}
+            {activeTab === "지역행사" && (
+              <div className="flex gap-2 justify-center mb-8">
+                {["전체", "일반행사", "추천코스"].map(sub => (
+                  <button
+                    key={sub}
+                    onClick={() => setActiveSubCat(sub)}
+                    className={`px-5 py-2.5 rounded-2xl text-[13px] font-black transition-all shadow-sm ${
+                      activeSubCat === sub
+                        ? "bg-purple-100 text-purple-600 shadow-inner border border-purple-200"
+                        : "bg-white text-gray-500 hover:bg-gray-50 border border-gray-100"
+                    }`}
+                  >
+                    {sub}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {/* 블로그 탭인 경우 상단 카테고리 필터 */}
             {activeTab === "블로그" && (
               <div className="flex gap-2 overflow-x-auto pb-6 no-scrollbar">
@@ -1094,10 +1141,19 @@ export default function DashboardClient({
                   "세계 경제": "세계 경제",
                   "지방선거": "지방선거"
                 };
-                const match = c.category === catMap[activeTab] || c.category === korCatMap[activeTab] ||
-                  (activeTab === "지역행사" && (c.category === "행사" || c.category === "지역행사")) ||
+                let match = c.category === catMap[activeTab] || c.category === korCatMap[activeTab] ||
                   ((activeTab === "도서정보" || activeTab === "도서 소식") && (c.category === "book" || c.category === "도서정보")) ||
                   (activeTab === "독서일기" && (c.category === "diary" || c.category === "독서일기"));
+                
+                if (activeTab === "지역행사") {
+                  const isEvent = c.category === "행사" || c.category === "지역행사" || c.category === "event";
+                  const isCourse = c.category === "추천코스";
+                  
+                  if (activeSubCat === "전체") match = isEvent || isCourse;
+                  else if (activeSubCat === "일반행사") match = isEvent;
+                  else if (activeSubCat === "추천코스") match = isCourse;
+                }
+                
                 return match;
               })).sort((a, b) => {
                 const aEnded = a.title.includes("[종료]");
@@ -1160,7 +1216,7 @@ export default function DashboardClient({
           >
             {/* 상단 미디어 영역 (지도가 기본으로 표시되며 이미지와 탭 토글 가능!) */}
             <div className="w-full relative flex-shrink-0 h-[300px] lg:h-[500px] overflow-hidden bg-gray-100 dark:bg-gray-950">
-              {selectedCard.id?.startsWith("guide-") && showMap ? (
+              {isMapEnabled(selectedCard) && showMap ? (
                 <iframe
                   width="100%"
                   height="100%"
@@ -1185,39 +1241,54 @@ export default function DashboardClient({
                 ✕
               </button>
               
-              {/* 관광 가이드 카드인 경우 노출되는 럭셔리 Glassmorphic "지도 🗺️ / 사진 🖼️" 토글 탭 단추 */}
-              {selectedCard.id?.startsWith("guide-") ? (
-                <div className="absolute top-8 left-8 z-[80] flex bg-white/80 dark:bg-slate-800/80 backdrop-blur-md p-1.5 rounded-2xl shadow-lg border border-white/20 dark:border-slate-700/20 gap-1 animate-in fade-in slide-in-from-left-2 duration-300">
-                  <button
-                    onClick={() => setShowMap(true)}
-                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all flex items-center gap-1 active:scale-95 ${
-                      showMap
-                        ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-sm shadow-emerald-500/20"
-                        : "text-gray-500 dark:text-slate-400 hover:text-gray-750 dark:hover:text-slate-200"
-                    }`}
-                  >
-                    <span>🗺️</span> 지도 보기
-                  </button>
-                  <button
-                    onClick={() => setShowMap(false)}
-                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all flex items-center gap-1 active:scale-95 ${
-                      !showMap
-                        ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-sm shadow-orange-500/20"
-                        : "text-gray-500 dark:text-slate-400 hover:text-gray-750 dark:hover:text-slate-200"
-                    }`}
-                  >
-                    <span>🖼️</span> 사진 보기
-                  </button>
-                </div>
-              ) : (
-                <div className="absolute top-8 left-8 z-[80]">
-                  {renderTags(selectedCard.category)}
-                </div>
-              )}
+              {/* 항상 카테고리 태그 노출 */}
+              <div className="absolute top-8 left-8 z-[80]">
+                {renderTags(selectedCard.category)}
+              </div>
             </div>
             {/* 하단 본문 영역 (이미지 아래에 바로 이어짐) */}
             <div className="p-10 lg:p-20">
               <h2 className="text-2xl font-[900] text-gray-900 dark:text-white mb-4 leading-tight">{selectedCard.title}</h2>
+
+              {/* 지도/사진 토글 및 길찾기 버튼 (크게 배치) */}
+              {isMapEnabled(selectedCard) && (
+                <div className="flex flex-wrap items-center gap-3 mb-8">
+                  <button
+                    onClick={() => {
+                       setShowMap(true);
+                       document.querySelector('.custom-scrollbar')?.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className={`px-5 py-3 rounded-2xl text-[14px] font-black transition-all flex items-center gap-2 active:scale-95 ${
+                      showMap
+                        ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    <span className="text-xl">🗺️</span> 지도 보기
+                  </button>
+                  <button
+                    onClick={() => {
+                       setShowMap(false);
+                       document.querySelector('.custom-scrollbar')?.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className={`px-5 py-3 rounded-2xl text-[14px] font-black transition-all flex items-center gap-2 active:scale-95 ${
+                      !showMap
+                        ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/30"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    <span className="text-xl">🖼️</span> 사진 보기
+                  </button>
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(getMapSearchKeyword(selectedCard))}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-5 py-3 rounded-2xl text-[14px] font-black transition-all flex items-center gap-2 active:scale-95 bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/30 ml-auto sm:ml-0"
+                  >
+                    <span className="text-xl">🧭</span> 길찾기
+                  </a>
+                </div>
+              )}
 
               {/* 관리자 수정 버튼 (ID나 Slug가 있으면 노출) */}
               {isAdmin && (selectedCard.slug || selectedCard.id) && (

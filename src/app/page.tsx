@@ -61,7 +61,14 @@ export default function Page() {
   }));
 
   // #2 속도 개선: 브라우저가 할 일(데이터 합치고 정렬하기)을 서버에서 미리 처리
-  const combined = [...blogPosts, ...featuredCards, ...tipsCards];
+  const blogPostsMap = new Map(blogPosts.map(p => [p.slug, p.content]));
+  const combined = [...blogPosts, ...featuredCards, ...tipsCards].map(item => {
+    // 팝업에서 짧은 요약(300자 제한) 대신 상세글 전체 길이를 보여주기 위해 md 원본 content를 주입합니다.
+    if (item.slug && blogPostsMap.has(item.slug)) {
+      item.content = blogPostsMap.get(item.slug);
+    }
+    return item;
+  });
   const unique = Array.from(new Map(combined.map(item => [item.slug || item.id, item])).values());
   const allCards = unique.sort((a, b) => {
     const dateA = new Date((a.date || "").toString().replace(/\./g, '-')).getTime();

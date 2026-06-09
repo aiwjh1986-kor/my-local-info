@@ -12,6 +12,7 @@ const IMG_BASE = "/images/";
 export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
   const router = useRouter();
   const [activeCat, setActiveCat] = useState("전체");
+  const [activeSubCat, setActiveSubCat] = useState("전체");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [visitorCount, setVisitorCount] = useState(1248);
 
@@ -34,7 +35,8 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
   const getCategoryStyles = (cat: string) => {
     const c = (cat || "").toLowerCase();
     if (c === "grant" || c === "지원금") return "bg-orange-100 text-orange-600 border-orange-200";
-    if (c === "event" || c === "행사") return "bg-blue-100 text-blue-600 border-blue-200";
+    if (c === "event" || c === "행사" || c === "지역행사") return "bg-blue-100 text-blue-600 border-blue-200";
+    if (c === "추천코스") return "bg-pink-100 text-pink-600 border-pink-200";
     if (c === "info" || c === "용인시정보") return "bg-green-100 text-green-600 border-green-200";
     if (c === "book" || c === "도서소식" || c === "도서정보") return "bg-purple-100 text-purple-600 border-purple-200";
     return "bg-gray-100 text-gray-600 border-gray-200";
@@ -59,9 +61,19 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
     : sortedAllPosts.filter(p => {
         const catMap: any = { "지원금": "grant", "지역행사": "event", "용인시정보": "info", "도서정보": "book" };
         const target = catMap[activeCat] || activeCat;
-        return p.category === target || 
-               p.category === activeCat || 
-               (activeCat === "지역행사" && (p.category === "행사" || p.category === "event"));
+        
+        let match = false;
+        if (activeCat === "지역행사") {
+          const isEvent = p.category === "행사" || p.category === "event" || p.category === "지역행사";
+          const isCourse = p.category === "추천코스";
+          
+          if (activeSubCat === "전체") match = isEvent || isCourse;
+          else if (activeSubCat === "일반행사") match = isEvent;
+          else if (activeSubCat === "추천코스") match = isCourse;
+        } else {
+          match = p.category === target || p.category === activeCat;
+        }
+        return match;
       });
 
   return (
@@ -128,12 +140,15 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
       </header>
 
       {/* 3. 카테고리 필터 */}
-      <div className="sticky top-28 z-[50] mb-12 px-6 overflow-x-auto no-scrollbar py-4">
+      <div className="sticky top-28 z-[50] mb-12 px-6 overflow-x-auto no-scrollbar py-4 flex flex-col items-center gap-4">
         <div className="max-w-4xl mx-auto flex items-center justify-center gap-2 bg-white/50 backdrop-blur-md p-2 rounded-3xl border border-white/50 shadow-lg w-max md:w-auto">
           {categories.map((cat) => (
             <button
               key={cat}
-              onClick={() => setActiveCat(cat)}
+              onClick={() => {
+                setActiveCat(cat);
+                setActiveSubCat("전체");
+              }}
               className={`px-6 lg:px-10 py-3 lg:py-4 rounded-2xl text-sm lg:text-xl font-black whitespace-nowrap transition-all ${
                 activeCat === cat
                   ? "bg-accent text-white shadow-xl shadow-accent/20 scale-105"
@@ -144,6 +159,25 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
             </button>
           ))}
         </div>
+        
+        {/* 하위 카테고리 (지역행사 선택 시) */}
+        {activeCat === "지역행사" && (
+          <div className="flex items-center gap-2 bg-white/40 backdrop-blur-md p-1.5 rounded-2xl border border-white/40 shadow-sm animate-in fade-in slide-in-from-top-2">
+            {["전체", "일반행사", "추천코스"].map(sub => (
+              <button
+                key={sub}
+                onClick={() => setActiveSubCat(sub)}
+                className={`px-4 lg:px-6 py-2 rounded-xl text-xs lg:text-sm font-bold transition-all ${
+                  activeSubCat === sub
+                    ? "bg-blue-100 text-blue-600 shadow-inner"
+                    : "text-gray-500 hover:bg-white"
+                }`}
+              >
+                {sub}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 4. 블로그 포스트 그리드 */}
@@ -166,7 +200,7 @@ export default function BlogListClient({ allPosts }: { allPosts: any[] }) {
                     <div className="absolute top-6 left-6 flex gap-2 items-center">
                       <span className={`px-4 py-2 backdrop-blur-md rounded-2xl text-[10px] lg:text-xs font-black uppercase tracking-widest shadow-lg border ${getCategoryStyles(post.category)}`}>
                         {post.category === "grant" ? "지원금" : 
-                         post.category === "event" || post.category === "지역행사" || post.category === "행사" ? "지역행사" : 
+                         post.category === "event" || post.category === "행사" ? "지역행사" : 
                          post.category === "info" ? "용인시정보" : 
                          post.category === "book" ? "도서소식" : post.category}
                       </span>
