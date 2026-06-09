@@ -1160,8 +1160,16 @@ export default function DashboardClient({
                 const bEnded = b.title.includes("[종료]");
                 if (aEnded && !bEnded) return 1;
                 if (!aEnded && bEnded) return -1;
-                const dateA = new Date((a.date || "").toString().replace(/\./g, '-')).getTime();
-                const dateB = new Date((b.date || "").toString().replace(/\./g, '-')).getTime();
+                const aDateStr = (a.date || "").toString();
+                const bDateStr = (b.date || "").toString();
+                const dateA = new Date(aDateStr.includes("T") ? aDateStr : aDateStr.replace(/\./g, '-')).getTime();
+                const dateB = new Date(bDateStr.includes("T") ? bDateStr : bDateStr.replace(/\./g, '-')).getTime();
+                
+                // NaN일 경우 (안전 장치)
+                if (isNaN(dateA) && isNaN(dateB)) return 0;
+                if (isNaN(dateA)) return 1;
+                if (isNaN(dateB)) return -1;
+                
                 return dateB - dateA;
               });
 
