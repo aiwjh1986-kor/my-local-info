@@ -449,7 +449,7 @@ export default function DashboardClient({
   // 상세 팝업 지도 임베드용 검색어 자동 정밀 파서 헬퍼
   const getMapSearchKeyword = (card: FeaturedCard) => {
     if (card.category === "추천코스") {
-      return card.region ? `${card.region} 관광` : card.title;
+      return card.region && card.region !== "전체" ? card.region : card.title;
     }
 
     // 네이버 지도 링크 등이 포함되어 있다면 링크에서 검색어를 파싱해요

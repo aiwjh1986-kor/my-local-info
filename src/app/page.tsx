@@ -16,7 +16,7 @@ export default function Page() {
       title: p.title,
       summary: p.summary,
       date: p.date,
-      region: "전체",
+      region: p.region || "전체",
       cta: "글 읽어보기",
       deadline: p.deadline || null,
       is_urgent: false,
