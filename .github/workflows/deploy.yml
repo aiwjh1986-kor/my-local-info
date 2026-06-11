@@ -33,7 +33,6 @@ jobs:
         run: |
           node scripts/fetch-public-data.js
           node scripts/fetch-gas-prices.js
-          node scripts/fetch-election-news.js
           node scripts/generate-blog-post.js
           node scripts/auto-archive.js
         env:
