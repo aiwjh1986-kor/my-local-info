@@ -12,6 +12,7 @@ tags:
   - 필사
   - 단상
 image: 독서일기/01.png
+link: "https://link.coupang.com/a/ezTXnssmYe"
 ---
 
 ![셜록 홈즈 네 개의 서명 독서 일기](/images/%EB%8F%85%EC%84%9C%EC%9D%BC%EA%B8%B0/20260614%20%EC%85%9C%EB%A1%9D%ED%99%88%EC%A6%88%202%20%EB%84%A4%20%EA%B0%9C%EC%9D%98%20%EC%84%9C%EB%AA%85.jpg)
