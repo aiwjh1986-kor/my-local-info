@@ -15,3 +15,5 @@ image: 독서일기/01.png
 ---
 
 ![셜록 홈즈 진홍색 연구 독서 일기](/images/%EB%8F%85%EC%84%9C%EC%9D%BC%EA%B8%B0/20260609%20%EC%85%9C%EB%A1%9D%ED%99%88%EC%A6%88%201%20%EC%A7%84%ED%99%8D%EC%83%89%20%EC%97%B0%EA%B5%AC.jpg)
+
+🛒 [셜록 홈즈 1 진홍색 연구 책 구매하기](https://link.coupang.com/a/ezTXnssmYe)
