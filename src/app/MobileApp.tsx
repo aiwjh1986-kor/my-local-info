@@ -24,9 +24,8 @@ interface FeaturedCard {
 }
 
 const icons = [
-  { name: "마감임박!", src: "/images/icon-clock.png", tab: "마감임박" },
   { name: "생활꿀팁", src: "/images/icon-ggul.png", tab: "생활꿀팁" },
-  { name: "EVENT", src: "/images/icon-event.png", tab: "지역행사" },
+  { name: "지역행사", src: "/images/icon-event.png", tab: "지역행사" },
   { name: "지원금", src: "/images/icon-grant.png", tab: "지원금" },
   { name: "BOOK", src: "/images/icon-book.png", tab: "도서정보" },
   { name: "독서일기", src: "/images/독서일기.png", tab: "독서일기" },
@@ -258,6 +257,13 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
 
           {/* Bottom Icons Grid */}
           <div className="grid grid-cols-4 gap-y-6 gap-x-2 mt-8 z-20">
+            {/* 화장실 찾기 바로가기 (마감임박 자리) */}
+            <div onClick={() => window.location.href='/toilet'} className="flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-transform">
+              <div className="w-16 h-16 bg-gradient-to-br from-yellow-300 to-yellow-500 shadow-inner rounded-2xl flex items-center justify-center mb-2 relative border border-white/20 text-3xl drop-shadow-md">
+                🧻
+              </div>
+              <span className="text-[11px] font-extrabold tracking-tight text-yellow-500">화장실찾기</span>
+            </div>
             {icons.map(icon => (
               <div key={icon.name} onClick={() => handleTabChange(icon.tab)} className="flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-transform">
                 <div className="w-16 h-16 bg-[#b19df5] shadow-inner rounded-2xl flex items-center justify-center mb-2 relative border border-white/20">

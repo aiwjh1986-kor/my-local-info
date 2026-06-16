@@ -125,6 +125,15 @@ export default function HeroSection({
             >
               지원금 혜택 보러가기
             </button>
+            <button
+              onClick={() => {
+                window.location.href = "/toilet";
+              }}
+              className="px-7 py-4 bg-yellow-400 text-yellow-900 rounded-2xl text-[13px] font-extrabold hover:bg-yellow-500 hover:-translate-y-0.5 active:translate-y-0 shadow-sm transition-all flex items-center gap-2"
+            >
+              <span className="text-lg">🧻</span>
+              <span>내 주변 화장실 찾기</span>
+            </button>
           </motion.div>
         </div>
 
