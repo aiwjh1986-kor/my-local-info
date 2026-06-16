@@ -24,30 +24,35 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 
 export async function fetchNearbyToilets(userLat: number, userLng: number): Promise<ToiletInfo[]> {
   try {
-    const apiKey = '92a89b899c53464e7bc2822b70cbb04236e5c27972e09adabe807f8acd77e6cf';
+    const apiKey = 'cbe8a59661c547c4ab966c5ef0650d42';
+    const baseUrl = `https://openapi.gg.go.kr/Publtolt?KEY=${apiKey}&Type=json&pSize=1000`;
     
-    // 행정안전부 전국공중화장실표준데이터 API (용인시 데이터 검색)
-    // CORS 문제를 피하고 용인시청 관련 데이터를 찾기 위해 instt_nm 파라미터를 사용할 수 있습니다.
-    const url = `https://api.data.go.kr/openapi/tn_pubr_public_toilet_api?serviceKey=${apiKey}&pageNo=1&numOfRows=1000&type=json&instt_nm=${encodeURIComponent('용인시')}`;
-
-    const response = await fetch(url);
-    if (!response.ok) throw new Error('API 응답 에러');
-
-    const data = await response.json();
+    // 경기도 전체 공중화장실 약 11,200여 개. 한 번에 최대 1000개 호출 가능.
+    // 사용자가 경기도 어디에 있든 가장 가까운 화장실을 찾기 위해 전체 페이지(1~12)를 동시에 가져옵니다.
+    const pages = Array.from({ length: 12 }, (_, i) => i + 1);
     
+    const responses = await Promise.all(
+      pages.map(page => fetch(`${baseUrl}&pIndex=${page}`).then(r => r.json()).catch(() => null))
+    );
+
     let toilets: ToiletInfo[] = [];
 
-    if (data.response?.header?.resultCode === '00' && data.response.body.items) {
-      toilets = data.response.body.items.map((item: any) => ({
-        toiletNm: item.toiletNm,
-        rdnmadr: item.rdnmadr || item.lnmadr || '주소 정보 없음',
-        lnmadr: item.lnmadr,
-        unisexToiletYn: item.unisexToiletYn,
-        openTime: item.openTime || '정보 없음',
-        latitude: parseFloat(item.latitude),
-        longitude: parseFloat(item.longitude),
-      }));
-    } else {
+    responses.forEach(data => {
+      if (data && data.Publtolt && data.Publtolt[1] && data.Publtolt[1].row) {
+        const items = data.Publtolt[1].row.map((item: any) => ({
+          toiletNm: item.PBCTLT_PLC_NM,
+          rdnmadr: item.REFINE_ROADNM_ADDR || item.REFINE_LOTNO_ADDR || '주소 정보 없음',
+          lnmadr: item.REFINE_LOTNO_ADDR,
+          unisexToiletYn: item.MALE_FEMALE_CMNUSE_TOILET_YN || 'N',
+          openTime: item.OPEN_TM_INFO || '정보 없음',
+          latitude: parseFloat(item.REFINE_WGS84_LAT),
+          longitude: parseFloat(item.REFINE_WGS84_LOGT),
+        }));
+        toilets.push(...items);
+      }
+    });
+
+    if (toilets.length === 0) {
       throw new Error('데이터 파싱 에러 또는 결과 없음');
     }
 
