@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Fuel, Compass, CloudSun, CalendarDays, TrendingUp } from "lucide-react";
+import { fetchKmaWeather } from "@/utils/weather";
 
 interface GasResponse {
   suji: { name: string; price: number; brand: string; } | null;
@@ -26,6 +27,7 @@ export default function HeroSection({
   onElectionClick,
 }: HeroSectionProps) {
   const [time, setTime] = useState("");
+  const [weather, setWeather] = useState<{ temp: string; condition: string } | null>(null);
 
   useEffect(() => {
     const updateTime = () => {
@@ -40,7 +42,22 @@ export default function HeroSection({
     };
     updateTime();
     const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
+
+    const fetchWeather = async () => {
+      try {
+        const data = await fetchKmaWeather();
+        setWeather(data);
+      } catch (err) {
+        console.error("날씨 정보 불러오기 실패:", err);
+      }
+    };
+    fetchWeather();
+    const weatherInterval = setInterval(fetchWeather, 30 * 60 * 1000); // 30분마다 갱신
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(weatherInterval);
+    };
   }, []);
 
   return (
@@ -128,8 +145,12 @@ export default function HeroSection({
                 <CloudSun className="w-5 h-5 text-accent" />
               </div>
               <div className="flex flex-col mt-4">
-                <span className="text-[32px] font-black text-gray-900 dark:text-white leading-none">21°C</span>
-                <span className="text-[12px] font-bold text-gray-600 dark:text-gray-300 mt-1">맑음 (미세먼지 보통)</span>
+                <span className="text-[32px] font-black text-gray-900 dark:text-white leading-none">
+                  {weather ? `${weather.temp}°C` : "로딩중"}
+                </span>
+                <span className="text-[12px] font-bold text-gray-600 dark:text-gray-300 mt-1">
+                  {weather ? weather.condition : "잠시만 기다려주세요..."}
+                </span>
               </div>
               <div className="text-[10px] font-bold text-[#FF6B6B] dark:text-[#FF8787] mt-auto">
                 🕒 {time || "오전 09:00"}

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { fetchKmaWeather } from "@/utils/weather";
 
 interface FeaturedCard {
   category: string;
@@ -38,6 +39,7 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
   const [selectedCard, setSelectedCard] = useState<FeaturedCard | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isBgmPlaying, setIsBgmPlaying] = useState(false);
+  const [weather, setWeather] = useState<{ temp: string; condition: string } | null>(null);
 
   useEffect(() => {
     const handleBgmState = (e: any) => setIsBgmPlaying(e.detail.isPlaying);
@@ -59,6 +61,20 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
   }, [selectedCard]);
+
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        const data = await fetchKmaWeather();
+        setWeather(data);
+      } catch (err) {
+        console.error("날씨 정보 불러오기 실패:", err);
+      }
+    };
+    fetchWeather();
+    const weatherInterval = setInterval(fetchWeather, 30 * 60 * 1000); // 30분마다 갱신
+    return () => clearInterval(weatherInterval);
+  }, []);
 
   const handleTabChange = (tab: string) => {
     if (tab === activeTab) return;
@@ -152,8 +168,12 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
           <div className="flex justify-between items-start mb-6 relative">
             <div>
               <div className="text-sm font-semibold opacity-80 mb-1">실시간 용인 날씨</div>
-              <div className="text-4xl font-extrabold tracking-tighter">21°C</div>
-              <div className="text-sm font-medium mt-1">맑음 (미세먼지 보통)</div>
+              <div className="text-4xl font-extrabold tracking-tighter">
+                {weather ? `${weather.temp}°C` : "로딩중"}
+              </div>
+              <div className="text-sm font-medium mt-1">
+                {weather ? weather.condition : "잠시만 기다려주세요..."}
+              </div>
             </div>
             <div className="text-right">
               <div className="flex gap-2 justify-end mb-3">
