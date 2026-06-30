@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Info, ArrowRight, Eye, Tent, Hotel, Utensils, Coffee, Compass } from "lucide-react";
+import { MapPin, Info, ArrowRight, Eye, Tent, Hotel, Utensils, Coffee, Compass, Footprints } from "lucide-react";
 
 interface FeaturedCard {
   category: string;
@@ -62,6 +62,11 @@ export default function MapNoticeSection({
         { name: "리디자인 호텔", desc: "유러피언 클래식 및 인더스트리얼 인테리어 부티크", type: "부티크" },
         { name: "동천하우스 펜션", desc: "광교산 아래 숲 향기를 만끽하는 조용한 펜션형 게스트하우스", type: "펜션" },
       ],
+      walking: [
+        { name: "정평천 벚꽃길", desc: "벚꽃 터널이 환상적인 도심 수변 보행 코스" },
+        { name: "광교산 산림욕장", desc: "도심 속 맑은 피톤치드를 듬뿍 마시는 힐링 하이킹" },
+        { name: "수지생태공원", desc: "맹꽁이와 딱따구리가 사는 청정 비오톱 데크 산책로" },
+      ],
       eats: [
         { name: "고기리막국수", desc: "전국에서 오픈런하는 들기름 막국수의 원조 맛집", category: "식사" },
         { name: "감치래 비빔국수", desc: "매콤새콤 입맛 돋우는 비빔국수와 바삭한 수제 돈까스", category: "식사" },
@@ -92,6 +97,10 @@ export default function MapNoticeSection({
         { name: "골드훼미리콘도", desc: "푸른 숲길 속 글램핑과 콘도 시설이 겸비된 가족형 쉼터", type: "콘도/글램핑" },
         { name: "호텔 더블루 기흥역", desc: "비즈니스 출장 및 가성비 숙박에 최적화된 기흥역 모던 호텔", type: "호텔" },
         { name: "소설원 호텔 기흥", desc: "자연 친화적이고 감성적인 부티크 인테리어의 힐링 숙소", type: "부티크" },
+      ],
+      walking: [
+        { name: "기흥호수공원", desc: "은빛 물결 위를 걷는 거대 수변 데크 산책로" },
+        { name: "동백호수공원", desc: "음악분수와 함께하는 도심 속 가벼운 캐시 메모리 산책" },
       ],
       eats: [
         { name: "신갈광장 불쭈꾸미", desc: "불맛 향 가득 쫄깃 매콤한 쭈꾸미와 고소한 메밀전", category: "식사" },
@@ -124,6 +133,11 @@ export default function MapNoticeSection({
         { name: "골든튤립 에버 용인", desc: "아름다운 루프탑 뷰와 현대적이고 감각적인 가성비 객실", type: "호텔" },
         { name: "용인 캠핑랜드 글램핑", desc: "아이들을 위한 실내 놀이시설과 온수 수영장을 갖춘 프리미엄 글램핑", type: "글램핑" },
         { name: "싱글벙글 캠핑장", desc: "푸르른 산림에 파묻혀 조용히 감성을 자극하는 오토캠핑 명소", type: "캠핑장" },
+      ],
+      walking: [
+        { name: "용담저수지", desc: "오르막 없는 완벽한 평지 루프(Loop) 4.1km 호수 둘레길" },
+        { name: "행정타운 맨발걷기길", desc: "시청 바로 뒤 석성산 기슭의 어싱(Earthing) 최적 코스" },
+        { name: "삼가체육공원", desc: "자연과 등산로가 연결된 확장성 높은 체육공원 산책로" },
       ],
       eats: [
         { name: "대성부대찌개", desc: "용인중앙시장 내 40년 전통의 백년가게 인증 칼칼 부대찌개", category: "식사" },
@@ -1261,25 +1275,27 @@ export default function MapNoticeSection({
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => {
-                      const query = selectedDistrict === "suji" ? "수지" : selectedDistrict === "giheung" ? "기흥" : "처인";
-                      handleDistrictSearch(districtDetails[selectedDistrict as keyof typeof districtDetails].name, query);
-                    }}
-                    className="w-full mt-6 py-3 bg-gradient-to-r from-accent to-accent-purple text-white rounded-2xl text-[11px] font-black flex items-center justify-center gap-1.5 hover:opacity-90 active:scale-95 transition-all shadow-md"
-                  >
-                    <span>🔍</span> {selectedDistrict === "suji" ? "수지구" : selectedDistrict === "giheung" ? "기흥구" : "처인구"} 이야기 더 많이 읽으러 가기 <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
+
                 </div>
 
                 {/* [Bento 2-2] 아래 좌측: 힐링 숙소 목록 (네이버 지도 연동!) */}
                 <div className="premium-glass p-8 rounded-[36px] shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center gap-2 mb-4 border-b border-gray-100 dark:border-gray-800 pb-3">
-                      <Hotel className="w-4.5 h-4.5 text-accent-purple" />
-                      <h4 className="text-[13.5px] font-black text-gray-800 dark:text-white">
-                        🏡 안락한 힐링 숙소 추천
-                      </h4>
+                    <div className="flex items-center justify-between mb-4 border-b border-gray-100 dark:border-gray-800 pb-3">
+                      <div className="flex items-center gap-2">
+                        <Hotel className="w-4.5 h-4.5 text-accent-purple" />
+                        <h4 className="text-[13.5px] font-black text-gray-800 dark:text-white">
+                          🏡 안락한 힐링 숙소
+                        </h4>
+                      </div>
+                      <a
+                        href={`https://map.naver.com/v5/search/${encodeURIComponent((selectedDistrict === "suji" ? "수지구" : selectedDistrict === "giheung" ? "기흥구" : "처인구") + " 숙소")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[10px] text-gray-400 hover:text-accent-purple font-bold flex items-center gap-1 transition-colors"
+                      >
+                        더보기 <ArrowRight className="w-3 h-3" />
+                      </a>
                     </div>
 
                     <div className="space-y-4">
@@ -1313,11 +1329,21 @@ export default function MapNoticeSection({
                 {/* [Bento 2-3] 아래 우측: 찐 로컬 맛집 & 카페 목록 (네이버 지도 연동!) */}
                 <div className="premium-glass p-8 rounded-[36px] shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center gap-2 mb-4 border-b border-gray-100 dark:border-gray-800 pb-3">
-                      <Utensils className="w-4.5 h-4.5 text-accent" />
-                      <h4 className="text-[13.5px] font-black text-gray-800 dark:text-white">
-                        🍲 찐단골 맛집 & 카페
-                      </h4>
+                    <div className="flex items-center justify-between mb-4 border-b border-gray-100 dark:border-gray-800 pb-3">
+                      <div className="flex items-center gap-2">
+                        <Utensils className="w-4.5 h-4.5 text-accent" />
+                        <h4 className="text-[13.5px] font-black text-gray-800 dark:text-white">
+                          🍲 로컬 찐맛집
+                        </h4>
+                      </div>
+                      <a
+                        href={`https://map.naver.com/v5/search/${encodeURIComponent((selectedDistrict === "suji" ? "수지구" : selectedDistrict === "giheung" ? "기흥구" : "처인구") + " 맛집")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[10px] text-gray-400 hover:text-accent font-bold flex items-center gap-1 transition-colors"
+                      >
+                        더보기 <ArrowRight className="w-3 h-3" />
+                      </a>
                     </div>
 
                     <div className="space-y-4">
@@ -1326,11 +1352,11 @@ export default function MapNoticeSection({
                           <div className="flex items-center gap-1.5">
                             {eat.category === "식사" ? (
                               <span className="text-[8.5px] font-black px-1.5 py-0.5 rounded-md bg-accent/10 text-accent dark:bg-accent/20">
-                                🍲 로컬식당
+                                식사
                               </span>
                             ) : (
                               <span className="text-[8.5px] font-black px-1.5 py-0.5 rounded-md bg-yellow-500/10 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-400">
-                                ☕ 감성카페
+                                카페
                               </span>
                             )}
 
@@ -1347,6 +1373,47 @@ export default function MapNoticeSection({
                           </div>
                           <span className="text-[9.5px] text-gray-400 dark:text-gray-500 font-bold leading-snug pl-1">
                             {eat.desc}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* [Bento 2-4] 전체 크기 하단: 걷기 좋은 산책 코스 */}
+                <div className="md:col-span-2 premium-glass p-8 rounded-[36px] shadow-sm border border-emerald-500/20 dark:border-emerald-500/30 bg-emerald-50/30 dark:bg-emerald-900/10 flex flex-col justify-between group/walking">
+                  <div>
+                    <div className="flex items-center justify-between mb-4 border-b border-emerald-500/20 pb-3">
+                      <div className="flex items-center gap-2">
+                        <Footprints className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                        <h4 className="text-[14px] font-black text-emerald-800 dark:text-emerald-300">
+                          🥾 {selectedDistrict === "suji" ? "수지구" : selectedDistrict === "giheung" ? "기흥구" : "처인구"} 추천 산책 코스
+                        </h4>
+                      </div>
+                      <a
+                        href={`https://map.naver.com/v5/search/${encodeURIComponent((selectedDistrict === "suji" ? "수지구" : selectedDistrict === "giheung" ? "기흥구" : "처인구") + " 산책로")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[10px] text-emerald-600/70 hover:text-emerald-600 dark:text-emerald-400/70 dark:hover:text-emerald-400 font-bold flex items-center gap-1 transition-colors"
+                      >
+                        더보기 <ArrowRight className="w-3 h-3" />
+                      </a>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-2">
+                      {districtDetails[selectedDistrict as keyof typeof districtDetails].walking.map((walk, idx) => (
+                        <div key={idx} className="flex flex-col gap-2">
+                          <a
+                            href={`https://map.naver.com/v5/search/${encodeURIComponent(walk.name)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-[13px] font-black text-gray-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors w-fit"
+                          >
+                            <span>{walk.name}</span>
+                            <span className="text-[10px] text-emerald-500 font-bold">↗</span>
+                          </a>
+                          <span className="text-[11px] text-gray-500 dark:text-gray-400 font-bold leading-relaxed">
+                            {walk.desc}
                           </span>
                         </div>
                       ))}
