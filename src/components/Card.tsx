@@ -69,6 +69,8 @@ export const Card = ({ card, onClick, isAdmin, onImageEdit, href }: CardProps) =
         <img
           src={card.image?.startsWith("http") ? card.image : (IMG_BASE + (card.image || "thumb-youth.png") + "?v=" + V_NUM)}
           alt={card.title}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-700 ease-out opacity-95 group-hover:opacity-100"
         />
         <div className="absolute top-4 left-4 flex gap-1.5 items-center">

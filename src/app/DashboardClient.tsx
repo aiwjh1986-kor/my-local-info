@@ -253,7 +253,8 @@ export default function DashboardClient({
       "도서정보": ["book", "도서정보", "도서 소식", "도서"],
       "독서일기": ["diary", "독서일기", "reading diary"],
       "세계 경제": ["world", "세계 경제", "economy"],
-      "지방선거": ["election", "지방선거"]
+      "지방선거": ["election", "지방선거"],
+      "월드컵": ["worldcup", "월드컵", "특별소식"]
     };
 
     const postsToFilter = allCards.filter(post => !post.title.includes("[종료]"));
@@ -657,6 +658,8 @@ export default function DashboardClient({
                           <img
                             src={card.image?.startsWith("http") ? card.image : (IMG_BASE + (card.image || "thumb-default.png") + "?v=" + V_NUM)}
                             alt={card.title}
+                            loading="lazy"
+                            decoding="async"
                             className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           />
                           {/* 카테고리 뱃지 (좌상단) */}
@@ -1104,7 +1107,7 @@ export default function DashboardClient({
             {/* 블로그 탭인 경우 상단 카테고리 필터 */}
             {activeTab === "블로그" && (
               <div className="flex gap-2 overflow-x-auto pb-6 no-scrollbar">
-                {["전체", "지원금", "지역행사", "용인시정보", "도서정보", "독서일기", "세계 경제"].map((cat) => (
+                {["전체", "지원금", "지역행사", "용인시정보", "도서정보", "독서일기", "세계 경제", "월드컵"].map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setActiveBlogCat(cat)}
@@ -1129,7 +1132,8 @@ export default function DashboardClient({
                   "도서 소식": "book",
                   "독서일기": "diary",
                   "세계 경제": "world",
-                  "지방선거": "election"
+                  "지방선거": "election",
+                  "월드컵": "특별소식"
                 };
                 const korCatMap: Record<string, string> = {
                   "지원금": "지원금",
@@ -1139,11 +1143,13 @@ export default function DashboardClient({
                   "도서 소식": "도서정보",
                   "독서일기": "독서일기",
                   "세계 경제": "세계 경제",
-                  "지방선거": "지방선거"
+                  "지방선거": "지방선거",
+                  "월드컵": "월드컵"
                 };
                 let match = c.category === catMap[activeTab] || c.category === korCatMap[activeTab] ||
                   ((activeTab === "도서정보" || activeTab === "도서 소식") && (c.category === "book" || c.category === "도서정보")) ||
-                  (activeTab === "독서일기" && (c.category === "diary" || c.category === "독서일기"));
+                  (activeTab === "독서일기" && (c.category === "diary" || c.category === "독서일기")) ||
+                  (activeTab === "월드컵" && (c.category === "특별소식" || c.category === "월드컵" || c.category === "worldcup"));
                 
                 if (activeTab === "지역행사") {
                   const isEvent = c.category === "행사" || c.category === "지역행사" || c.category === "event";
@@ -1195,14 +1201,25 @@ export default function DashboardClient({
                   )}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {cardsToRender.map((card, idx) => (
-                    <Card
-                      key={idx}
-                      card={card}
-                      onClick={() => setSelectedCard(card)}
-                    />
-                  ))}
+                <div className="flex flex-col gap-8 w-full">
+                  {activeTab === "블로그" && activeBlogCat === "월드컵" && (
+                    <div className="w-full flex justify-center bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700">
+                      <img 
+                        src="/images/월드컵/토너1.png" 
+                        alt="월드컵 토너먼트 대진표" 
+                        className="max-w-full h-auto rounded-xl"
+                      />
+                    </div>
+                  )}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {cardsToRender.map((card, idx) => (
+                      <Card
+                        key={idx}
+                        card={card}
+                        onClick={() => setSelectedCard(card)}
+                      />
+                    ))}
+                  </div>
                 </div>
               );
             })()}
