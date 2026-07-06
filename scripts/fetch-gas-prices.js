@@ -18,7 +18,7 @@ async function fetchGasPrices() {
   const displayDate = `${kstDate.getFullYear()}년 ${kstDate.getMonth() + 1}월 ${kstDate.getDate()}일`;
 
   try {
-    console.log('용인시 구별 주유소 가격 정보 가져오는 중 (좌표 기반)...');
+    console.log('용인시 구별 주유소 가격 정보 가져오는 중 (좌표 및 주소 확인 기반)...');
     const districtPoints = [
       { id: 'suji', name: '수지구', x: 318841, y: 524163 },
       { id: 'giheung', name: '기흥구', x: 322332, y: 517079 },
@@ -26,50 +26,55 @@ async function fetchGasPrices() {
     ];
 
     const results = { suji: null, giheung: null, cheoin: null };
+    const brandMap = {
+      'SKE': 'SK에너지', 'GSC': 'GS칼텍스', 'HDO': '현대오일뱅크', 'SOL': 'S-OIL',
+      'RTE': '자가상표', 'RTC': '자가상표', 'FTX': '알뜰주유소', 'NHO': '농협알뜰', 'ETC': '일반주유소'
+    };
+
+    // 주소 확인 함수
+    async function getValidStation(pointName, x, y, prodcd) {
+      const url = `http://www.opinet.co.kr/api/aroundAll.do?out=json&code=${OPINET_API_KEY}&x=${x}&y=${y}&radius=5000&prodcd=${prodcd}`;
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (!data.RESULT || !data.RESULT.OIL) return null;
+      
+      // 가격순으로 정렬된 상태에서 주소가 해당 구인지 확인
+      for (const station of data.RESULT.OIL) {
+        const detailUrl = `http://www.opinet.co.kr/api/detailById.do?out=json&code=${OPINET_API_KEY}&id=${station.UNI_ID}`;
+        const detailRes = await fetch(detailUrl);
+        if (detailRes.ok) {
+          const detailData = await detailRes.json();
+          if (detailData.RESULT && detailData.RESULT.OIL && detailData.RESULT.OIL.length > 0) {
+            const addr = detailData.RESULT.OIL[0].VAN_ADR || detailData.RESULT.OIL[0].NEW_ADR || '';
+            if (addr.includes(pointName)) {
+              return {
+                name: station.OS_NM,
+                price: station.PRICE,
+                brand: brandMap[station.POLL_DIV_CD] || '일반주유소'
+              };
+            }
+          }
+        }
+      }
+      return null;
+    }
 
     for (const point of districtPoints) {
-      console.log(`${point.name} 주변 데이터 수집 중...`);
-      const brandMap = {
-        'SKE': 'SK에너지', 'GSC': 'GS칼텍스', 'HDO': '현대오일뱅크', 'SOL': 'S-OIL',
-        'RTE': '자가상표', 'FTX': '알뜰주유소', 'NHO': '농협알뜰'
-      };
-
-      // 1. 휘발유 (B027)
-      const urlGas = `http://www.opinet.co.kr/api/aroundAll.do?out=json&code=${OPINET_API_KEY}&x=${point.x}&y=${point.y}&radius=5000&prodcd=B027`;
-      const resGas = await fetch(urlGas);
-      let gasData = null;
-      if (resGas.ok) {
-        const data = await resGas.json();
-        if (data.RESULT && data.RESULT.OIL && data.RESULT.OIL.length > 0) {
-          const cheapest = data.RESULT.OIL[0];
-          gasData = {
-            name: cheapest.OS_NM,
-            price: cheapest.PRICE,
-            brand: brandMap[cheapest.POLL_DIV_CD] || '일반주유소'
-          };
-        }
-      }
-
-      // 2. 경유 (D047)
-      const urlDiesel = `http://www.opinet.co.kr/api/aroundAll.do?out=json&code=${OPINET_API_KEY}&x=${point.x}&y=${point.y}&radius=5000&prodcd=D047`;
-      const resDiesel = await fetch(urlDiesel);
-      let dieselData = null;
-      if (resDiesel.ok) {
-        const data = await resDiesel.json();
-        if (data.RESULT && data.RESULT.OIL && data.RESULT.OIL.length > 0) {
-          const cheapest = data.RESULT.OIL[0];
-          dieselData = {
-            dieselName: cheapest.OS_NM,
-            dieselPrice: cheapest.PRICE,
-            dieselBrand: brandMap[cheapest.POLL_DIV_CD] || '일반주유소'
-          };
-        }
-      }
+      console.log(`${point.name} 데이터 처리 중...`);
+      const gasData = await getValidStation(point.name, point.x, point.y, 'B027');
+      const dieselDataRaw = await getValidStation(point.name, point.x, point.y, 'D047');
+      
+      const dieselData = dieselDataRaw ? {
+        dieselName: dieselDataRaw.name,
+        dieselPrice: dieselDataRaw.price,
+        dieselBrand: dieselDataRaw.brand
+      } : null;
 
       if (gasData) {
         results[point.id] = { ...gasData, ...dieselData };
       } else {
-        console.error(`API 호출 실패 (${point.name})`);
+        console.error(`데이터 찾을 수 없음 (${point.name})`);
       }
     }
 
