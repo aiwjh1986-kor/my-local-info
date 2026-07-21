@@ -17,12 +17,12 @@ async function fetchTourData() {
     .format(now).replace(/\. /g, '').replace('.', '');
   const dashDateStr = new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Seoul' }).format(now);
 
-  console.log(`[TourAPI] 경기도(31) 지역 축제 정보 수집 시작... (기준일: ${dateStr})`);
+  console.log(`[TourAPI] 전국 지역 축제 정보 수집 시작... (기준일: ${dateStr})`);
 
   try {
     const encodedKey = encodeURIComponent(API_KEY);
-    // areaCode=31 (경기도), eventStartDate=오늘날짜
-    const url = `https://apis.data.go.kr/B551011/KorService2/searchFestival2?serviceKey=${encodedKey}&numOfRows=5&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&arrange=A&eventStartDate=${dateStr}&areaCode=31`;
+    // 전국 단위 (areaCode 제거), eventStartDate=오늘날짜
+    const url = `https://apis.data.go.kr/B551011/KorService2/searchFestival2?serviceKey=${encodedKey}&numOfRows=5&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&arrange=A&eventStartDate=${dateStr}`;
 
     const res = await fetch(url);
     const text = await res.text();
@@ -41,14 +41,14 @@ async function fetchTourData() {
     } else {
       const data = JSON.parse(text);
       if (!data.response || !data.response.body || !data.response.body.items || !data.response.body.items.item) {
-        console.log('오늘 새롭게 올라온 경기도 지역 축제 정보가 없습니다.');
+        console.log('오늘 새롭게 올라온 전국 지역 축제 정보가 없습니다.');
         return;
       }
       items = data.response.body.items.item;
     }
-    console.log(`총 ${items.length}개의 축제 정보를 찾았습니다. 첫 번째 축제로 블로그 글을 생성합니다.`);
+    console.log(`총 ${items.length}개의 축제 정보를 찾았습니다. 두 번째 축제로 블로그 글을 생성합니다.`);
 
-    const festival = items[0];
+    const festival = items[1];
     const festInfo = `
 행사명: ${festival.title}
 기간: ${festival.eventstartdate} ~ ${festival.eventenddate}
@@ -59,7 +59,7 @@ async function fetchTourData() {
     console.log('[Gemini AI] 블로그 포스트 작성 중...');
 
     const prompt = `너는 '용인시 용인시정보 및 여행가이드' 블로그의 전문 에디터야.
-오늘은 경기도 지역의 신나는 축제 정보를 소개할 거야.
+오늘은 전국 각지의 신나는 축제 정보를 소개할 거야.
 아래 한국관광공사에서 받아온 축제 정보를 바탕으로 아주 풍성하고 재미있게, 한글 공백 포함 '최소 2000자 이상'의 분량으로 블로그 글을 작성해줘.
 
 [축제 정보]
@@ -73,12 +73,12 @@ ${festInfo}
 
 출력 형식:
 ---
-title: "[경기도 축제] 이번 주말 나들이 추천! ${festival.title} 완벽 가이드 🎉"
+title: "[전국 축제] 이번 주말 나들이 추천! ${festival.title} 완벽 가이드 🎉"
 date: ${now.toISOString()}
-summary: "경기도에서 열리는 꿀잼 보장 축제! ${festival.title}의 모든 것을 소개합니다."
+summary: "전국에서 열리는 꿀잼 보장 축제! ${festival.title}의 모든 것을 소개합니다."
 category: 지역행사
 image: event/festival-default.png
-tags: [경기도축제, 주말나들이, ${festival.title.replace(/\s+/g, '')}, 가족여행, 데이트코스]
+tags: [전국축제, 주말나들이, ${festival.title.replace(/\s+/g, '')}, 가족여행, 데이트코스]
 ---
 
 (본문 내용)`;
@@ -99,7 +99,7 @@ tags: [경기도축제, 주말나들이, ${festival.title.replace(/\s+/g, '')}, 
       cleanContent = cleanContent.replace(/^```markdown\n/, '').replace(/\n```$/, '');
     }
 
-    const slug = `${dashDateStr}-01-tour-festival`;
+    const slug = `${dashDateStr}-02-tour-festival`;
     const fileName = `${slug}.md`;
     const targetDir = path.join(__dirname, '../src/content/posts/지역행사');
     if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
@@ -115,11 +115,11 @@ tags: [경기도축제, 주말나들이, ${festival.title.replace(/\s+/g, '')}, 
     
     cards.unshift({
       category: '지역행사',
-      title: `[경기도 축제] 이번 주말 나들이 추천! ${festival.title} 완벽 가이드 🎉`,
-      summary: `경기도에서 열리는 꿀잼 보장 축제! ${festival.title}의 모든 것을 소개합니다.`,
+      title: `[전국 축제] 이번 주말 나들이 추천! ${festival.title} 완벽 가이드 🎉`,
+      summary: `전국에서 열리는 꿀잼 보장 축제! ${festival.title}의 모든 것을 소개합니다.`,
       content: cleanContent.split('---')[2].trim().substring(0, 300) + '...',
       date: dashDateStr,
-      region: '경기도',
+      region: '전국',
       image: 'event/festival-default.png',
       slug: slug
     });

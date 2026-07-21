@@ -481,7 +481,12 @@ export default function DashboardClient({
     
     // 장소명이 괄호에 없다면, 기존처럼 괄호 밖의 내용을 시도합니다.
     if (card.title.includes("] ")) {
-      const titleBody = card.title.split("] ")[1] || "";
+      let titleBody = card.title.split("] ")[1] || "";
+      
+      // 자동 생성된 축제 글의 불필요한 수식어 제거
+      titleBody = titleBody.replace(/이번 주말 나들이 추천!\s*/g, "");
+      titleBody = titleBody.replace(/\s*완벽 가이드\s*🎉/g, "");
+      
       if (titleBody.includes(",")) {
         return titleBody.split(",")[1]?.trim() || titleBody.trim();
       }
