@@ -487,10 +487,15 @@ export default function DashboardClient({
       titleBody = titleBody.replace(/이번 주말 나들이 추천!\s*/g, "");
       titleBody = titleBody.replace(/\s*완벽 가이드\s*🎉/g, "");
       
+      let finalKeyword = titleBody.trim();
       if (titleBody.includes(",")) {
-        return titleBody.split(",")[1]?.trim() || titleBody.trim();
+        finalKeyword = titleBody.split(",")[1]?.trim() || titleBody.trim();
       }
-      return titleBody.trim();
+      
+      if (card.region && card.region !== "전체" && card.region !== "전국") {
+        return `${card.region} ${finalKeyword}`;
+      }
+      return finalKeyword;
     }
     return card.region && card.region !== "전체" ? `${card.region} ${card.title}` : card.title;
   };

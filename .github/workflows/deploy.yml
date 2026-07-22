@@ -5,7 +5,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 22 * * *' # 매일 한국 시간 오전 7시 (UTC 22시)
+    - cron: '0 0 * * *' # 매일 한국 시간 오전 9시 (UTC 00시)
   workflow_dispatch: # 수동 실행 버튼 추가
 
 permissions:
@@ -34,6 +34,7 @@ jobs:
           node scripts/fetch-public-data.js
           node scripts/fetch-gas-prices.js
           node scripts/generate-blog-post.js
+          node scripts/fetch-tour-data.js
           node scripts/auto-archive.js
         env:
           PUBLIC_DATA_API_KEY: ${{ secrets.PUBLIC_DATA_API_KEY }}

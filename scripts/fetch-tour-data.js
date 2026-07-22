@@ -46,9 +46,25 @@ async function fetchTourData() {
       }
       items = data.response.body.items.item;
     }
-    console.log(`총 ${items.length}개의 축제 정보를 찾았습니다. 두 번째 축제로 블로그 글을 생성합니다.`);
+    const featuredCardsPath = path.join(__dirname, '../public/data/featured-cards.json');
+    let cards = fs.existsSync(featuredCardsPath) ? JSON.parse(fs.readFileSync(featuredCardsPath, 'utf8')) : [];
 
-    const festival = items[1];
+    let festival = null;
+    for (const item of items) {
+      const expectedTitle = `[전국 축제] 이번 주말 나들이 추천! ${item.title} 완벽 가이드 🎉`;
+      if (!cards.find(c => c.title === expectedTitle)) {
+        festival = item;
+        break;
+      }
+    }
+
+    if (!festival) {
+      console.log('이미 모든 축제 정보가 등록되어 있습니다.');
+      // 임시로 그냥 첫 번째 것을 사용 (업데이트용)
+      festival = items[0];
+    } else {
+      console.log(`새로운 축제 '${festival.title}' 정보로 블로그 글을 생성합니다.`);
+    }
     const festInfo = `
 행사명: ${festival.title}
 기간: ${festival.eventstartdate} ~ ${festival.eventenddate}
@@ -99,7 +115,9 @@ tags: [전국축제, 주말나들이, ${festival.title.replace(/\s+/g, '')}, 가
       cleanContent = cleanContent.replace(/^```markdown\n/, '').replace(/\n```$/, '');
     }
 
-    const slug = `${dashDateStr}-02-tour-festival`;
+    // 고유한 파일명(slug) 생성 (날짜 + 축제ID 또는 랜덤)
+    const uniqueId = festival.contentid || Math.floor(Math.random() * 10000);
+    const slug = `${dashDateStr}-tour-${uniqueId}`;
     const fileName = `${slug}.md`;
     const targetDir = path.join(__dirname, '../src/content/posts/지역행사');
     if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
@@ -107,19 +125,24 @@ tags: [전국축제, 주말나들이, ${festival.title.replace(/\s+/g, '')}, 가
     fs.writeFileSync(path.join(targetDir, fileName), cleanContent, 'utf8');
 
     // featured-cards.json 업데이트
-    const featuredCardsPath = path.join(__dirname, '../public/data/featured-cards.json');
-    let cards = JSON.parse(fs.readFileSync(featuredCardsPath, 'utf8'));
+    // 기존에 같은 제목의 축제가 있으면 삭제 (중복 생성 방지)
+    const newTitle = `[전국 축제] 이번 주말 나들이 추천! ${festival.title} 완벽 가이드 🎉`;
+    cards = cards.filter(c => c.title !== newTitle);
     
-    // 기존에 같은 slug가 있으면 삭제
-    cards = cards.filter(c => c.slug !== slug);
-    
+    // 주소에서 지역명 추출 (예: '울산광역시 남구' -> '울산')
+    let regionName = '전국';
+    if (festival.addr1) {
+      const firstWord = festival.addr1.split(' ')[0];
+      regionName = firstWord.replace(/광역시|특별시|특별자치시|특별자치도|도$/, '');
+    }
+
     cards.unshift({
       category: '지역행사',
       title: `[전국 축제] 이번 주말 나들이 추천! ${festival.title} 완벽 가이드 🎉`,
       summary: `전국에서 열리는 꿀잼 보장 축제! ${festival.title}의 모든 것을 소개합니다.`,
       content: cleanContent.split('---')[2].trim().substring(0, 300) + '...',
       date: dashDateStr,
-      region: '전국',
+      region: regionName,
       image: 'event/festival-default.png',
       slug: slug
     });
