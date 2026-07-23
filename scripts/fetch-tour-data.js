@@ -59,42 +59,71 @@ async function fetchTourData() {
     }
 
     if (!festival) {
-      console.log('이미 모든 축제 정보가 등록되어 있습니다.');
-      // 임시로 그냥 첫 번째 것을 사용 (업데이트용)
-      festival = items[0];
+      console.log('이미 모든 축제 정보가 등록되어 있습니다. 대신 추천 관광 코스를 찾아봅니다.');
+      // 관광코스 (contentTypeId=25) 데이터 호출
+      const courseUrl = `https://apis.data.go.kr/B551011/KorService2/areaBasedList1?serviceKey=${encodedKey}&numOfRows=20&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&arrange=O&contentTypeId=25`;
+      const courseRes = await fetch(courseUrl);
+      const courseText = await courseRes.text();
+      
+      try {
+        const courseData = JSON.parse(courseText);
+        const courseItems = courseData.response?.body?.items?.item || [];
+        
+        for (const item of courseItems) {
+          const expectedTitle = `[추천 코스] 이번 주말 나들이 추천! ${item.title} 완벽 가이드 🎉`;
+          if (!cards.find(c => c.title === expectedTitle)) {
+            festival = item;
+            festival.isCourse = true;
+            break;
+          }
+        }
+      } catch (e) {
+        console.error('관광코스 파싱 에러:', e);
+      }
+
+      if (!festival) {
+        console.log('새로운 관광코스도 찾을 수 없어 이번에는 글을 작성하지 않습니다.');
+        return;
+      }
+      console.log(`새로운 코스 '${festival.title}' 정보로 블로그 글을 생성합니다.`);
     } else {
       console.log(`새로운 축제 '${festival.title}' 정보로 블로그 글을 생성합니다.`);
     }
     const festInfo = `
-행사명: ${festival.title}
-기간: ${festival.eventstartdate} ~ ${festival.eventenddate}
-장소: ${festival.addr1} ${festival.addr2 || ''}
+이름: ${festival.title}
+${festival.eventstartdate ? `기간: ${festival.eventstartdate} ~ ${festival.eventenddate}` : ''}
+장소: ${festival.addr1 || ''} ${festival.addr2 || ''}
 전화번호: ${festival.tel || '정보 없음'}
     `.trim();
+
+    const postTitle = festival.isCourse 
+      ? `[추천 코스] 이번 주말 나들이 추천! ${festival.title} 완벽 가이드 🎉`
+      : `[전국 축제] 이번 주말 나들이 추천! ${festival.title} 완벽 가이드 🎉`;
+    const postCategory = festival.isCourse ? '추천코스' : '지역행사';
 
     console.log('[Gemini AI] 블로그 포스트 작성 중...');
 
     const prompt = `너는 '용인시 용인시정보 및 여행가이드' 블로그의 전문 에디터야.
-오늘은 전국 각지의 신나는 축제 정보를 소개할 거야.
-아래 한국관광공사에서 받아온 축제 정보를 바탕으로 아주 풍성하고 재미있게, 한글 공백 포함 '최소 2000자 이상'의 분량으로 블로그 글을 작성해줘.
+오늘은 전국 각지의 ${festival.isCourse ? '멋진 여행 코스를' : '신나는 축제 정보를'} 소개할 거야.
+아래 한국관광공사에서 받아온 정보를 바탕으로 아주 풍성하고 재미있게, 한글 공백 포함 '최소 2000자 이상'의 분량으로 블로그 글을 작성해줘.
 
-[축제 정보]
+[${festival.isCourse ? '코스' : '축제'} 정보]
 ${festInfo}
 
 작성 지침:
 1. 톤앤매너: 친절하고 다정한 말투 (해요체).
-2. 분량: 한글 공백 포함 최소 2000자 이상. 정보가 단순하므로, 이 축제의 예상되는 즐길 거리, 주변 여행 코스 추천, 가족/연인과 가기 좋은 이유 등 상상력과 배경지식을 동원해 아주 풍성하게 살을 붙여줘.
+2. 분량: 한글 공백 포함 최소 2000자 이상. 정보가 단순하므로, 이 ${festival.isCourse ? '코스의' : '축제의'} 예상되는 즐길 거리, 주변 여행 코스 추천, 가족/연인과 가기 좋은 이유 등 상상력과 배경지식을 동원해 아주 풍성하게 살을 붙여줘.
 3. 주의: '루미예요' 같은 가상의 이름은 넣지 마.
 4. 형식: 마크다운 형식을 사용. 다른 설명 없이 마크다운 내용만 출력해.
 
 출력 형식:
 ---
-title: "[전국 축제] 이번 주말 나들이 추천! ${festival.title} 완벽 가이드 🎉"
+title: "${postTitle}"
 date: ${now.toISOString()}
-summary: "전국에서 열리는 꿀잼 보장 축제! ${festival.title}의 모든 것을 소개합니다."
-category: 지역행사
+summary: "전국에서 즐기는 꿀잼 보장 나들이! ${festival.title}의 모든 것을 소개합니다."
+category: ${postCategory}
 image: event/festival-default.png
-tags: [전국축제, 주말나들이, ${festival.title.replace(/\s+/g, '')}, 가족여행, 데이트코스]
+tags: [전국나들이, 주말나들이, ${festival.title.replace(/\s+/g, '')}, 가족여행, 데이트코스]
 ---
 
 (본문 내용)`;
@@ -125,9 +154,8 @@ tags: [전국축제, 주말나들이, ${festival.title.replace(/\s+/g, '')}, 가
     fs.writeFileSync(path.join(targetDir, fileName), cleanContent, 'utf8');
 
     // featured-cards.json 업데이트
-    // 기존에 같은 제목의 축제가 있으면 삭제 (중복 생성 방지)
-    const newTitle = `[전국 축제] 이번 주말 나들이 추천! ${festival.title} 완벽 가이드 🎉`;
-    cards = cards.filter(c => c.title !== newTitle);
+    // 기존에 같은 제목이 있으면 삭제 (중복 생성 방지)
+    cards = cards.filter(c => c.title !== postTitle);
     
     // 주소에서 지역명 추출 (예: '울산광역시 남구' -> '울산')
     let regionName = '전국';
@@ -137,10 +165,10 @@ tags: [전국축제, 주말나들이, ${festival.title.replace(/\s+/g, '')}, 가
     }
 
     cards.unshift({
-      category: '지역행사',
-      title: `[전국 축제] 이번 주말 나들이 추천! ${festival.title} 완벽 가이드 🎉`,
-      summary: `전국에서 열리는 꿀잼 보장 축제! ${festival.title}의 모든 것을 소개합니다.`,
-      content: cleanContent.split('---')[2].trim().substring(0, 300) + '...',
+      category: postCategory,
+      title: postTitle,
+      summary: `전국에서 즐기는 꿀잼 보장 나들이! ${festival.title}의 모든 것을 소개합니다.`,
+      content: cleanContent.split('---')[2]?.trim().substring(0, 300) + '...',
       date: dashDateStr,
       region: regionName,
       image: 'event/festival-default.png',
