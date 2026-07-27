@@ -1,6 +1,6 @@
 {
   "success": true,
-  "timestamp": "2026-07-25T06:39:01.407Z",
+  "timestamp": "2026-07-27T11:17:39.030Z",
   "data": {
     "suji": {
       "name": "KH에너지㈜직영 엔크린주유소",
@@ -11,7 +11,7 @@
       "dieselBrand": "SK에너지"
     },
     "giheung": {
-      "name": "서울이엔지㈜ 사월주유소",
+      "name": "진우12주유소",
       "price": 1814,
       "brand": "현대오일뱅크",
       "dieselName": "서울이엔지㈜ 사월주유소",
@@ -19,12 +19,12 @@
       "dieselBrand": "현대오일뱅크"
     },
     "cheoin": {
-      "name": "주식회사 우리들",
-      "price": 1832,
-      "brand": "GS칼텍스",
-      "dieselName": "주식회사 우리들",
-      "dieselPrice": 1803,
-      "dieselBrand": "GS칼텍스"
+      "name": "(주)디오티디 용인드래곤주유소",
+      "price": 1823,
+      "brand": "현대오일뱅크",
+      "dieselName": "(주)디오티디 용인드래곤주유소",
+      "dieselPrice": 1792,
+      "dieselBrand": "현대오일뱅크"
     }
   }
 }

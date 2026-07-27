@@ -449,6 +449,10 @@ export default function DashboardClient({
 
   // 상세 팝업 지도 임베드용 검색어 자동 정밀 파서 헬퍼
   const getMapSearchKeyword = (card: FeaturedCard) => {
+    if ((card as any).address) {
+      return (card as any).address;
+    }
+    
     if (card.category === "추천코스") {
       return card.region && card.region !== "전체" ? card.region : card.title;
     }
