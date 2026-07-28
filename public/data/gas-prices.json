@@ -1,6 +1,6 @@
 {
   "success": true,
-  "timestamp": "2026-07-27T11:17:39.030Z",
+  "timestamp": "2026-07-28T13:35:59.318Z",
   "data": {
     "suji": {
       "name": "KH에너지㈜직영 엔크린주유소",
@@ -11,8 +11,8 @@
       "dieselBrand": "SK에너지"
     },
     "giheung": {
-      "name": "진우12주유소",
-      "price": 1814,
+      "name": "㈜자연에너지 신갈주유소",
+      "price": 1805,
       "brand": "현대오일뱅크",
       "dieselName": "서울이엔지㈜ 사월주유소",
       "dieselPrice": 1785,
