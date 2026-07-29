@@ -51,8 +51,8 @@ async function fetchTourData() {
 
     let festival = null;
     for (const item of items) {
-      const expectedTitle = `[전국 축제] 이번 주말 나들이 추천! ${item.title} 완벽 가이드 🎉`;
-      if (!cards.find(c => c.title === expectedTitle) && item.addr1 && item.addr1.trim() !== '') {
+      // 제목에 해당 축제 이름이 이미 포함되어 있는지 확인하여 중복 방지
+      if (!cards.find(c => c.title.includes(item.title)) && item.addr1 && item.addr1.trim() !== '') {
         festival = item;
         break;
       }
@@ -70,8 +70,8 @@ async function fetchTourData() {
         const courseItems = courseData.response?.body?.items?.item || [];
         
         for (const item of courseItems) {
-          const expectedTitle = `[추천 코스] 이번 주말 나들이 추천! ${item.title} 완벽 가이드 🎉`;
-          if (!cards.find(c => c.title === expectedTitle) && item.addr1 && item.addr1.trim() !== '') {
+          // 제목에 해당 코스 이름이 이미 포함되어 있는지 확인하여 중복 방지
+          if (!cards.find(c => c.title.includes(item.title)) && item.addr1 && item.addr1.trim() !== '') {
             festival = item;
             festival.isCourse = true;
             break;
