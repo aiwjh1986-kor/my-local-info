@@ -51,6 +51,10 @@ async function fetchTourData() {
 
     let festival = null;
     for (const item of items) {
+      // "하맥축제" 관련 글 생성을 금지 (사용자 요청)
+      if (item.title && item.title.includes('하맥')) {
+        continue;
+      }
       // 제목에 해당 축제 이름이 이미 포함되어 있는지 확인하여 중복 방지
       if (!cards.find(c => c.title.includes(item.title)) && item.addr1 && item.addr1.trim() !== '') {
         festival = item;
