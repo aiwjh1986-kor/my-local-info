@@ -49,14 +49,20 @@ async function fetchTourData() {
     const featuredCardsPath = path.join(__dirname, '../public/data/featured-cards.json');
     let cards = fs.existsSync(featuredCardsPath) ? JSON.parse(fs.readFileSync(featuredCardsPath, 'utf8')) : [];
 
+    const postsDir = path.join(__dirname, '../src/content/posts/지역행사');
+    const existingFiles = fs.existsSync(postsDir) ? fs.readdirSync(postsDir) : [];
+
     let festival = null;
     for (const item of items) {
       // "하맥축제" 관련 글 생성을 금지 (사용자 요청)
       if (item.title && item.title.includes('하맥')) {
         continue;
       }
+      const itemId = item.contentid;
+      const isAlreadyWritten = itemId && existingFiles.some(f => f.includes(`-${itemId}.md`));
+      
       // 제목에 해당 축제 이름이 이미 포함되어 있는지 확인하여 중복 방지
-      if (!cards.find(c => c.title.includes(item.title)) && item.addr1 && item.addr1.trim() !== '') {
+      if (!isAlreadyWritten && !cards.find(c => c.title.includes(item.title)) && item.addr1 && item.addr1.trim() !== '') {
         festival = item;
         break;
       }
@@ -74,8 +80,11 @@ async function fetchTourData() {
         const courseItems = courseData.response?.body?.items?.item || [];
         
         for (const item of courseItems) {
+          const itemId = item.contentid;
+          const isAlreadyWritten = itemId && existingFiles.some(f => f.includes(`-${itemId}.md`));
+          
           // 제목에 해당 코스 이름이 이미 포함되어 있는지 확인하여 중복 방지
-          if (!cards.find(c => c.title.includes(item.title)) && item.addr1 && item.addr1.trim() !== '') {
+          if (!isAlreadyWritten && !cards.find(c => c.title.includes(item.title)) && item.addr1 && item.addr1.trim() !== '') {
             festival = item;
             festival.isCourse = true;
             break;

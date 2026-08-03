@@ -1,22 +1,22 @@
 {
   "success": true,
-  "timestamp": "2026-07-31T10:19:08.269Z",
+  "timestamp": "2026-08-03T11:42:23.348Z",
   "data": {
     "suji": {
-      "name": "KH에너지㈜직영 엔크린주유소",
+      "name": "㈜청정에너지 죽전점",
       "price": 1825,
-      "brand": "SK에너지",
-      "dieselName": "KH에너지㈜직영 엔크린주유소",
-      "dieselPrice": 1800,
-      "dieselBrand": "SK에너지"
+      "brand": "S-OIL",
+      "dieselName": "㈜청정에너지 죽전점",
+      "dieselPrice": 1785,
+      "dieselBrand": "S-OIL"
     },
     "giheung": {
       "name": "㈜자연에너지 신갈주유소",
       "price": 1805,
       "brand": "현대오일뱅크",
-      "dieselName": "진우12주유소",
-      "dieselPrice": 1785,
-      "dieselBrand": "현대오일뱅크"
+      "dieselName": "신도시주유소",
+      "dieselPrice": 1784,
+      "dieselBrand": "SK에너지"
     },
     "cheoin": {
       "name": "(주)디오티디 용인드래곤주유소",
