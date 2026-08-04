@@ -70,7 +70,11 @@ export default function Page() {
     return item;
   });
   const unique = Array.from(new Map(combined.map(item => [item.slug || item.id, item])).values());
-  const allCards = unique.sort((a, b) => {
+  const validCards = unique.filter(item => {
+    const cat = item.category || "";
+    return !(cat === "지원금" || cat === "grant" || cat === "도서정보" || cat === "book" || cat === "독서일기" || cat === "diary" || cat === "도서 소식" || cat === "도서소식" || cat === "용인시정보" || cat === "info");
+  });
+  const allCards = validCards.sort((a, b) => {
     const dateA = new Date((a.date || "").toString().replace(/\./g, '-')).getTime();
     const dateB = new Date((b.date || "").toString().replace(/\./g, '-')).getTime();
     return dateB - dateA;

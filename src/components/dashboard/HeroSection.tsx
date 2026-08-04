@@ -85,9 +85,9 @@ export default function HeroSection({
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-4xl sm:text-5xl lg:text-[62px] font-black leading-[1.1] tracking-tight text-[#0F172A] dark:text-[#F1F5F9] mb-6"
           >
-            Live. Learn.<br />
+            KoreaTrip<br />
             <span className="bg-gradient-to-r from-accent via-[#8B5CF6] to-accent-purple bg-clip-text text-transparent">
-              Yongin Guide
+              Guide
             </span>
           </motion.h1>
 
@@ -116,15 +116,7 @@ export default function HeroSection({
               <Compass className="w-4 h-4" />
               <span>행사 및 축제 안내</span>
             </button>
-            <button
-              onClick={() => {
-                setActiveTab("지원금");
-                window.history.pushState({}, "", "/?tab=지원금");
-              }}
-              className="px-7 py-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white rounded-2xl text-[13px] font-extrabold border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750 hover:-translate-y-0.5 active:translate-y-0 shadow-sm transition-all"
-            >
-              지원금 혜택 보러가기
-            </button>
+
             <button
               onClick={() => {
                 window.location.href = "/toilet";
@@ -185,52 +177,8 @@ export default function HeroSection({
               </div>
             </div>
           </motion.div>
-
-          {/* Card 3: 실시간 최저가 주유소 */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="premium-glass p-5 rounded-[24px] col-span-2 flex flex-col justify-between min-h-[160px] hover:premium-glass-hover hover:scale-[1.01] cursor-pointer"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <Fuel className="w-4 h-4 text-emerald-500" />
-                <span className="text-[12px] font-black text-[#0F172A] dark:text-white">실시간 최저가 주유소</span>
-              </div>
-              <span className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider">
-                Live
-              </span>
-            </div>
-
-            {gasPrices ? (
-              <div className="grid grid-cols-3 gap-3 my-4">
-                {[
-                  { district: "수지구", data: gasPrices.suji },
-                  { district: "기흥구", data: gasPrices.giheung },
-                  { district: "처인구", data: gasPrices.cheoin }
-                ].map((item, idx) => (
-                  <div key={idx} className="flex flex-col">
-                    <span className="text-gray-400 dark:text-gray-500 text-[10px] font-bold">{item.district}</span>
-                    <span className="text-gray-700 dark:text-gray-300 text-[11px] font-bold truncate max-w-full">
-                      {item.data?.name || "정보없음"}
-                    </span>
-                    <span className="text-accent dark:text-accent-purple text-lg font-black tracking-tight mt-0.5">
-                      {item.data?.price?.toLocaleString() || "-"}원
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-gray-400 text-xs font-bold my-4">주유소 가격 정보를 읽어오는 중입니다...</div>
-            )}
-
-            <div className="flex items-center justify-between text-[9px] text-gray-400 dark:text-gray-500 font-bold border-t border-gray-150 dark:border-gray-700/30 pt-2.5">
-              <span>* 한국석유공사 오피넷 제공</span>
-              <span className="text-[#6C757D]">실시간 방문수: {visitorCount.toLocaleString()}명</span>
-            </div>
-          </motion.div>
         </div>
+
       </div>
     </section>
   );

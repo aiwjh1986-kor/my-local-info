@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Info, ArrowRight, Eye, Tent, Hotel, Utensils, Coffee, Compass, Footprints } from "lucide-react";
 
@@ -29,6 +29,8 @@ interface MapNoticeSectionProps {
   setSearchKeyword?: (keyword: string) => void;
 }
 
+import DynamicRegionBoard from "./DynamicRegionBoard";
+
 export default function MapNoticeSection({
   setActiveTab,
   onCardClick,
@@ -36,6 +38,22 @@ export default function MapNoticeSection({
   setSearchKeyword,
 }: MapNoticeSectionProps) {
   const [selectedDistrict, setSelectedDistrict] = useState<string>("cheoin");
+
+  // 전국 지역 선택 상태
+  const [regions, setRegions] = useState<any[]>([]);
+  const [selectedProvince, setSelectedProvince] = useState<any>(null);
+  const [selectedCity, setSelectedCity] = useState<any>(null);
+
+  useEffect(() => {
+    fetch('/data/region-codes.json')
+      .then(res => res.json())
+      .then(data => {
+        const initial = { code: "yongin_special", name: "🌟 용인 특별관", sigungus: [] };
+        setRegions([initial, ...data]);
+        setSelectedProvince(initial);
+      })
+      .catch(console.error);
+  }, []);
 
   // 🗺️ 각 구별 기본 리스트 데이터 정의
   const districtDetails = {
@@ -1078,6 +1096,46 @@ export default function MapNoticeSection({
 
   return (
     <section className="py-12 max-w-[1400px] mx-auto px-6">
+      
+      {/* 전국 시/도 선택 탭 */}
+      <div className="flex flex-col items-center mb-10">
+        <h2 className="text-2xl font-black text-gray-900 dark:text-white font-[family-name:var(--font-noto-serif-kr)] mb-6 tracking-tight">
+          🗺️ 전국 통합 관광 가이드
+        </h2>
+        <div className="flex flex-wrap justify-center gap-2 max-w-4xl">
+          {regions.map((prov, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                setSelectedProvince(prov);
+                setSelectedCity(prov.sigungus && prov.sigungus.length > 0 ? prov.sigungus[0] : null);
+              }}
+              className={`px-4 py-2 rounded-full text-[12px] font-black transition-all shadow-sm ${selectedProvince?.code === prov.code ? 'bg-blue-600 text-white shadow-blue-500/30 -translate-y-0.5' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-100 dark:border-gray-700 hover:bg-gray-50'}`}
+            >
+              {prov.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 시/군/구 선택 탭 (용인 특별관이 아닐 때만 노출) */}
+      {selectedProvince && selectedProvince.code !== "yongin_special" && selectedProvince.sigungus && selectedProvince.sigungus.length > 0 && (
+        <div className="flex flex-wrap justify-center gap-2 mb-10 max-w-4xl mx-auto h-[120px] overflow-y-auto custom-scrollbar p-2 bg-white/50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700">
+          {selectedProvince.sigungus.map((city: any, idx: number) => (
+            <button
+              key={idx}
+              onClick={() => setSelectedCity(city)}
+              className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all h-fit ${selectedCity?.code === city.code ? 'bg-indigo-500 text-white shadow-md' : 'bg-white dark:bg-slate-700 text-gray-500 hover:bg-gray-50 border border-gray-100 dark:border-slate-600'}`}
+            >
+              {city.name}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {selectedProvince?.code !== "yongin_special" && selectedCity ? (
+         <DynamicRegionBoard areaCode={selectedProvince.code} sigunguCode={selectedCity.code} regionName={`${selectedProvince.name.replace('특별관', '')} ${selectedCity.name}`} />
+      ) : (
       <div className="flex flex-col gap-10">
         
         {/* 1. 상단: 100% 레이아웃으로 웅장하게 확대된 용인 구별 생활권 지도 보드 */}
@@ -1426,8 +1484,8 @@ export default function MapNoticeSection({
             </div>
           </motion.div>
         </AnimatePresence>
-
       </div>
+      )}
     </section>
   );
 }

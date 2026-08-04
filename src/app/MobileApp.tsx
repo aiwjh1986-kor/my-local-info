@@ -233,21 +233,7 @@ export default function MobileApp({ allCards, gasPrices }: { allCards: FeaturedC
                 </div>
               );
               
-              // Insert Ad after every 3rd card
-              if ((idx + 1) % 3 === 0) {
-                acc.push(
-                  <div 
-                    key={`ad-${idx}`} 
-                    className="snap-start flex-shrink-0 w-[240px] bg-white rounded-[20px] overflow-hidden shadow-lg relative flex flex-col justify-center items-center h-[180px]"
-                  >
-                    <a href="https://link.coupang.com/a/ecH6eLl6Bw" target="_blank" rel="noreferrer" className="w-full h-full flex justify-center items-center">
-                      <img src="https://ads-partners.coupang.com/banners/993400?subId=&traceId=V0-301-f5c692db558def48-I993400&w=300&h=250" alt="광고" className="w-full h-full object-cover" />
-                    </a>
-                    <div className="absolute inset-0 bg-black/5 hover:bg-black/10 transition-colors pointer-events-none"></div>
-                    <div className="absolute top-0 right-0 bg-black/50 text-white text-[9px] px-1.5 py-0.5 m-2 rounded z-10 pointer-events-none">AD</div>
-                  </div>
-                );
-              }
+
               return acc;
             }, [])}
           </div>

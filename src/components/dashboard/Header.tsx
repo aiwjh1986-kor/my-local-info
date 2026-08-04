@@ -69,11 +69,7 @@ export default function Header() {
 
   const navItems = [
     { id: "홈", label: "홈", path: "/" },
-    { id: "지원금", label: "지원금", path: `/?tab=${encodeURIComponent("지원금")}` },
     { id: "지역행사", label: "지역행사", path: `/?tab=${encodeURIComponent("지역행사")}` },
-    { id: "용인시정보", label: "용인시정보", path: `/?tab=${encodeURIComponent("용인시정보")}` },
-    { id: "도서정보", label: "도서정보", path: `/?tab=${encodeURIComponent("도서정보")}` },
-    { id: "독서일기", label: "독서일기", path: `/?tab=${encodeURIComponent("독서일기")}` },
     { id: "블로그", label: "블로그", path: `/?tab=${encodeURIComponent("블로그")}` },
   ];
 
@@ -108,15 +104,15 @@ export default function Header() {
               className="flex items-center gap-2.5 cursor-pointer group"
             >
               <div className="relative w-9 h-9 rounded-xl bg-gradient-to-tr from-accent to-accent-purple flex items-center justify-center shadow-lg shadow-accent/20 overflow-hidden">
-                <span className="text-white font-extrabold text-lg group-hover:scale-110 transition-transform">L</span>
+                <span className="text-white font-extrabold text-lg group-hover:scale-110 transition-transform">K</span>
                 <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
               <div className="flex flex-col">
                 <span className="text-[15.5px] font-black tracking-tight text-[#0F172A] dark:text-[#F1F5F9]">
-                  LUMI PORTAL
+                  KoreaTrip
                 </span>
                 <span className="text-[9.5px] font-bold text-accent dark:text-accent-purple uppercase tracking-wider -mt-0.5">
-                  Yongin Guide
+                  Guide
                 </span>
               </div>
             </div>

@@ -36,17 +36,17 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "용인 가볼만한곳 & 용인 용인시정보 가이드 | 루미 가이드",
-    template: "%s | 루미 가이드"
+    default: "KoreaTrip - 국내 여행 & 축제 완벽 가이드",
+    template: "%s | KoreaTrip"
   },
-  description: "용인 가볼만한곳, 지역 축제, 행사 정보부터 용인시 지원금, 실생활 꿀팁까지! 용인 주민과 여행자를 위한 정보를 매일 업데이트합니다.",
+  description: "전국 가볼만한곳, 지역 축제, 행사 정보부터 숨겨진 여행 꿀팁까지! 여행자를 위한 최신 정보를 매일 업데이트합니다.",
   alternates: {
     canonical: "https://koreatripinfo.com",
   },
   keywords: ["용인 가볼만한곳", "용인 여행", "용인 축제", "용인 행사", "용인 지원금", "용인 용인시정보", "용인시 혜택", "용인 맛집", "용인 꿀팁"],
-  authors: [{ name: "LUMI GUIDE" }],
-  creator: "LUMI GUIDE",
-  publisher: "LUMI GUIDE",
+  authors: [{ name: "KoreaTrip" }],
+  creator: "KoreaTrip",
+  publisher: "KoreaTrip",
   formatDetection: {
     email: false,
     address: false,
@@ -60,16 +60,16 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "용인 가볼만한곳 & 용인 용인시정보 가이드 | 루미 가이드",
-    description: "용인시 주민과 여행자를 위한 지역 행사, 축제, 지원금, 실생활 꿀팁 정보를 매일 확인하세요.",
+    title: "KoreaTrip - 국내 여행 & 축제 완벽 가이드",
+    description: "전국 숨겨진 명소와 축제, 알찬 여행 정보를 매일 확인하세요.",
     url: "https://koreatripinfo.com",
-    siteName: "루미 가이드",
+    siteName: "KoreaTrip",
     images: [
       {
         url: "https://koreatripinfo.com/images/og-image.png",
         width: 1200,
         height: 630,
-        alt: "루미 가이드 - 용인 생활 정보",
+        alt: "KoreaTrip - 여행 및 행사 가이드",
       },
     ],
     type: "website",
@@ -77,8 +77,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "용인 가볼만한곳 & 용인 용인시정보 가이드 | 루미 가이드",
-    description: "용인시 주민과 여행자를 위한 필수 정보를 매일 업데이트합니다.",
+    title: "KoreaTrip - 국내 여행 & 축제 완벽 가이드",
+    description: "국내 여행자를 위한 필수 여행 정보를 매일 업데이트합니다.",
     images: ["https://koreatripinfo.com/images/og-image.png"],
   },
 };
@@ -168,9 +168,9 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "name": "용인시 생활 정보",
+              "name": "KoreaTrip 여행 가이드",
               "url": "https://koreatripinfo.com",
-              "description": "용인시 주민을 위한 지역 행사, 축제, 지원금, 혜택 정보"
+              "description": "국내 가볼만한 곳, 축제 및 행사 등 알찬 여행 정보"
             })
           }}
         />
